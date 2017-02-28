@@ -1,47 +1,67 @@
 /*******************************************************************************
-Test-Automation CRUD DDL for table ta.case_analysis_dimension
+Test-Automation CRUD DDL for table ta.person
 History:
-  02/22/2017  Todd Morley   initial file creation
-  02/27/2017  Todd Morley   column re-ordering
+  02/27/2017  Todd Morley   initial file creation
 *******************************************************************************/
 
 /*******************************************************************************
 Create function returns ID in a variable of type bigint, whether or not the 
 entity antedated the call.  (An attempt to re-create the entity is harmless.)
 *******************************************************************************/
-create or replace function ta.createCaseAnalysisDimension(
-  nameIn in text,
-  moduleIdIn in bigint
+create or replace function ta.createPerson(
+	fullNameIn in text,
+	activeDirectoryObjectGuidIn in text,
+	emailIn in text,
+	cellPhoneIn in text,
+	teamIdIn in bigint,
+	roleIdIn in bigint
 )
 returns bigint
 as $$
   declare
     tempId bigint;
   begin
+    if(
+      fullNameIn is null or
+      activeDirectoryObjectGuidIn is null or
+      emailIn is null or
+      teamIdIn is null or
+      roleIdIn is null
+    ) then
+      raise exception 'invalid input passed to ta.createPerson';
+    end if;
     begin
       select id 
         into strict tempId
-        from ta.case_analysis_dimension 
+        from ta.person 
         where 
-          name = lower(nameIn) and
+          active_directory_object_guid = activeDirectoryObjectGuidIn and
           end_datetime is null;
       return(tempId);
       exception
         when no_data_found then null; -- not return(null); continue to below
     end;
-    select nextval('ta.case_analysis_dimension_id_s') into tempId;
-    insert into ta.case_analysis_dimension(
+    select nextval('ta.person_id_s') into tempId;
+    insert into ta.person(
       id,
-      name,
+      full_name,
+      active_directory_object_guid,
+      email,
+      cell_phone,
       create_datetime,
       end_datetime,
-      module_id
+      team_id,
+      role_id
     ) values(
       tempId,
-      lower(nameIn),
+      fullNameIn,
+      activeDirectoryObjectGuidIn,
+      emailIn,
+      cellPhoneIn,
       current_timestamp,
       null,
-      moduleIdIn
+      teamIdIn,
+      roleIdIn
     );
     return(tempId);
   end
@@ -52,9 +72,8 @@ language plpgsql;
 GetId function returns the surrogate primary key (ID) of the entity with the 
 input natural-key value, or null if no entity with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getCaseAnalysisDimensionId(
-  nameIn in text,
-  moduleIdIn in bigint
+create or replace function ta.getPersonId(
+  activeDirectoryObjectGuidIn in text
 )
 returns bigint
 as $$
@@ -63,10 +82,9 @@ as $$
   begin
     select id
       into strict tempId
-      from ta.case_analysis_dimension
+      from ta.person
       where 
-        name = lower(nameIn) and 
-        module_id = moduleIdIn and
+        active_directory_object_guid = activeDirectoryObjectGuidIn and 
         end_datetime is null;
     return(tempId);
     exception
@@ -79,15 +97,15 @@ language plpgsql;
 Get function returns table rowtype, or null if no entity with the input ID was
 found.
 *******************************************************************************/
-create or replace function ta.getCaseAnalysisDimension(idIn in bigint)
-returns ta.case_analysis_dimension
+create or replace function ta.getPerson(idIn in bigint)
+returns ta.person
 as $$
   declare
-    tempRecord ta.case_analysis_dimension%rowtype;
+    tempRecord ta.person%rowtype;
   begin
     select * 
       into strict tempRecord
-      from ta.case_analysis_dimension 
+      from ta.person 
       where 
         id = idIn and 
         end_datetime is null;
@@ -99,45 +117,22 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-GetName function returns name in a variable of type text, or null if no
-entity with the input ID was found.
+GetPersonFullName function returns full_name in a variable of type text, or 
+null if no entity with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getCaseAnalysisDimensionName(idIn in bigint)
+create or replace function ta.getPersonFullName(idIn in bigint)
 returns text
 as $$
   declare
-    tempName text;
+    tempFullName text;
   begin
-    select name
-      into strict tempName
-      from ta.case_analysis_dimension 
+    select full_name
+      into strict tempFullName
+      from ta.person 
       where 
         id = idIn and 
         end_datetime is null;
-    return(tempName);
-    exception
-      when no_data_found then return(null);
-  end
-$$
-language plpgsql;
-
-/*******************************************************************************
-GetModuleId function returns the ID of the owning module in a variable of type 
-bigint, or null if no entity with the input ID was found.
-*******************************************************************************/
-create or replace function ta.getCaseAnalysisDimensionModuleId(idIn in bigint)
-returns bigint
-as $$
-  declare
-    tempModuleId bigint;
-  begin
-    select module_id
-      into strict tempModuleId
-      from ta.case_analysis_dimension 
-      where 
-        id = idIn and 
-        end_datetime is null;
-    return(tempModuleId);
+    return(tempFullName);
     exception
       when no_data_found then return(null);
   end
@@ -146,42 +141,96 @@ language plpgsql;
 
 /*******************************************************************************
 The update function upates all entity properties that are not part of the
-entity type's natural primary key, in this case the module ID.
+entity type's natural primary key.
 *******************************************************************************/
-create or replace function ta.updateCaseAnalysisDimension(
+create or replace function ta.updatePerson(
   idIn in bigint,
-  moduleIdIn in bigint
+	fullNameIn in text,
+	emailIn in text,
+	cellPhoneIn in text,
+	teamIdIn in bigint,
+	roleIdIn in bigint
 )
 returns bigint
 as $$
   declare
-    tempRow ta.case_analysis_dimension%rowtype;
+    tempTeamCount integer;
+    tempRoleCount integer;
+    tempRow ta.person%rowtype;
     tempTimestamp timestamp;
   begin
+    if(
+      fullNameIn is null or
+      emailIn is null or
+      teamIdIn is null or
+      roleIdIn is null
+    ) then
+      raise exception 'invalid input passed to ta.updatePerson';
+    end if;
+    select count(*)
+      into tempTeamCount
+      from ta.team
+      where
+        id = teamIdIn and
+        end_datetime is null;
+    select count(*)
+      into tempRoleCount
+      from ta.role
+      where
+        id = roleIdIn and
+        end_datetime is null;
+    if(
+      tempTeamCount = 0 or 
+      tempRoleCount = 0 or
+      sourceControlBranchIdIn is null
+     ) then
+      raise exception 'invalid input passed to ta.updatePerson';
+    end if;
     select * 
       into tempRow 
-      from ta.case_analysis_dimension
+      from ta.person
       where
         id = idIn and
         end_datetime is null;
     tempTimestamp := current_timestamp;
-    update ta.case_analysis_dimension
+    update ta.person
       set end_datetime = tempTimestamp
       where 
         id = idIn and
         end_datetime is null;
-    insert into ta.case_analysis_dimension(
+    insert into ta.person(
       id,
       name,
       create_datetime,
       end_datetime,
-      module_id
+      source_control_branch_id
     ) values(
       idIn,
       tempRow.name,
       tempTimestamp,
       null,
-      moduleIdIn
+      sourceControlBranchIdIn
+    );
+    insert into ta.person(
+      id,
+      full_name,
+      active_directory_object_guid,
+      email,
+      cell_phone,
+      create_datetime,
+      end_datetime,
+      team_id,
+      role_id
+    ) values(
+      idIn,
+      fullNameIn,
+      tempRow.active_directory_object_guid,
+      emailIn,
+      cellPhoneIn,
+      tempTimestamp,
+      null,
+      teamIdIn,
+      roleIdIn
     );
     return(idIn);
     exception
@@ -194,13 +243,13 @@ language plpgsql;
 Delete function returns deleted entity's ID in a variable of type bigint, if the
 entity was found (and deleted), otherwise null.
 *******************************************************************************/
-create or replace function ta.deleteCaseAnalysisDimension(idIn in bigint)
+create or replace function ta.deletePerson(idIn in bigint)
 returns bigint
 as $$
   declare
     tempId bigint;
   begin
-     update ta.case_analysis_dimension 
+     update ta.person 
       set end_datetime = current_timestamp
       where
         id = idIn and

@@ -1,47 +1,65 @@
 /*******************************************************************************
-Test-Automation CRUD DDL for table ta.case_analysis_dimension
+Test-Automation CRUD DDL for table ta.test
 History:
-  02/22/2017  Todd Morley   initial file creation
-  02/27/2017  Todd Morley   column re-ordering
+  02/27/2017  Todd Morley   initial file creation
 *******************************************************************************/
 
 /*******************************************************************************
 Create function returns ID in a variable of type bigint, whether or not the 
 entity antedated the call.  (An attempt to re-create the entity is harmless.)
 *******************************************************************************/
-create or replace function ta.createCaseAnalysisDimension(
-  nameIn in text,
-  moduleIdIn in bigint
+create or replace function ta.createTest(
+	fileNameIn in text,
+	pathIn in text,
+	descriptionIn in text,
+	sourceControlServerIdIn in bigint,
+	testPriorityLevelIdIn in bigint
 )
 returns bigint
 as $$
   declare
     tempId bigint;
   begin
+    if(
+      fileNameIn is null or
+      pathIn is null or
+      sourceControlServerIdIn is null or
+      testPriorityLevelIdIn is null
+    ) then
+      raise exception 'invalid input passed to ta.createTest';
+    end if;
     begin
       select id 
         into strict tempId
-        from ta.case_analysis_dimension 
+        from ta.test 
         where 
-          name = lower(nameIn) and
+          file_name = fileNameIn and
+          path = pathIn and
+          source_control_server_id = sourceControlServerIdIn and
           end_datetime is null;
       return(tempId);
       exception
         when no_data_found then null; -- not return(null); continue to below
     end;
-    select nextval('ta.case_analysis_dimension_id_s') into tempId;
-    insert into ta.case_analysis_dimension(
+    select nextval('ta.test_id_s') into tempId;
+    insert into ta.test(
       id,
-      name,
+      file_name,
+      path,
+      description,
       create_datetime,
       end_datetime,
-      module_id
+      source_control_server_id,
+      test_priority_level_id
     ) values(
       tempId,
-      lower(nameIn),
+      fileNameIn,
+      pathIn,
+      descriptionIn,
       current_timestamp,
       null,
-      moduleIdIn
+      sourceControlServerIdIn,
+      testPriorityLevelIdIn
     );
     return(tempId);
   end
@@ -52,9 +70,10 @@ language plpgsql;
 GetId function returns the surrogate primary key (ID) of the entity with the 
 input natural-key value, or null if no entity with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getCaseAnalysisDimensionId(
-  nameIn in text,
-  moduleIdIn in bigint
+create or replace function ta.getTestId(
+	fileNameIn in text,
+	pathIn in text,
+	sourceControlServerIdIn in bigint
 )
 returns bigint
 as $$
@@ -63,10 +82,11 @@ as $$
   begin
     select id
       into strict tempId
-      from ta.case_analysis_dimension
+      from ta.test
       where 
-        name = lower(nameIn) and 
-        module_id = moduleIdIn and
+        file_name = fileNameIn and 
+        path = pathIn and
+        source_control_server_id = sourceControlServerIdIn and
         end_datetime is null;
     return(tempId);
     exception
@@ -79,15 +99,15 @@ language plpgsql;
 Get function returns table rowtype, or null if no entity with the input ID was
 found.
 *******************************************************************************/
-create or replace function ta.getCaseAnalysisDimension(idIn in bigint)
-returns ta.case_analysis_dimension
+create or replace function ta.getTest(idIn in bigint)
+returns ta.test
 as $$
   declare
-    tempRecord ta.case_analysis_dimension%rowtype;
+    tempRecord ta.test%rowtype;
   begin
     select * 
       into strict tempRecord
-      from ta.case_analysis_dimension 
+      from ta.test 
       where 
         id = idIn and 
         end_datetime is null;
@@ -99,45 +119,30 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-GetName function returns name in a variable of type text, or null if no
-entity with the input ID was found.
+GetTestLocation function returns the test's location in a variable of type 
+testLocationType, or null if no entity with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getCaseAnalysisDimensionName(idIn in bigint)
-returns text
+create or replace function ta.GetTestLocation(idIn in bigint)
+returns ta.testLocationType
 as $$
   declare
-    tempName text;
+    tempLocation ta.testLocationType;
   begin
-    select name
-      into strict tempName
-      from ta.case_analysis_dimension 
+    select
+      ta.test.file_name,
+      ta.test.path,
+      ta.source_control_server.static_ip_address,
+      ta.source_control_server.dns_name
+      into strict tempLocation
+      from 
+        ta.test,
+        ta.source_control_server
       where 
-        id = idIn and 
-        end_datetime is null;
-    return(tempName);
-    exception
-      when no_data_found then return(null);
-  end
-$$
-language plpgsql;
-
-/*******************************************************************************
-GetModuleId function returns the ID of the owning module in a variable of type 
-bigint, or null if no entity with the input ID was found.
-*******************************************************************************/
-create or replace function ta.getCaseAnalysisDimensionModuleId(idIn in bigint)
-returns bigint
-as $$
-  declare
-    tempModuleId bigint;
-  begin
-    select module_id
-      into strict tempModuleId
-      from ta.case_analysis_dimension 
-      where 
-        id = idIn and 
-        end_datetime is null;
-    return(tempModuleId);
+        ta.test.id = idIn and
+        ta.source_control_server.id = ta.test.source_control_server_id and
+        ta.test.end_datetime is null and
+        ta.source_control_server.end_datetime is null;
+    return(tempLocation);
     exception
       when no_data_found then return(null);
   end
@@ -146,42 +151,62 @@ language plpgsql;
 
 /*******************************************************************************
 The update function upates all entity properties that are not part of the
-entity type's natural primary key, in this case the module ID.
+entity type's natural primary key.
 *******************************************************************************/
-create or replace function ta.updateCaseAnalysisDimension(
+create or replace function ta.updateTest(
   idIn in bigint,
-  moduleIdIn in bigint
+	descriptionIn in text,
+	testPriorityLevelIdIn in bigint
 )
 returns bigint
 as $$
   declare
-    tempRow ta.case_analysis_dimension%rowtype;
+    tempCount integer;
+    tempRow ta.test%rowtype;
     tempTimestamp timestamp;
   begin
+    select count(*)
+      into tempCount
+      from ta.test_priority_level
+      where
+        id = testPriorityLevelIdIn and
+        end_datetime is null;
+    if(
+      tempCount = 0 or 
+      testPriorityLevelIdIn is null
+     ) then
+      raise exception 'invalid input passed to ta.updateTest';
+    end if;
     select * 
       into tempRow 
-      from ta.case_analysis_dimension
+      from ta.test
       where
         id = idIn and
         end_datetime is null;
     tempTimestamp := current_timestamp;
-    update ta.case_analysis_dimension
+    update ta.test
       set end_datetime = tempTimestamp
       where 
         id = idIn and
         end_datetime is null;
-    insert into ta.case_analysis_dimension(
+    insert into ta.test(
       id,
-      name,
+      file_name,
+      path,
+      description,
       create_datetime,
       end_datetime,
-      module_id
+      source_control_server_id,
+      test_priority_level_id
     ) values(
       idIn,
-      tempRow.name,
+      tempRow.file_name,
+      tempRow.path,
+      descriptionIn,
       tempTimestamp,
       null,
-      moduleIdIn
+      tempRow.source_control_server_id,
+      testPriorityLevelIdIn
     );
     return(idIn);
     exception
@@ -194,13 +219,13 @@ language plpgsql;
 Delete function returns deleted entity's ID in a variable of type bigint, if the
 entity was found (and deleted), otherwise null.
 *******************************************************************************/
-create or replace function ta.deleteCaseAnalysisDimension(idIn in bigint)
+create or replace function ta.deleteTest(idIn in bigint)
 returns bigint
 as $$
   declare
     tempId bigint;
   begin
-     update ta.case_analysis_dimension 
+     update ta.test 
       set end_datetime = current_timestamp
       where
         id = idIn and

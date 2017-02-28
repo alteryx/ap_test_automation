@@ -4,6 +4,7 @@ History:
   02/14/2017  Todd Morley   initial file creation
   02/22/2017  Todd Morley   corrections, initial execution on test_automation
                             schema
+  02/27/2017  Todd Morley   added several types, plus natural-key annotations
 *******************************************************************************/
 
 /*******************************************************************************
@@ -16,7 +17,25 @@ create schema ta;
 types
 *******************************************************************************/
 
-create type ta.periodType as (start_date date, end_date date);
+create type ta.periodType as (
+  start_date date, 
+  end_date date
+);
+create type ta.networkInfoType as (
+  ip_address text, 
+  dns_name text
+);
+create type ta.branchLocationType as (
+  path text, 
+  ip_address text, 
+  dns_name text
+);
+create type ta.testLocationType as (
+  file_name text, 
+  path text, 
+  ip_address text, 
+  dns_name text
+);
 
 /*******************************************************************************
 lookup tables with no foreign keys
@@ -24,8 +43,8 @@ lookup tables with no foreign keys
 
 create table ta.source_control_system_type(
   id bigint not null,
-  name text not null,
-  version text not null,
+  name text not null, -- nk
+  version text not null, -- nk
   create_datetime timestamp not null,
   end_datetime timestamp default null
 );
@@ -33,7 +52,7 @@ create sequence ta.source_control_system_type_id_s;
 
 create table ta.bug_management_system_type(
   id bigint not null,
-  name text not null,
+  name text not null, -- nk
   create_datetime timestamp not null,
   end_datetime timestamp default null
 );
@@ -41,7 +60,7 @@ create sequence ta.bug_management_system_type_id_s;
 
 create table ta.role(
   id bigint not null,
-  name text not null,
+  name text not null, -- nk
   create_datetime timestamp not null,
   end_datetime timestamp default null
 );
@@ -49,7 +68,7 @@ create sequence ta.role_id_s;
 
 create table ta.test_priority_level(
   id bigint not null,
-	name text not null,
+	name text not null, -- nk
   create_datetime timestamp not null,
   end_datetime timestamp default null
 );
@@ -57,7 +76,7 @@ create sequence ta.test_priority_level_id_s;
 
 create table ta.test_result_type(
   id bigint not null,
-  name text not null,
+  name text not null, -- nk
   create_datetime timestamp not null,
   end_datetime timestamp default null
 );
@@ -65,8 +84,8 @@ create sequence ta.test_result_type_id_s;
 
 create table ta.operating_system_type(
   id bigint not null,
-  name text not null,
-  version text not null,
+  name text not null, -- nk
+  version text not null, -- nk
   create_datetime timestamp not null,
   end_datetime timestamp default null
 );
@@ -74,8 +93,8 @@ create sequence ta.operating_system_type_id_s;
 
 create table ta.database_type(
   id bigint not null,
-  name text not null,
-  version text not null,
+  name text not null, -- nk
+  version text not null, -- nk
   create_datetime timestamp not null,
   end_datetime timestamp default null
 );
@@ -83,7 +102,7 @@ create sequence ta.database_type_id_s;
 
 create table ta.alteryx_type(
   id bigint not null,
-  version text not null,
+  version text not null, -- nk
   support_start_date date not null,
   support_end_date date default null,
   create_datetime timestamp not null,
@@ -93,7 +112,7 @@ create sequence ta.alteryx_type_id_s;
 
 create table ta.natural_language(
   id bigint not null,
-  name text not null,
+  name text not null, -- nk
   create_datetime timestamp not null,
   end_datetime timestamp default null
 );
@@ -101,7 +120,7 @@ create sequence ta.natural_language_id_s;
 
 create table ta.node_group(
   id bigint not null,
-	name text not null,
+	name text not null, -- nk
   last_start_datetime timestamp not null,
 	create_datetime timestamp not null,
   end_datetime timestamp default null
@@ -110,7 +129,7 @@ create sequence ta.node_group_id_s;
 
 create table ta.event_type(
   id bigint not null,
-  name text not null,
+  name text not null, -- nk
   create_datetime timestamp not null,
   end_datetime timestamp default null
 );
@@ -118,7 +137,7 @@ create sequence ta.event_type_id_s;
 
 create table ta.request_status_type(
   id bigint not null,
-  name text not null,
+  name text not null, -- nk
   create_datetime timestamp not null,
   end_datetime timestamp default null
 );
@@ -130,48 +149,48 @@ lookup tables with foreign keys
 
 create table ta.case_analysis_dimension(
   id bigint not null,
-  name text not null,
-  module_id bigint not null,
+  name text not null, -- nk
   create_datetime timestamp not null,
-  end_datetime timestamp default null
+  end_datetime timestamp default null,
+  module_id bigint not null -- nk
 );
 create sequence ta.case_analysis_dimension_id_s;
 
 create table ta.source_control_server(
   id bigint not null,
-  name text not null,
+  name text not null, -- nk
   static_ip_address text default null,
   dns_name text default null,
   create_datetime timestamp not null,
   end_datetime timestamp default null,
-  source_control_system_type_id bigint not null
+  source_control_system_type_id bigint not null -- nk
 );
 create sequence ta.source_control_server_id_s;
 
 create table ta.source_control_branch(
   id bigint not null,
-  name text not null,
+  name text not null, -- nk
   path text not null,
   create_datetime timestamp not null,
   end_datetime timestamp default null,
-  source_control_server_id bigint not null
+  source_control_server_id bigint not null -- nk
 );
 create sequence ta.source_control_branch_id_s;
 
 create table ta.bug_management_server(
   id bigint not null,
-  name text not null,
+  name text not null, -- nk
   static_ip_address text default null,
   dns_name text default null,
   create_datetime timestamp not null,
   end_datetime timestamp default null,
-  bug_management_system_type_id bigint not null
+  bug_management_system_type_id bigint not null -- nk
 );
 create sequence ta.bug_management_server_id_s;
 
 create table ta.team(
   id bigint not null,
-  name text not null,
+  name text not null, -- nk
   create_datetime timestamp not null,
   end_datetime timestamp default null,
   source_control_branch_id bigint not null
@@ -180,64 +199,65 @@ create sequence ta.team_id_s;
 
 create table ta.source_file(
   id bigint not null,
-  name text not null,
-  path text not null,
+  name text not null, -- nk
+  path text not null, -- nk
   create_datetime timestamp not null,
   end_datetime timestamp default null,
-  source_control_branch_id bigint not null
+  source_control_branch_id bigint not null -- nk
 );
 create sequence ta.source_file_id_s;
 
 create table ta.person(
   id bigint not null,
 	full_name text not null,
-	active_directory_object_guid text not null,
-	team_id bigint not null,
+	active_directory_object_guid text not null, -- nk
 	email text not null,
 	cell_phone text default null,
   create_datetime timestamp not null,
   end_datetime timestamp default null,
+	team_id bigint not null,
 	role_id bigint not null
 );
 create sequence ta.person_id_s;
 
 create table ta.module(
   id bigint not null,
-	name text not null,
+	name text not null, -- nk
   create_datetime timestamp not null,
   end_datetime timestamp default null,
-	owning_team_id bigint not null
+	owning_team_id bigint not null -- nk
 );
 create sequence ta.module_id_s;
 
 create table ta.test(
-	file_name text not null,
-	path text not null,
-	source_control_server_id bigint not null,
+  id bigint not null,
+	file_name text not null, -- nk
+	path text not null, -- nk
 	description text default null,
   create_datetime timestamp not null,
   end_datetime timestamp default null,
+	source_control_server_id bigint not null, -- nk
 	test_priority_level_id bigint not null
 );
 create sequence ta.test_id_s;
 
 create table ta.node_type(
   id bigint not null,
-  name text not null,
-  core_count integer not null,
-  ram_gb integer not null,
+  description text not null,
+  core_count integer not null, -- nk
+  ram_gb integer not null, -- nk
   create_datetime timestamp not null,
   end_datetime timestamp default null,
-  operating_system_type_id bigint not null,
-  database_type_id bigint default null,
-  alteryx_type_id bigint default null
+  operating_system_type_id bigint not null, -- nk
+  database_type_id bigint default null, -- nk
+  alteryx_type_id bigint default null -- nk
 );
 create sequence ta.node_type_id_s;
 
 create table ta.node(
   id bigint not null,
-  ip_address text default null,
-  dns_name text default null,
+  ip_address text default null, -- nk (can't change, except null to non-null)
+  dns_name text default null, -- nk (can't change, except null to non-null)
   virtual_yn char not null,
   last_start_date date not null,
   create_datetime timestamp not null,

@@ -1,27 +1,39 @@
 /*******************************************************************************
-Test-Automation CRUD DDL for table ta.case_analysis_dimension
+Test-Automation CRUD DDL for table ta.source_control_server
 History:
-  02/22/2017  Todd Morley   initial file creation
-  02/27/2017  Todd Morley   column re-ordering
+  02/27/2017  Todd Morley   initial file creation
 *******************************************************************************/
 
 /*******************************************************************************
 Create function returns ID in a variable of type bigint, whether or not the 
 entity antedated the call.  (An attempt to re-create the entity is harmless.)
+Name is the natural key.
 *******************************************************************************/
-create or replace function ta.createCaseAnalysisDimension(
+create or replace function ta.createSourceControlServer(
   nameIn in text,
-  moduleIdIn in bigint
+  sourceControlSystemTypeIdIn in bigint,
+  staticIpAddressIn in text default null,
+  dnsNameIn in text default null
 )
 returns bigint
 as $$
   declare
     tempId bigint;
   begin
+    if(
+      nameIn is null or
+      sourceControlSystemTypeIdIn is null or
+      (
+        staticIpAddressIn is null and
+        dnsNameIn is null
+      )
+    ) then
+      raise exception 'invalid input passed to ta.createSourceControlServer';
+    end if;
     begin
       select id 
         into strict tempId
-        from ta.case_analysis_dimension 
+        from ta.source_control_server 
         where 
           name = lower(nameIn) and
           end_datetime is null;
@@ -29,19 +41,23 @@ as $$
       exception
         when no_data_found then null; -- not return(null); continue to below
     end;
-    select nextval('ta.case_analysis_dimension_id_s') into tempId;
-    insert into ta.case_analysis_dimension(
+    select nextval('ta.source_control_server_id_s') into tempId;
+    insert into ta.source_control_server(
       id,
       name,
+      static_ip_address,
+      dns_name,
       create_datetime,
       end_datetime,
-      module_id
+      source_control_system_type_id
     ) values(
       tempId,
       lower(nameIn),
+      staticIpAddressIn,
+      dnsNameIn,
       current_timestamp,
       null,
-      moduleIdIn
+      sourceControlSystemTypeIdIn
     );
     return(tempId);
   end
@@ -52,9 +68,8 @@ language plpgsql;
 GetId function returns the surrogate primary key (ID) of the entity with the 
 input natural-key value, or null if no entity with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getCaseAnalysisDimensionId(
-  nameIn in text,
-  moduleIdIn in bigint
+create or replace function ta.getSourceControlServerId(
+  nameIn in text
 )
 returns bigint
 as $$
@@ -63,10 +78,9 @@ as $$
   begin
     select id
       into strict tempId
-      from ta.case_analysis_dimension
+      from ta.source_control_server
       where 
         name = lower(nameIn) and 
-        module_id = moduleIdIn and
         end_datetime is null;
     return(tempId);
     exception
@@ -79,15 +93,15 @@ language plpgsql;
 Get function returns table rowtype, or null if no entity with the input ID was
 found.
 *******************************************************************************/
-create or replace function ta.getCaseAnalysisDimension(idIn in bigint)
-returns ta.case_analysis_dimension
+create or replace function ta.getSourceControlServer(idIn in bigint)
+returns ta.source_control_server
 as $$
   declare
-    tempRecord ta.case_analysis_dimension%rowtype;
+    tempRecord ta.source_control_server%rowtype;
   begin
     select * 
       into strict tempRecord
-      from ta.case_analysis_dimension 
+      from ta.source_control_server 
       where 
         id = idIn and 
         end_datetime is null;
@@ -102,7 +116,7 @@ language plpgsql;
 GetName function returns name in a variable of type text, or null if no
 entity with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getCaseAnalysisDimensionName(idIn in bigint)
+create or replace function ta.getSourceControlServerName(idIn in bigint)
 returns text
 as $$
   declare
@@ -110,7 +124,7 @@ as $$
   begin
     select name
       into strict tempName
-      from ta.case_analysis_dimension 
+      from ta.source_control_server 
       where 
         id = idIn and 
         end_datetime is null;
@@ -122,22 +136,24 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-GetModuleId function returns the ID of the owning module in a variable of type 
-bigint, or null if no entity with the input ID was found.
+GetSourceControlServerNetworkInfo function returns a networkInfoType, or null 
+if no entity with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getCaseAnalysisDimensionModuleId(idIn in bigint)
-returns bigint
+create or replace function ta.getSourceControlServerNetworkInfo(idIn in bigint)
+returns ta.networkInfoType
 as $$
   declare
-    tempModuleId bigint;
+    tempNetworkInfo ta.networkInfoType;
   begin
-    select module_id
-      into strict tempModuleId
-      from ta.case_analysis_dimension 
+    select 
+      static_ip_address,
+      dns_name
+      into strict tempNetworkInfo
+      from ta.source_control_server 
       where 
         id = idIn and 
         end_datetime is null;
-    return(tempModuleId);
+    return(tempNetworkInfo);
     exception
       when no_data_found then return(null);
   end
@@ -146,42 +162,53 @@ language plpgsql;
 
 /*******************************************************************************
 The update function upates all entity properties that are not part of the
-entity type's natural primary key, in this case the module ID.
+entity type's natural primary key.
 *******************************************************************************/
-create or replace function ta.updateCaseAnalysisDimension(
+
+create or replace function ta.updateSourceControlServer(
   idIn in bigint,
-  moduleIdIn in bigint
+  staticIpAddressIn in text,
+  dnsNameIn in text
 )
 returns bigint
 as $$
   declare
-    tempRow ta.case_analysis_dimension%rowtype;
+    tempRow ta.source_control_server%rowtype;
     tempTimestamp timestamp;
   begin
+    if(
+      staticIpAddressIn is null and
+      dnsNameIn is null
+    ) then
+      raise exception 'invalid input passed to ta.updateSourceControlServer';
+    end if;
     select * 
       into tempRow 
-      from ta.case_analysis_dimension
+      from ta.source_control_server 
       where
         id = idIn and
         end_datetime is null;
     tempTimestamp := current_timestamp;
-    update ta.case_analysis_dimension
+    update ta.source_control_server
       set end_datetime = tempTimestamp
       where 
         id = idIn and
         end_datetime is null;
-    insert into ta.case_analysis_dimension(
+    insert into ta.source_control_server(
       id,
-      name,
+      static_ip_address,
+      dns_name,
       create_datetime,
       end_datetime,
-      module_id
+      source_control_system_type_id
     ) values(
       idIn,
       tempRow.name,
+      staticIpAddressIn,
+      dnsNameIn,
       tempTimestamp,
       null,
-      moduleIdIn
+      tempRow.source_control_system_type_id
     );
     return(idIn);
     exception
@@ -194,13 +221,13 @@ language plpgsql;
 Delete function returns deleted entity's ID in a variable of type bigint, if the
 entity was found (and deleted), otherwise null.
 *******************************************************************************/
-create or replace function ta.deleteCaseAnalysisDimension(idIn in bigint)
+create or replace function ta.deleteSourceControlServer(idIn in bigint)
 returns bigint
 as $$
   declare
     tempId bigint;
   begin
-     update ta.case_analysis_dimension 
+     update ta.source_control_server 
       set end_datetime = current_timestamp
       where
         id = idIn and

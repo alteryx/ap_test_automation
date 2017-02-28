@@ -1,47 +1,72 @@
 /*******************************************************************************
-Test-Automation CRUD DDL for table ta.case_analysis_dimension
+Test-Automation CRUD DDL for table ta.source_control_branch
 History:
-  02/22/2017  Todd Morley   initial file creation
-  02/27/2017  Todd Morley   column re-ordering
+  02/27/2017  Todd Morley   initial file creation
 *******************************************************************************/
 
 /*******************************************************************************
 Create function returns ID in a variable of type bigint, whether or not the 
 entity antedated the call.  (An attempt to re-create the entity is harmless.)
+Name and source_control_branch_id (translated to source-control server name, 
+technically) are the natural key.  
 *******************************************************************************/
-create or replace function ta.createCaseAnalysisDimension(
+create or replace function ta.createSourceControlBranch(
   nameIn in text,
-  moduleIdIn in bigint
+  pathIn in text,
+  sourceControlServerIdIn in bigint
 )
 returns bigint
 as $$
   declare
+    tempCount integer;
     tempId bigint;
   begin
+    if(
+      nameIn is null or
+      pathIn is null or
+      sourceControlServerIdIn is null
+    ) then
+      raise exception 'invalid input passed to ta.createSourceControlBranch';
+    end if;
+    select count(*)
+      into tempCount
+      from ta.source_control_branch
+      where
+        name != lower(nameIn) and
+        path = pathIn and
+        source_control_server_id = sourceControlServerIdIn and
+        end_datetime is null;
+    if(tempCount > 0) then
+      raise exception 'pre-existing path passed to ta.createSourceControlBranch';
+    end if;
     begin
       select id 
         into strict tempId
-        from ta.case_analysis_dimension 
+        from ta.source_control_branch 
         where 
           name = lower(nameIn) and
+          source_control_server_id = sourceControlServerIdIn and
           end_datetime is null;
       return(tempId);
       exception
         when no_data_found then null; -- not return(null); continue to below
     end;
-    select nextval('ta.case_analysis_dimension_id_s') into tempId;
-    insert into ta.case_analysis_dimension(
+    select nextval('ta.source_control_branch_id_s') into tempId;
+    insert into ta.source_control_branch(
       id,
       name,
+      path,
       create_datetime,
       end_datetime,
-      module_id
+      source_control_server_id
     ) values(
       tempId,
       lower(nameIn),
+      staticIpAddressIn,
+      dnsNameIn,
       current_timestamp,
       null,
-      moduleIdIn
+      sourceControlSystemTypeIdIn
     );
     return(tempId);
   end
@@ -52,9 +77,9 @@ language plpgsql;
 GetId function returns the surrogate primary key (ID) of the entity with the 
 input natural-key value, or null if no entity with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getCaseAnalysisDimensionId(
+create or replace function ta.getSourceControlBranchId(
   nameIn in text,
-  moduleIdIn in bigint
+  sourceControlServerIdIn in bigint
 )
 returns bigint
 as $$
@@ -63,10 +88,10 @@ as $$
   begin
     select id
       into strict tempId
-      from ta.case_analysis_dimension
+      from ta.source_control_branch
       where 
         name = lower(nameIn) and 
-        module_id = moduleIdIn and
+        source_control_server_id = sourceControlServerIdIn and
         end_datetime is null;
     return(tempId);
     exception
@@ -79,15 +104,15 @@ language plpgsql;
 Get function returns table rowtype, or null if no entity with the input ID was
 found.
 *******************************************************************************/
-create or replace function ta.getCaseAnalysisDimension(idIn in bigint)
-returns ta.case_analysis_dimension
+create or replace function ta.getSourceControlBranch(idIn in bigint)
+returns ta.source_control_branch
 as $$
   declare
-    tempRecord ta.case_analysis_dimension%rowtype;
+    tempRecord ta.source_control_branch%rowtype;
   begin
     select * 
       into strict tempRecord
-      from ta.case_analysis_dimension 
+      from ta.source_control_branch 
       where 
         id = idIn and 
         end_datetime is null;
@@ -102,7 +127,7 @@ language plpgsql;
 GetName function returns name in a variable of type text, or null if no
 entity with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getCaseAnalysisDimensionName(idIn in bigint)
+create or replace function ta.getSourceControlBranchName(idIn in bigint)
 returns text
 as $$
   declare
@@ -110,7 +135,7 @@ as $$
   begin
     select name
       into strict tempName
-      from ta.case_analysis_dimension 
+      from ta.source_control_branch 
       where 
         id = idIn and 
         end_datetime is null;
@@ -122,22 +147,29 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-GetModuleId function returns the ID of the owning module in a variable of type 
-bigint, or null if no entity with the input ID was found.
+GetSourceControlBranchLocation function returns a branchLocationType, or null 
+if no entity with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getCaseAnalysisDimensionModuleId(idIn in bigint)
-returns bigint
+create or replace function ta.getSourceControlBranchLocation(idIn in bigint)
+returns ta.branchLocationType
 as $$
   declare
-    tempModuleId bigint;
+    tempBranchLocation ta.branchLocationType;
   begin
-    select module_id
-      into strict tempModuleId
-      from ta.case_analysis_dimension 
+    select 
+      ta.source_control_branch.path,
+      ta.source_control_server.static_ip_address,
+      ta.source_control_server.dns_name
+      into strict tempBranchLocation
+      from 
+        ta.source_control_branch,
+        ta.source_control_server
       where 
-        id = idIn and 
-        end_datetime is null;
-    return(tempModuleId);
+        ta.source_control_branch.id = idIn and 
+        ta.source_control_server.id = ta.source_control_branch.source_control_server_id and
+        ta.source_control_branchend_datetime is null and
+        ta.source_control_server is null;
+    return(tempBranchLocation);
     exception
       when no_data_found then return(null);
   end
@@ -146,42 +178,60 @@ language plpgsql;
 
 /*******************************************************************************
 The update function upates all entity properties that are not part of the
-entity type's natural primary key, in this case the module ID.
+entity type's natural primary key.
 *******************************************************************************/
-create or replace function ta.updateCaseAnalysisDimension(
+
+create or replace function ta.updateSourceControlBranch(
   idIn in bigint,
-  moduleIdIn in bigint
+  pathIn in text
 )
 returns bigint
 as $$
   declare
-    tempRow ta.case_analysis_dimension%rowtype;
+    tempCount integer;
+    tempRow ta.source_control_branch%rowtype;
     tempTimestamp timestamp;
   begin
+    if(pathIn is null) then
+      raise exception 'invalid input passed to ta.updateSourceControlBranch';
+    end if;
     select * 
       into tempRow 
-      from ta.case_analysis_dimension
+      from ta.source_control_branch 
       where
         id = idIn and
         end_datetime is null;
     tempTimestamp := current_timestamp;
-    update ta.case_analysis_dimension
+    select count(*)
+      into tempCount
+      from ta.source_control_branch
+      where
+        name != tempRow.name and
+        path = pathIn and
+        source_control_server_id = tempRow.source_control_server_id and
+        end_datetime is null;
+    if(tempCount > 0) then
+      raise exception 'pre-existing path passed to ta.updateSourceControlBranch';
+    end if;
+    update ta.source_control_branch
       set end_datetime = tempTimestamp
       where 
         id = idIn and
         end_datetime is null;
-    insert into ta.case_analysis_dimension(
+    insert into ta.source_control_branch(
       id,
       name,
+      path,
       create_datetime,
       end_datetime,
-      module_id
+      source_control_server_id
     ) values(
       idIn,
       tempRow.name,
+      pathIn,
       tempTimestamp,
       null,
-      moduleIdIn
+      tempRow.source_control_server_id
     );
     return(idIn);
     exception
@@ -194,13 +244,13 @@ language plpgsql;
 Delete function returns deleted entity's ID in a variable of type bigint, if the
 entity was found (and deleted), otherwise null.
 *******************************************************************************/
-create or replace function ta.deleteCaseAnalysisDimension(idIn in bigint)
+create or replace function ta.deleteSourceControlBranch(idIn in bigint)
 returns bigint
 as $$
   declare
     tempId bigint;
   begin
-     update ta.case_analysis_dimension 
+     update ta.source_control_branch 
       set end_datetime = current_timestamp
       where
         id = idIn and
