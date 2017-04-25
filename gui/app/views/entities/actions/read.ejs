@@ -1,0 +1,112 @@
+<%- include ../../layouts/header.ejs %>
+
+       <div class="page-data">
+         <% if (create_enabled) { %>
+           <div class="data-btn data-btn-enabled">
+             <button type="submit" onClick="add_entity('<%=table_name%>');">
+         <% } else { %>
+           <div class="data-btn data-btn-disabled">
+             <button type="button" onClick="">
+         <% } %>
+               + Add
+             </button>
+           </div>
+
+         <div class="data-table">
+            <table border="1" cellpadding="7" cellspacing="7">
+
+              <% if(fields.length){ %>
+
+                <tr>
+                    <% for(var i=0, l=fields.length;i < l;i++) { %>
+                      <% if(fields[i].column_name==='id') { %>
+                          <th class="idcol">id</th>
+                      <% } else{ %>
+                            <th><%=fields[i].column_name%></th>
+                      <% } %>
+                    <% } %>
+                    <th width="120px">
+                      Action
+                      <!-- eyeball -->
+                      <div id='button'>
+                        <svg viewBox='0 0 193.5 116'>
+                          <circle class='eye pupil' cx='96.8' cy='58' r='24'/>
+                          <path class='eye lid' d='M5,58L5,58C23.4,26.3,57.6,5,96.8,5c39.3,0,73.8,21.3,91.8,53l0,0c0,0-26.7,53-91.8,53S5,58,5,58z'/>
+                        </svg>
+                      </div>
+                    </th>
+                </tr>
+
+              <% if (data.length){
+                    if (update_enabled) {
+                      var edit_class = "edit";
+                      var edit_onclick = '';
+                    } else {
+                      var edit_class = "disabled";
+                      var edit_onclick = "return false;";
+                    }
+                    if (delete_enabled) {
+                      var delete_class = "delete";
+                      var delete_onclick = '';
+                    } else {
+                      var delete_class = "disabled";
+                      var delete_onclick = "return false;";
+                    }
+                %>
+
+                  <%  for(var j=0, m=data.length;j < m;j++) { %>
+                  <%
+                      if (data[j]['end_datetime'] == null ) {
+                          var row_class = "active-row";
+                        } else {
+                          var row_class = "deleted-row hidden-row";
+                        }
+                  %>
+
+                    <tr class="<%=row_class%>">
+                      <% for(var i=0, l=fields.length;i < l;i++) { %>
+                        <td><%=data[j][fields[i].column_name]%></td>
+                      <% } %>
+                      <td>
+
+                        <% if (data[j]['end_datetime'] == null ) { %>
+                          <a
+                            class="a-inside <%=edit_class%>"
+                            href="../crud/<%=table_name%>/edit/<%=data[j].id%>"
+                            onclick="<%=edit_onclick%>"
+                          >
+                            Edit
+                          </a>
+                          <a
+                            class="a-inside <%=delete_class%>"
+                            href="<%=table_name%>/delete/<%=data[j].id%>"
+                            onclick="<%=delete_onclick%>"
+                          >
+                            Delete
+                          </a>
+                        <% } %>
+
+                      </td>
+                    </tr>
+                  <% } %>
+                <% } else { %>
+                  <tr>
+                     <td colspan="999">Zero data rows loaded from table</td>
+                  </tr>
+                <% } %>
+
+
+
+            <% }else{ %>
+                 <tr>
+                    <td colspan="3">Unable to load data</td>
+                 </tr>
+            <% } %>
+
+
+
+            </table>
+         </div>
+        </div>
+
+<%- include ../../layouts/footer.ejs %>

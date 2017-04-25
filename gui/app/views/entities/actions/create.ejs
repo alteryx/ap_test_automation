@@ -1,0 +1,52 @@
+<%- include ../../layouts/header.ejs %>
+
+        <div class="page-data">
+
+            <form method="post" action="/crud/<%=table_name%>/add">
+                <table cellpadding="11">
+
+                  <%
+                    for(var i=0, l=fields.length;i < l;i++) {
+                      if (fields[i].is_nullable==='NO') {
+                        var required = "required";
+                      } else {
+                        var required = "";
+                      }
+
+                      var input_classes = "create-input";
+                      if (fields[i].data_type === "date") {
+                        input_classes += " datepicker";
+                      }
+                  %>
+
+                      <tr>
+                        <td class="label"><%=fields[i].column_name%>:</td>
+                        <td>
+                          <input
+                            class="<%=input_classes%>"
+                            type="text"
+                            name="<%=fields[i].column_name%>"
+                            <%=required%>
+                          >
+                        </td>
+                      </tr>
+                  <% } %>
+
+                 <!--tr>
+                    <td class="label" valign="top">name</td>
+                    <td valign="top">: <textarea name="name" required cols="30" rows="5"></textarea></td>
+                 </tr-->
+
+                 <tr>
+                    <td class="label"></td>
+                    <td>
+                        &nbsp; <input type="submit" name="submit" value="Save">
+                       <input type="button" name="cancel" value="Cancel" class="cancel" onClick="cancel_add_entity('<%=table_name%>')">
+                    </td>
+                 </tr>
+                </table>
+            </form>
+
+        </div>
+
+<%- include ../../layouts/footer.ejs %>

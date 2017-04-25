@@ -1,0 +1,218 @@
+body {
+  margin:0;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background:#eee;
+  width:100%;
+  height:100%;
+}
+*{
+
+    border-radius:0px;
+}
+a {
+  color: #00B7FF;
+}
+
+#wrapper{
+
+    float:left;
+    margin-top:30px;
+    width:90%;
+    min-height:300px;
+    margin-left:5%;
+    border:1px solid #ddd;
+    background:#fff;
+    margin-bottom:15px;
+
+}
+
+.page-container{padding:20px;}
+.page-data{padding:10px;}
+.page-header{
+
+    padding:2px;
+    padding-left:10px;
+    background:#665847;color:#FEFFFD;
+}
+.data-btn{padding-left:8px}
+.data-btn button{
+    padding:10px 20px;
+    border:1px solid #fff;
+}
+.data-btn-enabled button{
+    background:#FF9900;
+    font-weight:bold;
+    color:#FEFFFD;
+}
+.data-btn-disabled button{
+    background:#AAAAAA;
+    font-weight:normal;
+    font-style: italic;
+    color:#CDCDCD;
+}
+
+.data-table{padding-left:10px;}
+.data-table table{border-collapse:collapse;border:1px solid #ddd;width:100%}
+.a-inside{padding:4px 10px;border:1px solid #fff;text-decoration:none;}
+.a-inside.edit{background-color:#00CC00;color:#fff;}
+.a-inside.delete{background-color:#D23641;color:#fff;}
+.a-inside.disabled{background-color:#AAAAAA;color:#CDCDCD;font-style:italic;}
+.deleted-row{background-color:#CCCCCC;}
+.hidden-row{visibility:collapse;display:none;}
+.active-row{background-color:#ffffff;}
+
+
+
+input[type="text"]{
+    border:1px solid #ddd;
+    height:26px;
+    width:300px;
+}
+.cancel{
+    background-color:#D23641;color:#fff;
+    border:1px solid #d32132;color:#fff;
+    padding:8px 35px;font-weight:bold;
+
+
+}
+input[type="submit"]{
+
+    border:1px solid #6599FF;color:#fff;
+    padding:8px 35px;font-weight:bold;
+    background:#6599FF;
+}
+textarea{ border:1px solid #ddd;width:296px;}
+.label{font-weight:bold;}
+
+input.create-input {
+  text-align: center;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+
+.page-header img  {
+  width: 45px;
+  height: auto;
+  padding:10px 5px;
+}
+
+.page-header * {
+  display:inline;
+  vertical-align:middle;
+}
+
+.page-header .title-link {
+  text-decoration: none;
+  color: #F5F5F5;
+}
+
+.page-header img.alteryx-logo {
+  float:right;
+  height: 50px;
+  width: auto;
+}
+
+#footer{
+  margin-left:82%;
+  margin-bottom:10%;
+  padding-top:20px;
+  padding-right:20px;
+}
+
+#footer img {
+  height: 50px;
+  width: auto;
+}
+
+
+
+
+/* (start) eyeball */
+#button {
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  background: none;
+}
+
+.eye {
+  fill: none;
+  stroke: #DDDDDD;
+  stroke-width: 10;
+  stroke-miterlimit: 10;
+  stroke-linecap: round;
+}
+
+svg {
+  display: block;
+  margin: 10px auto;
+  width: 20px;
+}
+
+.lid {
+  stroke-dasharray: 222;
+  stroke-dashoffset: 0;
+}
+
+.pupil {
+  stroke-dasharray: 150;
+  stroke-dashoffset: 0;
+  -webkit-transform: rotate(170deg);
+  -moz-transform: rotate(170deg);
+  -o-transform: rotate(170deg);
+  -ms-transform: rotate(170deg);
+  transform: rotate(170deg);
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  -o-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+}
+
+.lid--close {
+  animation: lid--close .5s ease-in-out forwards;
+}
+.lid--open {
+  animation: lid--open .5s ease-in-out forwards;
+}
+
+.pupil--close {
+  animation: pupil--close .5s ease-in-out forwards;
+}
+.pupil--open {
+  animation: pupil--open .5s ease-in-out forwards;
+}
+
+@keyframes lid--close {
+  from {
+    stroke-dashoffset: 0;}
+  to {
+    stroke-dashoffset: -222;
+  }
+}
+
+@keyframes lid--open {
+  from {
+    stroke-dashoffset: -222;}
+  to {
+    stroke-dashoffset: -444;
+  }
+}
+
+@keyframes pupil--close {
+  from {
+    stroke-dashoffset: 0;}
+  to {
+    stroke-dashoffset: -150;
+  }
+}
+
+@keyframes pupil--open {
+  from {
+    stroke-dashoffset: -150;}
+  to {
+    stroke-dashoffset: -300;
+  }
+}
+
+/* (end) eyeball */

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+</html>
+    <head>
+        <title>Test GUI: <%=page_name%></title>
+        <link href="/../lib/jquery-ui-1.12.1/jquery-ui.min.css" rel="stylesheet">
+        <link href="/../css/style.css" rel="stylesheet">
+        <script type="text/javascript" src="/../lib/jquery-3.2.1/jquery-3.2.1.js"></script>
+        <script type="text/javascript" src="/../lib/jquery-ui-1.12.1/jquery-ui.js"></script>
+        <script type="text/javascript" src="/../js/header_routing.js"></script>
+        <script type="text/javascript" src="/../js/header_widgets.js"></script>
+    </head>
+    <body>
+      <div id="body-container">
+        <div id="wrapper">
+            <div class="page-header">
+                <a href="/tables"><img class="img-dbhome" src="/../images/dbhome.png" /></a>
+                <!--h2><%=page_name%></h2-->
+
+                <% if (locals.table_name) { %>
+                <%    var link = "/crud/" + table_name; %>
+                <% } else { %>
+                <%    var link = "/tables"; %>
+                <% } %>
+
+                  <a class="title-link" href= "<%=link%>">
+                    <h2><%=page_name%></h2>
+                  </a>
+
+                  <img class="alteryx-logo" src="/../images/alteryx-a.png">
+
+            </div>
+            <div class="page-container">
