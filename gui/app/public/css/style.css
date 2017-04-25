@@ -1,10 +1,4 @@
-body {
-  margin:0;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background:#eee;
-  width:100%;
-  height:100%;
-}
+
 *{
 
     border-radius:0px;
@@ -13,28 +7,87 @@ a {
   color: #00B7FF;
 }
 
-#wrapper{
-
-    float:left;
-    margin-top:30px;
-    width:90%;
-    min-height:300px;
-    margin-left:5%;
-    border:1px solid #ddd;
-    background:#fff;
-    margin-bottom:15px;
-
+body {
+  margin:0;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background:#eee;
+  width:100%;
+  height:100%;
 }
+  .outer-container {
+    overflow:auto;
+  }
+    #wrapper{
 
-.page-container{padding:20px;}
-.page-data{padding:10px;}
-.page-header{
+        float:left;
+        margin-top:30px;
+        width:90%;
+        min-height:300px;
+        margin-left:5%;
+        border:1px solid #ddd;
+        background:#fff;
+        margin-bottom:15px;
+        overflow:auto;
 
-    padding:2px;
-    padding-left:10px;
-    background:#665847;color:#FEFFFD;
+    }
+      .page-header{
+          padding:2px;
+          padding-left:10px;
+          background:#665847;color:#FEFFFD;
+      }
+      .page-container{
+        padding:20px;
+        height:100%;
+        overflow:auto;
+      }
+        .page-read{
+          padding:10px;
+        }
+        .page-data{
+          padding:10px;
+          width:100%;
+          height:100%;
+          overflow:hidden;
+          position:relative;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+          display: -ms-flex; display: -webkit-flex; display: flex;
+        }
+          .page-data>* {
+            float:left;
+            height:100%;
+            margin:0px;
+            padding:0px;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            min-width:100px;
+            min-height:100px;
+            flex:1;
+            margin-bottom: -99999px;
+            padding-bottom: 99999px;
+          }
+          .data-entry-panel {
+            width:60%;
+            min-width: 500px;
+          }
+          .reference-data-panel {
+            background-color: #f9f0ff;
+            width:40%;
+            border-style:solid;
+            border-width: 10px;
+            border-color: white;
+          }
+          .page-data::after {
+            display:block;
+            content:"";
+            clear:both;
+          }
+
+
+
+.data-btn{
+  padding-left:8px
 }
-.data-btn{padding-left:8px}
 .data-btn button{
     padding:10px 20px;
     border:1px solid #fff;
@@ -57,11 +110,31 @@ a {
 .a-inside.edit{background-color:#00CC00;color:#fff;}
 .a-inside.delete{background-color:#D23641;color:#fff;}
 .a-inside.disabled{background-color:#AAAAAA;color:#CDCDCD;font-style:italic;}
-.deleted-row{background-color:#CCCCCC;}
-.hidden-row{visibility:collapse;display:none;}
-.active-row{background-color:#ffffff;}
+
+.deleted-row{color:#9d83b5;}
+.active-row{color:#000000;}
+
+.default-column{background-color:#ffffff;}
+.nondefault-column{background-color:#fafafa;}
+.hidden-data{visibility:collapse;display:none;}
 
 
+
+
+/*
+.data-entry-panel {
+  float:left;
+  width:80%;
+  height:100%;
+}
+.reference-data-panel {
+  float:right;
+  height:100px;
+  margin:0px;
+  padding:0px;
+  background-color: green;
+}
+*/
 
 input[type="text"]{
     border:1px solid #ddd;
@@ -69,20 +142,26 @@ input[type="text"]{
     width:300px;
 }
 .cancel{
-    background-color:#D23641;color:#fff;
-    border:1px solid #d32132;color:#fff;
-    padding:8px 35px;font-weight:bold;
-
-
+    background-color:#D23641;
+    color:#fff;
+    border:1px solid #d32132;
+    padding:8px 35px;
+    font-weight:bold;
 }
 input[type="submit"]{
-
-    border:1px solid #6599FF;color:#fff;
-    padding:8px 35px;font-weight:bold;
+    border:1px solid #6599FF;
+    color:#fff;
+    padding:8px 35px;
+    font-weight:bold;
     background:#6599FF;
 }
-textarea{ border:1px solid #ddd;width:296px;}
-.label{font-weight:bold;}
+textarea{
+  border:1px solid #ddd;
+  width:296px;
+}
+.label{
+  font-weight:bold;
+}
 
 input.create-input {
   text-align: center;
@@ -112,6 +191,11 @@ input.create-input {
   width: auto;
 }
 
+img.table-header-link-icon {
+  width: 10px;
+  height: auto;
+}
+
 #footer{
   margin-left:82%;
   margin-bottom:10%;
@@ -128,91 +212,90 @@ input.create-input {
 
 
 /* (start) eyeball */
-#button {
-  display: inline-block;
-  height: 20px;
-  width: 20px;
-  background: none;
-}
-
-.eye {
-  fill: none;
-  stroke: #DDDDDD;
-  stroke-width: 10;
-  stroke-miterlimit: 10;
-  stroke-linecap: round;
-}
-
-svg {
-  display: block;
-  margin: 10px auto;
-  width: 20px;
-}
-
-.lid {
-  stroke-dasharray: 222;
-  stroke-dashoffset: 0;
-}
-
-.pupil {
-  stroke-dasharray: 150;
-  stroke-dashoffset: 0;
-  -webkit-transform: rotate(170deg);
-  -moz-transform: rotate(170deg);
-  -o-transform: rotate(170deg);
-  -ms-transform: rotate(170deg);
-  transform: rotate(170deg);
-  -webkit-transform-origin: 50% 50%;
-  -moz-transform-origin: 50% 50%;
-  -o-transform-origin: 50% 50%;
-  -ms-transform-origin: 50% 50%;
-  transform-origin: 50% 50%;
-}
-
-.lid--close {
-  animation: lid--close .5s ease-in-out forwards;
-}
-.lid--open {
-  animation: lid--open .5s ease-in-out forwards;
-}
-
-.pupil--close {
-  animation: pupil--close .5s ease-in-out forwards;
-}
-.pupil--open {
-  animation: pupil--open .5s ease-in-out forwards;
-}
-
-@keyframes lid--close {
-  from {
-    stroke-dashoffset: 0;}
-  to {
-    stroke-dashoffset: -222;
+  #button {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    background: none;
   }
-}
 
-@keyframes lid--open {
-  from {
-    stroke-dashoffset: -222;}
-  to {
-    stroke-dashoffset: -444;
+  .eye {
+    fill: none;
+    stroke: #DDDDDD;
+    stroke-width: 10;
+    stroke-miterlimit: 10;
+    stroke-linecap: round;
   }
-}
 
-@keyframes pupil--close {
-  from {
-    stroke-dashoffset: 0;}
-  to {
-    stroke-dashoffset: -150;
+  svg {
+    display: block;
+    margin: 10px auto;
+    width: 20px;
   }
-}
 
-@keyframes pupil--open {
-  from {
-    stroke-dashoffset: -150;}
-  to {
-    stroke-dashoffset: -300;
+  .lid {
+    stroke-dasharray: 222;
+    stroke-dashoffset: 0;
   }
-}
 
+  .pupil {
+    stroke-dasharray: 150;
+    stroke-dashoffset: 0;
+    -webkit-transform: rotate(170deg);
+    -moz-transform: rotate(170deg);
+    -o-transform: rotate(170deg);
+    -ms-transform: rotate(170deg);
+    transform: rotate(170deg);
+    -webkit-transform-origin: 50% 50%;
+    -moz-transform-origin: 50% 50%;
+    -o-transform-origin: 50% 50%;
+    -ms-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+  }
+
+  .lid--close {
+    animation: lid--close .5s ease-in-out forwards;
+  }
+  .lid--open {
+    animation: lid--open .5s ease-in-out forwards;
+  }
+
+  .pupil--close {
+    animation: pupil--close .5s ease-in-out forwards;
+  }
+  .pupil--open {
+    animation: pupil--open .5s ease-in-out forwards;
+  }
+
+  @keyframes lid--close {
+    from {
+      stroke-dashoffset: 0;}
+    to {
+      stroke-dashoffset: -222;
+    }
+  }
+
+  @keyframes lid--open {
+    from {
+      stroke-dashoffset: -222;}
+    to {
+      stroke-dashoffset: -444;
+    }
+  }
+
+  @keyframes pupil--close {
+    from {
+      stroke-dashoffset: 0;}
+    to {
+      stroke-dashoffset: -150;
+    }
+  }
+
+  @keyframes pupil--open {
+    from {
+      stroke-dashoffset: -150;}
+    to {
+      stroke-dashoffset: -300;
+    }
+  }
 /* (end) eyeball */

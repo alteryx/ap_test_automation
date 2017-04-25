@@ -22,12 +22,20 @@ function camelize(str) {
 
 
 function columnNameProperties(name){
-  var props = {dependency:false};
+  // set default properties
+  var props = {
+    dependency:false,
+    display:true
+  };
 
   if (name.slice(-3)==="_id") {
     props.dependency = true;
     props.dependent_table = name.slice(0,-3);
     props.dependent_field = "id";
+  }
+
+  if (name.match( /^(id|create_datetime|end_datetime)$/g )){
+    props.display = false;
   }
 
   return props;

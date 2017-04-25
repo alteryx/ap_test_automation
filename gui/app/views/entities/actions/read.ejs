@@ -1,6 +1,6 @@
 <%- include ../../layouts/header.ejs %>
 
-       <div class="page-data">
+       <div class="page-read">
          <% if (create_enabled) { %>
            <div class="data-btn data-btn-enabled">
              <button type="submit" onClick="add_entity('<%=table_name%>');">
@@ -18,12 +18,29 @@
               <% if(fields.length){ %>
 
                 <tr>
-                    <% for(var i=0, l=fields.length;i < l;i++) { %>
-                      <% if(fields[i].column_name==='id') { %>
-                          <th class="idcol">id</th>
-                      <% } else{ %>
-                            <th><%=fields[i].column_name%></th>
-                      <% } %>
+                    <%
+                      for(var i=0, l=fields.length;i < l;i++) {
+                        var header_classes = "read-header-class";
+                        if (fields[i].props.display) {
+                          header_classes += " default-column";
+                        } else {
+                          header_classes += " nondefault-column hidden-data";
+                        }
+                    %>
+
+                      <th class="<%=header_classes%>">
+                        <%=fields[i].column_name%>
+                        <% if (fields[i].props.dependency){ %>
+                          <a
+                            href="/crud/<%=fields[i].props.dependent_table%>"
+                            title="Reference table: <%=fields[i].props.dependent_table%>"
+                            target="_blank"
+                          >
+                            <span class="ui-icon ui-icon-extlink"></span>
+                          </a>
+                        <% } %>
+                      </th>
+
                     <% } %>
                     <th width="120px">
                       Action
@@ -59,13 +76,20 @@
                       if (data[j]['end_datetime'] == null ) {
                           var row_class = "active-row";
                         } else {
-                          var row_class = "deleted-row hidden-row";
+                          var row_class = "deleted-row hidden-data";
                         }
                   %>
 
                     <tr class="<%=row_class%>">
                       <% for(var i=0, l=fields.length;i < l;i++) { %>
-                        <td><%=data[j][fields[i].column_name]%></td>
+                        <%
+                          if (fields[i].props.display===false) {
+                            var td_class = "nondefault-column hidden-data";
+                          } else {
+                            var td_class = "default-column";
+                          }
+                        %>
+                        <td class="<%=td_class%>"><%=data[j][fields[i].column_name]%></td>
                       <% } %>
                       <td>
 

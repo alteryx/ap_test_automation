@@ -11,18 +11,29 @@ var utils = require('../utils');
 // print sql queries to console
 var log_query_strings = true;
 
-function dbname(req,default_db){
-  if (req.params.db) var dbname = req.params.db;
-  else var dbname = default_db;
-  return dbname;
-}
+// DEVNOTE:
+// I created these two functions (dbname, connect) so that we could allow
+// a dynamic database pointer. For example, the URL would be able to take the
+// database name as a parameter (eg, /db/:db/tables == /tables, where the latter
+// would use a default database specified somewhere in code). While this would
+// be useful for development purposes (eg, another team could work with one
+// database, while I develop on another). But the problem was that this required
+// creating a new database connection with each page load, which would not scale
+// well. So I kept the logical infrastructure, but removed the dynamic aspect
+// from it.
+// (start) database connection setup
+  function dbname(req,default_db){
+    if (req.params.db) var dbname = req.params.db;
+    else var dbname = default_db;
+    return dbname;
+  }
 
-function connect(req){
-//  var database = dbname(req,db.default_db);
-//  return db.postgres(database);
-  return db.postgres;
-}
-
+  function connect(req){
+  //  var database = dbname(req,db.default_db);
+  //  return db.postgres(database);
+    return db.postgres;
+  }
+// (end) database connection setup
 
 // if no path entered (after base url), redirect to tables page-data
 exports.defaultpath = function(req, res){
@@ -126,6 +137,16 @@ exports.list = function(req, res){
           delete_enabled = true;
         }
 
+        // apply field properties based on column name
+        // (eg, inferring dependencies, etc)
+        cols.map(function(e){
+          var obj = e;
+          obj.props = utils.columnNameProperties(obj.column_name);
+          return obj;
+        })
+
+        console.log(cols);
+
         res.render(
             'entities/actions/read',
             {
@@ -188,6 +209,8 @@ exports.add = function(req, res){
       // to the create function in that order!
       cols_to_add.sort(utils.dynamicSort("create_param_index"));
 
+      // apply field properties based on column name
+      // (eg, inferring dependencies, etc)
       cols_to_add.map(function(e){
         var obj = e;
         obj.props = utils.columnNameProperties(obj.column_name);
