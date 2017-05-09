@@ -2,6 +2,8 @@
 Test-Automation CRUD DDL for table ta.source_control_branch
 History:
   02/27/2017  Todd Morley   initial file creation
+  03/22/2017  Todd Morley   added getSourceControlBranchDescription
+  04/03/2017  Todd Morley   fixed a bug in createSourceControlBranch
 *******************************************************************************/
 
 /*******************************************************************************
@@ -62,11 +64,10 @@ as $$
     ) values(
       tempId,
       lower(nameIn),
-      staticIpAddressIn,
-      dnsNameIn,
+      pathIn,
       current_timestamp,
       null,
-      sourceControlSystemTypeIdIn
+      sourceControlServerIdIn
     );
     return(tempId);
   end
@@ -167,9 +168,44 @@ as $$
       where 
         ta.source_control_branch.id = idIn and 
         ta.source_control_server.id = ta.source_control_branch.source_control_server_id and
-        ta.source_control_branchend_datetime is null and
+        ta.source_control_branch.end_datetime is null and
         ta.source_control_server is null;
     return(tempBranchLocation);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+getSourceControlBranchDescription returns a text description of the branch with
+ID idIn, or null if no entity with the input ID was found.
+*******************************************************************************/
+create or replace function ta.getSourceControlBranchDescription(idIn in bigint)
+returns text
+as $$
+  declare
+    tempDescription text;
+  begin
+    select 
+      ta.source_control_branch.name ||
+      ' on ' ||
+      ta.source_control_branch.path ||
+      '@' ||
+      nvl(
+        ta.source_control_server.dns_name, 
+        ta.source_control_server.static_ip_address
+      ) ||
+      into strict tempDescription
+      from
+        ta.source_control_branch,
+        ta.source_control_server
+      where 
+        ta.source_control_branch.id = idIn and 
+        ta.source_control_server.id = ta.source_control_branch.source_control_server_id and
+        ta.source_control_branch.end_datetime is null and
+        ta.source_control_server is null;
+    return(tempDescription);
     exception
       when no_data_found then return(null);
   end

@@ -2,6 +2,9 @@
 Test-Automation CRUD DDL for table ta.test
 History:
   02/27/2017  Todd Morley   initial file creation
+  03/21/2017  Todd Morley   added getTestDescription
+  03/23/2017  Todd Morley   dropped description column, rewrote 
+                            getTestDescription
 *******************************************************************************/
 
 /*******************************************************************************
@@ -11,7 +14,6 @@ entity antedated the call.  (An attempt to re-create the entity is harmless.)
 create or replace function ta.createTest(
 	fileNameIn in text,
 	pathIn in text,
-	descriptionIn in text,
 	sourceControlServerIdIn in bigint,
 	testPriorityLevelIdIn in bigint
 )
@@ -46,7 +48,6 @@ as $$
       id,
       file_name,
       path,
-      description,
       create_datetime,
       end_datetime,
       source_control_server_id,
@@ -55,7 +56,6 @@ as $$
       tempId,
       fileNameIn,
       pathIn,
-      descriptionIn,
       current_timestamp,
       null,
       sourceControlServerIdIn,
@@ -150,12 +150,49 @@ $$
 language plpgsql;
 
 /*******************************************************************************
+getTestDescription returns a text description of the test with ID idIn, or null 
+if no entity with the input ID was found.
+*******************************************************************************/
+create or replace function ta.getTestDescription(idIn in bigint)
+returns text
+as $$
+  declare
+    tempDescription text;
+  begin
+    select 
+      ta.test.path || 
+      '/' || 
+      ta.test.file_name || 
+      ' @ ' || 
+      nvl(ta.source_control_server.dns_name, ta.source_control_server.static_ip_address) ||
+      '(' ||
+      ta.test_priority_level.name ||
+      ' priority)'
+      into strict tempDescription
+      from 
+        ta.test,
+        ta.source_control_server,
+        ta.test_priority_level
+      where 
+        ta.test.id = idIn and
+        ta.test.source_control_server_id = ta.source_control_server.id and
+        ta.test.test_priority_level_id = ta.test_priority_level.id and
+        ta.test.end_datetime is null and
+        ta.source_control_server.end_datetime is null and
+        ta.test_priority_level.end_datetime is null;
+    return(tempDescription);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
 The update function upates all entity properties that are not part of the
 entity type's natural primary key.
 *******************************************************************************/
 create or replace function ta.updateTest(
   idIn in bigint,
-	descriptionIn in text,
 	testPriorityLevelIdIn in bigint
 )
 returns bigint
@@ -193,7 +230,6 @@ as $$
       id,
       file_name,
       path,
-      description,
       create_datetime,
       end_datetime,
       source_control_server_id,
@@ -202,7 +238,6 @@ as $$
       idIn,
       tempRow.file_name,
       tempRow.path,
-      descriptionIn,
       tempTimestamp,
       null,
       tempRow.source_control_server_id,

@@ -3,6 +3,8 @@ Test-Automation CRUD DDL for table ta.case_analysis_dimension
 History:
   02/22/2017  Todd Morley   initial file creation
   02/27/2017  Todd Morley   column re-ordering
+  03/13/2017  Todd Morley   added get-description function
+  04/05/2017  Todd Morley   added createCaseAnalysisDimension2
 *******************************************************************************/
 
 /*******************************************************************************
@@ -24,6 +26,7 @@ as $$
         from ta.case_analysis_dimension 
         where 
           name = lower(nameIn) and
+          module_id = moduleIdIn and
           end_datetime is null;
       return(tempId);
       exception
@@ -44,6 +47,48 @@ as $$
       moduleIdIn
     );
     return(tempId);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+Create2 function returns ID in a variable of type bigint, whether or not the 
+entity antedated the call.  (An attempt to re-create the entity is harmless.)
+This version of the create function takes a module' natural key, rather than
+its ID, as an input, to avoid a separate ancillary call to get a module ID.
+*******************************************************************************/
+create or replace function ta.createCaseAnalysisDimension2(
+  nameIn in text,
+  moduleNameIn in text,
+  teamNameIn in text
+)
+returns bigint
+as $$
+  declare
+    tempModuleId bigint;
+  begin
+    begin
+      select ta.module.id
+        into strict tempModuleId
+        from 
+          ta.module,
+          ta.team
+        where 
+          ta.module.name = lower(moduleNameIn) and
+          ta.team.name = lower(teamNameIn) and
+          ta.module.owning_team_id = ta.team.id and
+          ta.module.end_datetime is null and
+          ta.team.end_datetime is null;
+      exception
+        when no_data_found then 
+          raise exception 'invalid module or team name passed to ta.createCaseAnalysisDimension2';
+    end;
+    return(
+      ta.createCaseAnalysisDimension(
+        nameIn = nameIn,
+        moduleIdIn = tempModuleId
+      )
+    );
   end
 $$
 language plpgsql;
@@ -122,8 +167,8 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-GetModuleId function returns the ID of the owning module in a variable of type 
-bigint, or null if no entity with the input ID was found.
+getCaseAnalysisDimensionModuleId function returns the ID of the owning module 
+in a variable of type bigint, or null if no entity with the input ID was found.
 *******************************************************************************/
 create or replace function ta.getCaseAnalysisDimensionModuleId(idIn in bigint)
 returns bigint
@@ -138,6 +183,38 @@ as $$
         id = idIn and 
         end_datetime is null;
     return(tempModuleId);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+getCaseAnalysisDescription function returns a description of the input object, 
+or null if no entity with the input ID was found.
+*******************************************************************************/
+create or replace function ta.getCaseAnalysisDimensionDescription(
+  idIn in bigint
+)
+returns text
+as $$
+  declare
+    tempDescription text;
+  begin
+    select 
+      ta.case_analysis_dimension.name ||
+      ' of ' ||
+      ta.module.name
+      into strict tempDescription
+      from 
+        ta.case_analysis_dimension,
+        ta.module
+      where 
+        ta.case_analysis_dimension.id = idIn and 
+        ta.case_analysis_dimension.module_id = ta.module.id and
+        ta.case_analysis_dimension.end_datetime is null and
+        ta.module.end_datetime is null;
+    return(tempDescription);
     exception
       when no_data_found then return(null);
   end

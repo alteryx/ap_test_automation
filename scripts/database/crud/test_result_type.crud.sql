@@ -2,6 +2,7 @@
 Test-Automation CRUD DDL for table ta.test_result_type
 History:
   02/22/2017  Todd Morley   initial file creation
+  03/22/2017  Todd Morley   added getTestResultTypeDescription
 *******************************************************************************/
 
 /*******************************************************************************
@@ -9,7 +10,8 @@ Create function returns ID in a variable of type bigint, whether or not the
 entity antedated the call.  (An attempt to re-create the entity is harmless.)
 *******************************************************************************/
 create or replace function ta.createTestResultType(
-  nameIn in text
+  nameIn in text,
+  dataTypeId in bigint
 )
 returns bigint
 as $$
@@ -22,6 +24,7 @@ as $$
         from ta.test_result_type 
         where 
           name = lower(nameIn) and
+          data_type_id = dataTypeId and
           end_datetime is null;
       return(tempId);
       exception
@@ -32,12 +35,54 @@ as $$
       id,
       name,
       create_datetime,
-      end_datetime
+      end_datetime,
+      data_type_id
     ) values(
       tempId,
       lower(nameIn),
       current_timestamp,
-      null
+      null,
+      dataTypeId
+    );
+    return(tempId);
+  end
+$$
+language plpgsql;
+
+create or replace function ta.createTestResultType2(
+  nameIn in text,
+  dataTypeNameIn in text
+)
+returns bigint
+as $$
+  declare
+    tempId bigint;
+  begin
+    begin
+      select id 
+        into strict tempId
+        from ta.test_result_type 
+        where 
+          name = lower(nameIn) and
+          data_type_id = ta.getDataTypeId(nameIn := dataTypeNameIn) and
+          end_datetime is null;
+      return(tempId);
+      exception
+        when no_data_found then null; -- not return(null); continue to below
+    end;
+    select nextval('ta.test_result_type_id_s') into tempId;
+    insert into ta.test_result_type(
+      id,
+      name,
+      create_datetime,
+      end_datetime,
+      data_type_id
+    ) values(
+      tempId,
+      lower(nameIn),
+      current_timestamp,
+      null,
+      ta.getDataTypeId(nameIn := dataTypeNameIn)
     );
     return(tempId);
   end
@@ -109,6 +154,33 @@ as $$
         id = idIn and 
         end_datetime is null;
     return(tempName);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+getTestResultTypeDescription returns a text description of the test-result type
+having the ID idIn, or null if no entity with the input ID was found.
+*******************************************************************************/
+create or replace function ta.getTestResultTypeDescription(idIn in bigint)
+returns text
+as $$
+  declare
+    tempDescription text;
+  begin
+    select ta.test_result_type.name || ' of type ' || ta.data_type.name
+      into strict tempDescription
+      from 
+        ta.test_result_type,
+        ta.data_type
+      where 
+        ta.test_result_type.id = idIn and 
+        ta.test_result_type.data_type_id = ta.data_type.id and
+        ta.test_result_type.end_datetime is null and
+        ta.data_type.end_datetime is null;
+    return(tempDescription);
     exception
       when no_data_found then return(null);
   end
