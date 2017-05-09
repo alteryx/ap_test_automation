@@ -1,0 +1,55 @@
+<%- include ../../layouts/header.ejs %>
+
+        <div class="page-data">
+
+         <div class="data-table">
+            <table border="1" cellpadding="7" cellspacing="7">
+
+
+
+              <% if(tables.length){ %>
+
+                    <tr>
+                      <% for(var j=0, m=headers.length; j<m; j++) { %>
+                      <%   var field = headers[j]; %>
+                      <%   var name = field.replace(/_/g, ' '); %>
+                        <th>
+                          <%=name%>
+                        </th>
+                      <% } %>
+                    </tr>
+
+
+                    <% for(var i=0, l=tables.length;i < l;i++) { %>
+                      <tr>
+                        <% for(var j=0, m=headers.length; j<m; j++) { %>
+                        <%   var field = headers[j]; %>
+                          <td>
+                            <% if (field === 'table_name') { %>
+                            <a href="./crud/<%=tables[i].table_name%>">
+                              <%=tables[i][field]%>
+                            </a>
+                            <% } else { %>
+                              <%=tables[i][field]%>
+                            <% } %>
+                          </td>
+                        <% } %>
+                      </tr>
+                    <% } %>
+
+
+
+
+            <% }else{ %>
+                 <tr>
+                    <td colspan="3">Unable to load data</td>
+                 </tr>
+            <% } %>
+
+
+
+            </table>
+         </div>
+        </div>
+
+<%- include ../../layouts/footer.ejs %>
