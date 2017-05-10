@@ -2,6 +2,7 @@
 Test-Automation CRUD DDL for table ta.node_group
 History:
   02/22/2017  Todd Morley   initial file creation
+  02/22/2017  Todd Morley   added getNodeGroupDescription
 *******************************************************************************/
 
 /*******************************************************************************
@@ -131,6 +132,33 @@ as $$
         id = idIn and 
         end_datetime is null;
     return(tempLastStartDatetime);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+getNodeGroupDescription returns a text description of the node group with input
+idIn, or null if no entity with the input ID was found.
+*******************************************************************************/
+create or replace function ta.getNodeGroupDescription(idIn in bigint)
+returns text
+as $$
+  declare
+    tempDescription text;
+  begin
+    select 
+      name || 
+      ' (last started ' ||
+      to_char(last_start_datetime, 'YYYY-MON-DD:HH24-MI-SS')
+      ')'
+      into strict tempDescription
+      from ta.node_group 
+      where 
+        id = idIn and 
+        end_datetime is null;
+    return(tempDescription);
     exception
       when no_data_found then return(null);
   end

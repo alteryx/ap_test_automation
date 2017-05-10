@@ -43,5 +43,17 @@
     9.10 Integrate unit-test frameworks with the controller.
        9.10.1 Integrate call to execute tests.
        9.10.2 Integrate to receive test results.
+	9.11 Implement general change management control
+	   9.11.1 [...]
  10. Create business process to convert QA bugs to tests.
  11. Migrate data from Mongo DB to PostgreSQL.
+ 12. allow for [optional] input dataset selection
+	12.1 update schema
+	12.2 web ui selection
+ 13. setup reporting of continuous integration events: build starts /finishes, a test starts/finishes
+	13.1 basic setup
+		13.1.1 update schema
+		13.1.2 update api
+		13.1.3 coordinate with build master to get make api calls on the build side
+	13.2 additional
+		13.2.1 [...]

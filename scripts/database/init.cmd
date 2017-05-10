@@ -14,18 +14,27 @@ set username=postgres
 set port=5432
 
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\ddl\test_automation_schema.ddl.sql"
-pause
+::pause
 
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\alteryx_type.crud.sql"
+psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\alteryx_version.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\bug_management_server.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\bug_management_system_type.crud.sql"
+psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\bug_test.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\case_analysis_dimension.crud.sql"
+psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\case_dim_allowed_value.crud.sql"
+psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\case_dim_allowed_value_test.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\database_type.crud.sql"
+psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\data_type.crud.sql"
+psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\date.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\event_type.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\module.crud.sql"
+psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\module_module.crud.sql"
+psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\module_test.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\natural_language.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\node.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\node_group.crud.sql"
+psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\node_node_group.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\node_type.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\operating_system_type.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\person.crud.sql"
@@ -35,11 +44,16 @@ psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\source_control
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\source_control_server.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\source_control_system_type.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\source_file.crud.sql"
+psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\source_file_module.crud.sql"
+psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\ta_admin.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\team.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\test.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\test_priority_level.crud.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\crud\test_result_type.crud.sql"
-pause
+::pause
+
+psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\operational\operational.sql"
+::pause
 
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\seed\test_automation_seed.ddl.sql"
 psql -h %ip% -d %dbname% -U %username% -p %port% -a -q -f ".\seed\test_automation_seed.dml.sql"

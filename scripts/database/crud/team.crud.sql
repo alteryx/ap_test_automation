@@ -2,6 +2,8 @@
 Test-Automation CRUD DDL for table ta.team
 History:
   02/27/2017  Todd Morley   initial file creation
+  03/22/2017  Todd Morley   added getTeamDescription
+  04/06/2017  Todd Morley   added createTeam2
 *******************************************************************************/
 
 /*******************************************************************************
@@ -49,6 +51,62 @@ as $$
       sourceControlBranchIdIn
     );
     return(tempId);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+Create2 function returns ID in a variable of type bigint, whether or not the 
+entity antedated the call.  (An attempt to re-create the entity is harmless.)
+As usual, the Create2 version only takes natural-key arguments.
+*******************************************************************************/
+create or replace function ta.createTeam2(
+  nameIn in text,
+  sourceControlBranchNameIn in text,
+  sourceControlServerNameIn in text,
+  sourceControlServerTypeNameIn in text,
+  sourceControlServerTypeVersionIn in text
+)
+returns bigint
+as $$
+  declare
+    tempSourceControlBranchId bigint;
+  begin
+    if(
+      nameIn is null or
+      sourceControlBranchNameIn is null or
+      sourceControlServerNameIn is null or
+      sourceControlServerTypeNameIn is null or
+      sourceControlServerTypeVersionIn is null
+    ) then
+      raise exception 'invalid input passed to ta.createTeam2';
+    end if;
+    begin
+      select ta.source_control_branch.id 
+        into strict tempSourceControlBranchId
+        from 
+          ta.source_control_branch,
+          ta.source_control_server,
+          ta.source_control_server_type
+        where 
+          ta.source_control_branch.name = lower(sourceControlBranchNameIn) and
+          ta.source_control_branch.source_control_server_id = ta.source_control_server.id and
+          ta.source_control_branch.end_datetime is null and
+          ta.source_control_server.name = lower(sourceControlServerNameIn) and 
+          ta.source_control_server.end_datetime is null and
+          ta.source_control_server_type.name = lower(sourceControlServerTypeNameIn) and
+          ta.source_control_server_type.version = lower(sourceControlServerTypeVersionIn) and
+          ta.source_control_server_type.end_datetime is null;
+      exception
+        when no_data_found then 
+          raise exception 'No source-control branch matches the inputs passed to createTeam2.';
+    end;
+    return(
+      ta.createTeam(
+        nameIn := nameIn,
+        sourceControlBranchIdIn := tempSourceControlBranchId
+      )
+    );
   end
 $$
 language plpgsql;
@@ -118,6 +176,22 @@ as $$
         id = idIn and 
         end_datetime is null;
     return(tempName);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+getTeamDescription returns a text description of the team with ID idIn, or null 
+if no entity with the input ID was found.
+*******************************************************************************/
+create or replace function ta.getTeamDescription(idIn in bigint)
+returns text
+as $$
+  declare
+  begin
+    return(getTeamName(idIn = idIn));
     exception
       when no_data_found then return(null);
   end

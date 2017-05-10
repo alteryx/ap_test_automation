@@ -2,6 +2,7 @@
 Test-Automation CRUD DDL for table ta.natural_language
 History:
   02/22/2017  Todd Morley   initial file creation
+  03/22/2017  Todd Morley   added getNaturalLanguageDescription
 *******************************************************************************/
 
 /*******************************************************************************
@@ -84,6 +85,22 @@ as $$
         id = idIn and 
         end_datetime is null;
     return(tempName);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+getNaturalLanguageDescription returns a text description of the natural language
+with the input ID, or null if no entity with the input ID was found.
+*******************************************************************************/
+create or replace function ta.getNaturalLanguageDescription(idIn in bigint)
+returns text
+as $$
+  declare
+  begin
+    return(getNaturalLanguageName(idIn = idIn));
     exception
       when no_data_found then return(null);
   end

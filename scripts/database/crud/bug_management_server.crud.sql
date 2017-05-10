@@ -2,6 +2,7 @@
 Test-Automation CRUD DDL for table ta.bug_management_server
 History:
   02/27/2017  Todd Morley   initial file creation
+  03/13/2017  Todd Morley   added get-description function
 *******************************************************************************/
 
 /*******************************************************************************
@@ -136,7 +137,7 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-GetBugManagementServerNetworkInfo function returns a networkInfoType, or null 
+getBugManagementServerNetworkInfo function returns a networkInfoType, or null 
 if no entity with the input ID was found.
 *******************************************************************************/
 create or replace function ta.getBugManagementServerNetworkInfo(idIn in bigint)
@@ -154,6 +155,42 @@ as $$
         id = idIn and 
         end_datetime is null;
     return(tempNetworkInfo);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+getBugManagementServerDescription function returns a description of the input
+bug-management server, or null if no object with the input ID was found.
+*******************************************************************************/
+create or replace function ta.getBugManagementServerDescription(idIn in bigint)
+returns text
+as $$
+  declare
+    tempDescription text;
+  begin
+    select 
+      ta.bug_management_system_type.name ||
+      ' ' ||
+      ta.bug_management_server.name ||
+      ' @ ' ||
+      coalesce(
+        ta.bug_management_system_type.static_ip_address,
+        ta.bug_management_system_type.dns_name
+      )
+      into strict tempDescription
+      from 
+        ta.bug_management_system_type,
+        ta.bug_management_server 
+      where 
+        ta.bug_management_server.id = idIn and 
+        ta.bug_management_server.bug_management_system_type_id = 
+          bug_management_system_type.id and
+        ta.bug_management_server.end_datetime is null and
+        ta.bug_management_server.end_datetime is null;
+    return(tempDescription);
     exception
       when no_data_found then return(null);
   end

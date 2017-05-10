@@ -2,6 +2,8 @@
 Test-Automation CRUD DDL for table ta.bug_management_system_type
 History:
   02/22/2017  Todd Morley   initial file creation
+  03/13/2017  Todd Morley   added get-description function
+  03/31/2017  Todd Morley   added support for version column
 *******************************************************************************/
 
 /*******************************************************************************
@@ -9,7 +11,8 @@ Create function returns ID in a variable of type bigint, whether or not the
 entity antedated the call.  (An attempt to re-create the entity is harmless.)
 *******************************************************************************/
 create or replace function ta.createBugManagementSystemType(
-  nameIn in text
+  nameIn in text,
+  versionIn in text
 )
 returns bigint
 as $$
@@ -22,6 +25,7 @@ as $$
         from ta.bug_management_system_type 
         where 
           name = lower(nameIn) and
+          version = lower(versionIn) and
           end_datetime is null;
       return(tempId);
       exception
@@ -31,11 +35,13 @@ as $$
     insert into ta.bug_management_system_type(
       id,
       name,
+      version,
       create_datetime,
       end_datetime
     ) values(
       tempId,
       lower(nameIn),
+      lower(versionIn),
       current_timestamp,
       null
     );
@@ -49,7 +55,8 @@ GetId function returns the surrogate primary key (ID) of the entity with the
 input natural-key value, or null if no entity with the input ID was found.
 *******************************************************************************/
 create or replace function ta.getBugManagementSystemTypeId(
-  nameIn in text
+  nameIn in text,
+  versionIn in text
 )
 returns bigint
 as $$
@@ -61,6 +68,7 @@ as $$
       from ta.bug_management_system_type
       where 
         name = lower(nameIn) and 
+        version = lower(versionIn) and
         end_datetime is null;
     return(tempId);
     exception
@@ -109,6 +117,56 @@ as $$
         id = idIn and 
         end_datetime is null;
     return(tempName);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+GetVersion function returns version in a variable of type text, or null if no
+entity with the input ID was found.
+*******************************************************************************/
+create or replace function ta.getBugManagementSystemTypeVersion(idIn in bigint)
+returns text
+as $$
+  declare
+    tempVersion text;
+  begin
+    select version
+      into strict tempVersion
+      from ta.bug_management_system_type 
+      where 
+        id = idIn and 
+        end_datetime is null;
+    return(tempVersion);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+getBugManagementSystemTypeDescription function returns a description of the 
+input bug-management system type, or null if no object with the input ID was
+found.
+*******************************************************************************/
+create or replace function ta.getBugManagementSystemTypeDescription(
+  idIn in bigint
+)
+returns text
+as $$
+  declare
+    tempDescription text;
+  begin
+    select 
+      name || ' ' || version
+      into tempDescription
+      from ta.bug_management_system_type
+      where
+        id = idIn and
+        end_datetime is null;
+    return(tempDescription);
     exception
       when no_data_found then return(null);
   end

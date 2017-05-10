@@ -2,6 +2,7 @@
 Test-Automation CRUD DDL for table ta.event_type
 History:
   02/22/2017  Todd Morley   initial file creation
+  03/22/2017  Todd Morley   added getEventTypeDescription
 *******************************************************************************/
 
 /*******************************************************************************
@@ -109,6 +110,22 @@ as $$
         id = idIn and 
         end_datetime is null;
     return(tempName);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+getEventTypeDescription function returns a text description of the event type 
+with ID idIn, or null if no entity with the input ID was found.
+*******************************************************************************/
+create or replace function ta.getEventTypeDescription(idIn in bigint)
+returns text
+as $$
+  declare
+  begin
+    return(getEventTypeName(idIn = idIn));
     exception
       when no_data_found then return(null);
   end

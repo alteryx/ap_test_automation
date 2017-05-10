@@ -1,47 +1,62 @@
 /*******************************************************************************
-Test-Automation CRUD DDL for table ta.module
+Test-Automation CRUD DDL for table ta.case_dim_allowed_value
 History:
-  02/22/2017  Todd Morley   initial file creation
-  03/22/2017  Todd Morley   added getModuleDescription
+  02/28/2017  Todd Morley   initial file 
+  03/21/2017  Todd Morley   added GetCaseDimAllowedValueDescription
+  04/24/2017  Todd Morley   bug fix
 *******************************************************************************/
 
 /*******************************************************************************
 Create function returns ID in a variable of type bigint, whether or not the 
 entity antedated the call.  (An attempt to re-create the entity is harmless.)
 *******************************************************************************/
-create or replace function ta.createModule(
-  nameIn in text,
-  owningTeamIdIn in bigint
+create or replace function ta.createCaseDimAllowedValue(
+  serializedValueIn in text,
+  caseAnalysisDimensionIdIn in bigint
 )
 returns bigint
 as $$
   declare
+    tempCount integer;
     tempId bigint;
   begin
+    select count(*)
+      from ta.case_analysis_dimension
+      where
+        id = caseAnalysisDimensionIdIn and
+        end_datetime is null;
+    if(
+      tempCount = 0 or
+      serializedValueIn is null or
+      caseAnalysisDimensionIdIn is null
+    ) then
+      raise exception 'invalid input passed to ta.createCaseDimAllowedValue';
+    end if;
     begin
       select id 
         into strict tempId
-        from ta.module 
-        where 
-          name = lower(nameIn) and
+        from ta.case_dim_allowed_value 
+        where
+          serialized_value = serializedValueIn and
+          case_analysis_dimension_id = caseAnalysisDimensionIdIn and
           end_datetime is null;
       return(tempId);
       exception
         when no_data_found then null; -- not return(null); continue to below
     end;
-    select nextval('ta.module_id_s') into tempId;
-    insert into ta.module(
+    select nextval('ta.case_dim_allowed_value_id_s') into tempId;
+    insert into ta.case_dim_allowed_value(
       id,
-      name,
+      serialized_value,
       create_datetime,
       end_datetime,
-      owning_team_id
+      case_analysis_dimension_id
     ) values(
       tempId,
-      lower(nameIn),
+      serializedValueIn,
       current_timestamp,
       null,
-      owningTeamIdIn
+      caseAnalysisDimensionIdIn
     );
     return(tempId);
   end
@@ -52,22 +67,28 @@ language plpgsql;
 GetId function returns the surrogate primary key (ID) of the entity with the 
 input natural-key value, or null if no entity with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getModuleId(
-  nameIn in text,
-  owningTeamIdIn in bigint
+create or replace function ta.getCaseDimAllowedValueId(
+  serializedValueIn in text,
+  caseAnalysisDimensionIdIn in bigint
 )
 returns bigint
 as $$
   declare
     tempId bigint;
   begin
-    select id
+    if(
+      serializedValueIn is null or 
+      caseAnalysisDimensionIdIn is null
+    ) then
+      raise exception 'invalid input passed to ta.getCaseDimAllowedValueId';
+    end if;
+    select id 
       into strict tempId
-      from ta.module
-      where 
-        name = lower(nameIn) and 
-        owning_team_id = owningTeamIdIn and
-        end_datetime is null;
+      from ta.case_dim_allowed_value 
+      where
+      serialized_value = serializedValueIn and
+      case_analysis_dimension_id = caseAnalysisDimensionIdIn and
+      end_datetime is null;
     return(tempId);
     exception
       when no_data_found then return(null);
@@ -79,15 +100,15 @@ language plpgsql;
 Get function returns table rowtype, or null if no entity with the input ID was
 found.
 *******************************************************************************/
-create or replace function ta.getModule(idIn in bigint)
-returns ta.module
+create or replace function ta.getCaseDimAllowedValue(idIn in bigint)
+returns ta.case_dim_allowed_value
 as $$
   declare
-    tempRecord ta.module%rowtype;
+    tempRecord ta.case_dim_allowed_value%rowtype;
   begin
     select * 
       into strict tempRecord
-      from ta.module 
+      from ta.case_dim_allowed_value 
       where 
         id = idIn and 
         end_datetime is null;
@@ -99,49 +120,31 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-GetName function returns name in a variable of type text, or null if no
-entity with the input ID was found.
+GetCaseDimAllowedValueDescription function returns a description of the case
+dimension's allowed value. 
 *******************************************************************************/
-create or replace function ta.getModuleName(idIn in bigint)
-returns text
-as $$
-  declare
-    tempName text;
-  begin
-    select name
-      into strict tempName
-      from ta.module 
-      where 
-        id = idIn and 
-        end_datetime is null;
-    return(tempName);
-    exception
-      when no_data_found then return(null);
-  end
-$$
-language plpgsql;
-
-/*******************************************************************************
-getModuleDescription function returns a text description of the module 
-with ID idIn, or null if no entity with the input ID was found.
-*******************************************************************************/
-create or replace function ta.getModuleDescription(idIn in bigint)
+create or replace function ta.GetCaseDimAllowedValueDescription(
+  caseAnalysisDimensionIdIn in bigint
+)
 returns text
 as $$
   declare
     tempDescription text;
   begin
-    select
-      ta.module.name || ' owned by ' || ta.team.name
+    select 
+      ta.case_dim_allowed_value.serialized_value ||
+      ' of case ' ||
+      ta.case_analysis_dimension.name
       into tempDescription
-      from
-        ta.module,
-        ta.team
-      where
-        ta.module.owning_team_id = ta.team.id and
-        ta.module.id = idIn and
-        ta.module.end_datetime is null and
-        ta.team.end_datetime is null;
+      from 
+        ta.case_dim_allowed_value,
+        ta.case_analysis_dimension
+      where 
+        ta.case_dim_allowed_value.id = caseAnalysisDimensionIdIn and 
+        ta.case_analysis_dimension.id = 
+          ta.case_dim_allowed_value.case_analysis_dimension_id and
+        ta.case_dim_allowed_value.end_datetime is null and
+        ta.case_analysis_dimension.end_datetime is null;
     return(tempDescription);
     exception
       when no_data_found then return(null);
@@ -150,44 +153,41 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-GetOwningTeamId function returns the ID of the owning team in a variable of type 
-bigint, or null if no entity with the input ID was found.
+GetCaseDimAllowedValues function returns a table of text values that are all of
+the serialized allowed values for the input case-analysis dimension.
 *******************************************************************************/
-create or replace function ta.getOwningTeamId(idIn in bigint)
-returns bigint
+create or replace function ta.getCaseDimAllowedValues(caseAnalysisDimensionIdIn in bigint)
+returns table(serialized_value text)
 as $$
   declare
-    tempOwningTeamId bigint;
   begin
-    select owning_team_id
-      into strict tempOwningTeamId
-      from ta.module 
+    return query select 
+      serialized_value
+      from ta.case_dim_allowed_value 
       where 
-        id = idIn and 
+        id = caseAnalysisDimensionIdIn and 
         end_datetime is null;
-    return(tempOwningTeamId);
     exception
-      when no_data_found then return(null);
+      when no_data_found then return;
   end
 $$
 language plpgsql;
 
 /*******************************************************************************
-There is no update function, because all exposed attributes pertain to the 
-natural key.
+No update function, because all exposed attributes belong to the natural key.
 *******************************************************************************/
 
 /*******************************************************************************
 Delete function returns deleted entity's ID in a variable of type bigint, if the
 entity was found (and deleted), otherwise null.
 *******************************************************************************/
-create or replace function ta.deleteModule(idIn in bigint)
+create or replace function ta.deleteCaseDimAllowedValue(idIn in bigint)
 returns bigint
 as $$
   declare
     tempId bigint;
   begin
-     update ta.module 
+     update ta.case_dim_allowed_value 
       set end_datetime = current_timestamp
       where
         id = idIn and

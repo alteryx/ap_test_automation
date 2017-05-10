@@ -2,38 +2,31 @@
 Test-Automation CRUD DDL for table ta.alteryx_type
 History:
   02/22/2017  Todd Morley   initial file creation
+  03/13/2017  Todd Morley   added get-description function
+  03/31/2017  Todd Morley   added support for build column, moved version into
+                            separate ta.alteryx_version table
 *******************************************************************************/
 
 /*******************************************************************************
 Create function returns ID in a variable of type bigint, whether or not the 
 entity antedated the call.  (An attempt to re-create the entity is harmless.)
-Version is the natural key.
 *******************************************************************************/
 create or replace function ta.createAlteryxType(
-  versionIn in text,
-  supportStartDateIn in date,
-  supportEndDateIn in date default null
+  buildIn in text,
+  alteryxVersionIdIn in bigint
 )
 returns bigint
 as $$
   declare
     tempId bigint;
   begin
-    if(
-      supportStartDateIn is null OR
-      (
-        supportEndDateIn is not null AND
-        supportStartDateIn >= supportEndDateIn
-      )
-    ) then
-      raise exception 'invalid support period passed to ta.createAlteryxType';
-    end if;
     begin
       select id 
         into strict tempId
         from ta.alteryx_type 
         where 
-          version = lower(versionIn) and
+          build = lower(buildIn) and
+          alteryx_version_id = alteryxVersionIdIn and
           end_datetime is null;
       return(tempId);
       exception
@@ -42,18 +35,75 @@ as $$
     select nextval('ta.alteryx_type_id_s') into tempId;
     insert into ta.alteryx_type(
       id,
-      version,
-      support_start_date,
-      support_end_date,
+      build,
       create_datetime,
-      end_datetime
+      end_datetime,
+      alteryx_version_id
     ) values(
       tempId,
-      lower(versionIn),
-      supportStartDateIn,
-      supportEndDateIn,
+      lower(buildIn),
       current_timestamp,
-      null
+      null,
+      alteryxVersionIdIn
+    );
+    return(tempId);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+Create2 function returns ID in a variable of type bigint, whether or not the 
+entity antedated the call.  (An attempt to re-create the entity is harmless.)
+This version of the create function takes natural-key inputs for entities
+referenced by foreign keys, for ease of use.  The function fails in the 
+referenced foreign key does not currently exist.
+*******************************************************************************/
+create or replace function ta.createAlteryxType2(
+  buildIn in text,
+  alteryxVersionIn in text
+)
+returns bigint
+as $$
+  declare
+    tempId bigint;
+    tempVersionId bigint;
+  begin
+    begin
+      select id
+        into tempVersionId
+        from ta.alteryx_version
+        where
+          version = lower(alteryxVersionIn) and
+          end_datetime is null;
+      exception
+        when no_data_found then 
+          raise exception 'invalid Alteryx version passed to ta.createAlteryxType2';
+    end;
+    begin
+      select id 
+        into strict tempId
+        from ta.alteryx_type 
+        where 
+          build = lower(buildIn) and
+          alteryx_version_id = tempVersionId and
+          end_datetime is null;
+      return(tempId);
+      exception
+        when no_data_found then null; -- not return(null); continue to below
+    end;
+    select nextval('ta.alteryx_type_id_s') into tempId;
+    insert into ta.alteryx_type(
+      id,
+      build,
+      create_datetime,
+      end_datetime,
+      alteryx_version_id
+    ) values(
+      tempId,
+      lower(buildIn),
+      current_timestamp,
+      null,
+      tempVersionId
     );
     return(tempId);
   end
@@ -65,7 +115,8 @@ GetId function returns the surrogate primary key (ID) of the entity with the
 input natural-key value, or null if no entity with the input ID was found.
 *******************************************************************************/
 create or replace function ta.getAlteryxTypeId(
-  versionIn in text
+  buildIn in text,
+  alteryxVersionIdIn in bigint
 )
 returns bigint
 as $$
@@ -76,7 +127,8 @@ as $$
       into strict tempId
       from ta.alteryx_type
       where 
-        version = lower(versionIn) and 
+        build = lower(buildIn) and
+        alteryx_version_id = alteryxVersionIdIn and 
         end_datetime is null;
     return(tempId);
     exception
@@ -118,12 +170,16 @@ as $$
   declare
     tempVersion text;
   begin
-    select version
+    select ta.alteryx_version.version
       into strict tempVersion
-      from ta.alteryx_type 
+      from 
+        ta.alteryx_version,
+        ta.alteryx_type 
       where 
-        id = idIn and 
-        end_datetime is null;
+        ta.alteryx_type.id = idIn and 
+        ta.alteryx_version.id = ta.alteryx_type.alteryx_version_id and
+        ta.alteryx_type.end_datetime is null and
+        ta.alteryx_version.end_datetime is null;
     return(tempVersion);
     exception
       when no_data_found then return(null);
@@ -132,24 +188,22 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-GetSupportPeriod function returns a periodType, or null if no
-entity with the input ID was found.
+GetVersionID function returns the ID of the Alteryx type's version, or null if 
+no type with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getAlteryxTypeSupportPeriod(idIn in bigint)
-returns ta.periodType
+create or replace function ta.getAlteryxTypeVersionId(idIn in bigint)
+returns bigint
 as $$
   declare
-    tempPeriod ta.periodType;
+    tempVersionId bigint;
   begin
-    select 
-      support_start_date,
-      support_end_date
-      into strict tempPeriod
+    select alteryx_version_id
+      into strict tempVersionId
       from ta.alteryx_type 
       where 
-        id = idIn and 
-        end_datetime is null;
-    return(tempPeriod);
+        ta.alteryx_type.id = idIn and 
+        ta.alteryx_type.end_datetime is null;
+    return(tempVersionId);
     exception
       when no_data_found then return(null);
   end
@@ -157,63 +211,34 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-The update function upates all entity properties that are not part of the
-entity type's natural primary key, in this case the support-period dates.
+getAlteryxTypeDescription function returns a description of the input Alteryx
+type, or null if no object with the input ID was found.
 *******************************************************************************/
-
-create or replace function ta.updateAlteryxType(
-  idIn in bigint,
-  supportStartDateIn in date,
-  supportEndDateIn in date default null
-)
-returns bigint
+create or replace function ta.getAlteryxTypeDescription(idIn in bigint)
+returns text
 as $$
   declare
-    tempRow ta.alteryx_type%rowtype;
-    tempTimestamp timestamp;
+    tempDescription text;
   begin
-    if(
-      supportStartDateIn is null or
-      (
-        supportEndDateIn is not null and
-        supportStartDateIn >= supportEndDateIn
-      )
-    ) then
-      raise exception 'invalid support period passed to ta.createAlteryxType';
-    end if;
-    select * 
-      into tempRow 
+    select 
+      ta.getAlteryxVersionDescription(alteryx_version_id), ||
+      ' build ' ||
+      build
+      into strict tempDescription
       from ta.alteryx_type 
-      where
-        id = idIn and
-        end_datetime is null;
-    tempTimestamp := current_timestamp;
-    update ta.alteryx_type
-      set end_datetime = tempTimestamp
       where 
-        id = idIn and
+        id = idIn and 
         end_datetime is null;
-    insert into ta.alteryx_type(
-      id,
-      version,
-      support_start_date,
-      support_end_date,
-      create_datetime,
-      end_datetime
-    ) values(
-      idIn,
-      tempRow.version,
-      supportStartDateIn,
-      supportEndDateIn,
-      tempTimestamp,
-      null
-    );
-    return(idIn);
+    return(tempDescription);
     exception
       when no_data_found then return(null);
   end
 $$
 language plpgsql;
+
+/*******************************************************************************
+No update function, for the usual reason.
+*******************************************************************************/
 
 /*******************************************************************************
 Delete function returns deleted entity's ID in a variable of type bigint, if the

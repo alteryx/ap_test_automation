@@ -2,6 +2,7 @@
 Test-Automation CRUD DDL for table ta.source_control_system_type
 History:
   02/22/2017  Todd Morley   initial file creation
+  03/22/2017  Todd Morley   added getSourceControlSystemTypeDescription
 *******************************************************************************/
 
 /*******************************************************************************
@@ -137,6 +138,31 @@ as $$
         id = idIn and 
         end_datetime is null;
     return(tempName);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+getSourceControlSystemTypeDescription returns a text description of the source-
+control system with ID idin, or null if no entity with the input ID was found.
+*******************************************************************************/
+create or replace function ta.getSourceControlSystemTypeDescription(
+  idIn in bigint
+)
+returns text
+as $$
+  declare
+    tempDescription text;
+  begin
+    select name || ' ' || version
+      into strict tempDescription
+      from ta.source_control_system_type 
+      where 
+        id = idIn and 
+        end_datetime is null;
+    return(tempDescription);
     exception
       when no_data_found then return(null);
   end

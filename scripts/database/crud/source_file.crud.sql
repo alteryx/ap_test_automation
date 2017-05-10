@@ -2,6 +2,7 @@
 Test-Automation CRUD DDL for table ta.source_file
 History:
   02/27/2017  Todd Morley   initial file creation
+  03/22/2017  Todd Morley   added getSourceFileDescription
 *******************************************************************************/
 
 /*******************************************************************************
@@ -121,6 +122,34 @@ as $$
         id = idIn and 
         end_datetime is null;
     return(tempName);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+getSourceFileDescription returns a text description of the source file with ID
+idIn, or null if no entity with the input ID was found.
+*******************************************************************************/
+create or replace function ta.getSourceFileDescription(idIn in bigint)
+returns text
+as $$
+  declare
+    tempDescription text;
+  begin
+    select 
+      path || 
+      '/' || 
+      name || 
+      ' on ' || 
+      ta.source_control_branch.name
+      into strict tempDescription
+      from ta.source_file 
+      where 
+        id = idIn and 
+        end_datetime is null;
+    return(tempDescription);
     exception
       when no_data_found then return(null);
   end

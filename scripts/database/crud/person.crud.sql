@@ -2,6 +2,7 @@
 Test-Automation CRUD DDL for table ta.person
 History:
   02/27/2017  Todd Morley   initial file creation
+  03/22/2017  Todd Morley   added getPersonDescription
 *******************************************************************************/
 
 /*******************************************************************************
@@ -133,6 +134,29 @@ as $$
         id = idIn and 
         end_datetime is null;
     return(tempFullName);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+getPersonDescription returns a text description of the person whose ID is idIn,
+or null if no entity with the input ID was found.
+*******************************************************************************/
+create or replace function ta.getPersonDescription(idIn in bigint)
+returns text
+as $$
+  declare
+    tempDescription text;
+  begin
+    select full_name || '(' || email || ')'
+      into strict tempDescription
+      from ta.person 
+      where 
+        id = idIn and 
+        end_datetime is null;
+    return(tempDescription);
     exception
       when no_data_found then return(null);
   end

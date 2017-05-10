@@ -2,6 +2,7 @@
 Test-Automation CRUD DDL for table ta.source_control_server
 History:
   02/27/2017  Todd Morley   initial file creation
+  03/22/2017  Todd Morley   added getSourceControlServerDescription
 *******************************************************************************/
 
 /*******************************************************************************
@@ -60,6 +61,59 @@ as $$
       sourceControlSystemTypeIdIn
     );
     return(tempId);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+Create2 function returns ID in a variable of type bigint, whether or not the 
+entity antedated the call.  (An attempt to re-create the entity is harmless.)
+Name is the natural key.  This version of the create function takes natural-
+key arguments for source-control system type as well, for convenience.
+*******************************************************************************/
+create or replace function ta.createSourceControlServer2(
+  nameIn in text,
+  sourceControlSystemTypeNameIn in text,
+  sourceControlSystemTypeVersionIn in text,
+  staticIpAddressIn in text default null,
+  dnsNameIn in text default null
+)
+returns bigint
+as $$
+  declare
+    tempSourceControlSystemTypeId bigint;
+  begin
+    if(
+      nameIn is null or
+      (
+        staticIpAddressIn is null and
+        dnsNameIn is null
+      ) or 
+      sourceControlSystemTypeNameIn is null or
+      sourceControlSystemTypeVersionIn is null
+    ) then
+      raise exception 'invalid input passed to ta.createSourceControlServer';
+    end if;
+    begin
+      select id 
+        into strict tempSourceControlSystemTypeId
+        from ta.source_control_system_type
+        where 
+          name = lower(nameIn) and
+          version = lower(versionIn) and
+          end_datetime is null;
+      exception
+        when no_data_found then 
+          raise exception 'invalid source-control name or version passed to createSourceControlServer';
+    end;
+    return(
+      ta.createSourceControlServer(
+        nameIn := nameIn,
+        sourceControlSystemTypeIdIn := tempSourceControlSystemTypeId,
+        staticIpAddressIn := staticIpAddressIn,
+        dnsNameIn := dnsNameIn
+      )
+    );
   end
 $$
 language plpgsql;
@@ -154,6 +208,40 @@ as $$
         id = idIn and 
         end_datetime is null;
     return(tempNetworkInfo);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+
+/*******************************************************************************
+getSourceControlServerDescription returns a text description of the source-
+control server with ID idIn, or null if no entity with the input ID was found.
+*******************************************************************************/
+create or replace function ta.getSourceControlServerDescription(idIn in bigint)
+returns text
+as $$
+  declare
+    tempDescription text;
+  begin
+    select
+      name ||
+      ' (' ||
+      ta.source_control_system_type.name ||
+      ') @ ' ||
+      nvl(dns_name, static_ip_address)
+      into strict tempDescription
+      from 
+        ta.source_control_server,
+        ta.source_control_system_type
+      where 
+        ta.source_control_server.id = idIn and 
+        ta.source_control_system_type.id = 
+          ta.source_control_server.source_control_system_type_id and
+        ta.source_control_server.end_datetime is null and
+        ta.source_control_system_type.end_datetime is null;
+    return(tempDescription);
     exception
       when no_data_found then return(null);
   end

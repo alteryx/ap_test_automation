@@ -3,6 +3,7 @@ Test-Automation CRUD DDL for table ta.request_status_type
 History:
   02/22/2017  Todd Morley   initial file creation
   02/27/2017  Todd Morley   bug fix:  replaced getRoleId with correct name
+  03/22/2017  Todd Morley   added requestStatusTypeDescription
 *******************************************************************************/
 
 /*******************************************************************************
@@ -110,6 +111,22 @@ as $$
         id = idIn and 
         end_datetime is null;
     return(tempName);
+    exception
+      when no_data_found then return(null);
+  end
+$$
+language plpgsql;
+
+/*******************************************************************************
+requestStatusTypeDescription returns a text description of the request status 
+type with ID idIn, or null if no entity with the input ID was found.
+*******************************************************************************/
+create or replace function ta.requestStatusTypeDescription(idIn in bigint)
+returns text
+as $$
+  declare
+  begin
+    return(getRequestStatusTypeName(idIn = idIn));
     exception
       when no_data_found then return(null);
   end

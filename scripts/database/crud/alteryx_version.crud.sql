@@ -1,81 +1,59 @@
 /*******************************************************************************
-Test-Automation CRUD DDL for table ta.node
+Test-Automation CRUD DDL for table ta.alteryx_version
 History:
-  02/27/2017  Todd Morley   initial file creation
-  03/08/2017  Todd Morley   fixed a typo, added getNodeNodeTypeId
-  03/22/2017  Todd Morley   added getNodeDescription
-  04/17/2017  Todd Morley   bug fixes
+  03/31/2017  Todd Morley   initial file creation
 *******************************************************************************/
 
 /*******************************************************************************
 Create function returns ID in a variable of type bigint, whether or not the 
 entity antedated the call.  (An attempt to re-create the entity is harmless.)
+Version is the natural key.
 *******************************************************************************/
-create or replace function ta.createNode(
-  ipAddressIn in text,
-  dnsNameIn in text,
-  virtualYnIn in char,
-  lastStartDateIn in date,
-  nodeTypeIdIn in bigint
+create or replace function ta.createAlteryxVersion(
+  versionIn in text,
+  supportStartDateIn in date,
+  supportEndDateIn in date default null
 )
 returns bigint
 as $$
   declare
-    tempCount integer;
     tempId bigint;
   begin
-    select count(*)
-      into tempCount
-      from ta.node_type
-      where
-        id = nodeTypeIdIn and
-        end_datetime is null;
     if(
-      tempCount = 0 or
-      (ipAddressIn is null and dnsNameIn is null) or
-      virtualYnIn is null or
-      lastStartDateIn is null or
-      nodeTypeIdIn is null
+      supportStartDateIn is null OR
+      (
+        supportEndDateIn is not null AND
+        supportStartDateIn >= supportEndDateIn
+      )
     ) then
-      raise exception 'invalid input passed to ta.createNode';
+      raise exception 'invalid support period passed to ta.createAlteryxVersion';
     end if;
     begin
       select id 
         into strict tempId
-        from ta.node 
-        where
-        (
-          (ip_address is null and ipAddressIn is null) or 
-          ip_address = ipAddressIn
-        ) and
-        (
-          (dns_name is null and dnsNameIn is null) or 
-          dns_name = dnsNameIn
-        ) and
-        end_datetime is null;
+        from ta.alteryx_version 
+        where 
+          version = lower(versionIn) and
+          end_datetime is null;
       return(tempId);
       exception
         when no_data_found then null; -- not return(null); continue to below
     end;
-    select nextval('ta.node_id_s') into tempId;
-    insert into ta.node(
+    select nextval('ta.alteryx_version_id_s') into tempId;
+    insert into ta.alteryx_version(
       id,
-      ip_address,
-      dns_name,
-      virtual_yn,
-      last_start_date,
+      version,
+      support_start_date,
+      support_end_date,
       create_datetime,
-      end_datetime,
-      node_type_id
+      end_datetime
     ) values(
       tempId,
-      ipAddressIn,
-      dnsNameIn,
-      virtualYnIn,
-      lastStartDateIn,
+      lower(versionIn),
+      supportStartDateIn,
+      supportEndDateIn,
       current_timestamp,
-      null,
-      nodeTypeIdIn
+      null
     );
     return(tempId);
   end
@@ -86,31 +64,18 @@ language plpgsql;
 GetId function returns the surrogate primary key (ID) of the entity with the 
 input natural-key value, or null if no entity with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getNodeId(
-  ipAddressIn in bigint,
-  dnsNameIn in bigint
-)
+create or replace function ta.getAlteryxVersionId(versionIn in text)
 returns bigint
 as $$
   declare
     tempId bigint;
   begin
-    if(ipAddressIn is null and dnsNameIn is null) then
-      raise exception 'invalid input passed to ta.getNodeId';
-    end if;
-    select id 
+    select id
       into strict tempId
-      from ta.node 
-      where
-      (
-        (ip_address is null and ipAddressIn is null) or 
-        ip_address = ipAddressIn
-      ) and
-      (
-        (dns_name is null and dnsNameIn is null) or 
-        dns_name = dnsNameIn
-      ) and
-      end_datetime is null;
+      from ta.alteryx_version
+      where 
+        version = lower(versionIn) and 
+        end_datetime is null;
     return(tempId);
     exception
       when no_data_found then return(null);
@@ -122,15 +87,15 @@ language plpgsql;
 Get function returns table rowtype, or null if no entity with the input ID was
 found.
 *******************************************************************************/
-create or replace function ta.getNode(idIn in bigint)
-returns ta.node
+create or replace function ta.getAlteryxVersion(idIn in bigint)
+returns ta.alteryx_version
 as $$
   declare
-    tempRecord ta.node%rowtype;
+    tempRecord ta.alteryx_version%rowtype;
   begin
     select * 
       into strict tempRecord
-      from ta.node 
+      from ta.alteryx_version 
       where 
         id = idIn and 
         end_datetime is null;
@@ -142,22 +107,22 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-GetNodeNodeTypeId function returns a node-type ID, or null if no entity with the 
-input ID was found.
+GetVersion function returns version in a variable of type text, or null if no
+entity with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getNodeNodeTypeId(idIn in bigint)
-returns bigint
+create or replace function ta.getAlteryxVersionVersion(idIn in bigint)
+returns text
 as $$
   declare
-    tempNodeTypeId bigint;
+    tempVersion text;
   begin
-    select node_type_id
-      into tempNodeTypeId
-      from ta.node 
+    select version
+      into strict tempVersion
+      from ta.alteryx_version 
       where 
         id = idIn and 
         end_datetime is null;
-    return(tempNodeTypeId);
+    return(tempVersion);
     exception
       when no_data_found then return(null);
   end
@@ -165,25 +130,24 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-GetNetworkInfo function returns a node's network IP address and/or DNS name
-in a variable of type networkInfoType, or null if no entity with the input ID 
-was found.
+GetSupportPeriod function returns a periodVersion, or null if no
+entity with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getNodeNetworkInfo(idIn in bigint)
-returns ta.networkInfoType
+create or replace function ta.getAlteryxVersionSupportPeriod(idIn in bigint)
+returns ta.periodType
 as $$
   declare
-    tempNetworkInfo ta.networkInfoType;
+    tempPeriod ta.periodType;
   begin
     select 
-      ip_address,
-      dns_name
-      into strict tempNetworkInfo
-      from ta.node 
+      support_start_date,
+      support_end_date
+      into strict tempPeriod
+      from ta.alteryx_version 
       where 
         id = idIn and 
         end_datetime is null;
-    return(tempNetworkInfo);
+    return(tempPeriod);
     exception
       when no_data_found then return(null);
   end
@@ -191,29 +155,28 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-getNodeDescription returns a text description of the node with ID idIn, or null 
-if no entity with the input ID was found.
+getAlteryxVersionDescription function returns a description of the input Alteryx
+type, or null if no object with the input ID was found.
 *******************************************************************************/
-create or replace function ta.getNodeDescription(idIn in bigint)
+create or replace function ta.getAlteryxVersionDescription(idIn in bigint)
 returns text
 as $$
   declare
     tempDescription text;
   begin
     select 
-      nvl(ta.node.dns_name, ta.node.ip_address) || 
-      ', type ' ||
-      ta.node_type.name ||
-      case ta.node.virtual_yn when 'y' then ', virtual' end
+      'Alteryx ' ||
+      version, ||
+      ' (' ||
+      to_char(support_start_date, 'Mon DD, YYYY') ||
+      ' to ' ||
+      nvl(to_char(support_end_date, 'Mon DD, YYYY'), ' present') ||
+      ')'
       into strict tempDescription
-      from 
-        ta.node,
-        ta.node_type
+      from ta.alteryx_version 
       where 
-        ta.node.id = idIn and 
-        ta.node_type.id = ta.node.node_type_id and
-        ta.node.end_datetime is null and
-        ta.node_type.end_datetime is null;
+        id = idIn and 
+        end_datetime is null;
     return(tempDescription);
     exception
       when no_data_found then return(null);
@@ -223,63 +186,55 @@ language plpgsql;
 
 /*******************************************************************************
 The update function upates all entity properties that are not part of the
-entity type's natural primary key.
+entity type's natural primary key, in this case the support-period dates.
 *******************************************************************************/
-create or replace function ta.updateNode(
+
+create or replace function ta.updateAlteryxVersion(
   idIn in bigint,
-  virtualYnIn in char,
-  lastStartDateIn in date,
-  nodeTypeIdIn in bigint
+  supportStartDateIn in date,
+  supportEndDateIn in date default null
 )
 returns bigint
 as $$
   declare
-    tempCount integer;
-    tempRow ta.node%rowtype;
+    tempRow ta.alteryx_version%rowtype;
     tempTimestamp timestamp;
   begin
-    select count(*)
-      into tempCount
-      from ta.node_type
-      where
-        id = nodeTypeIdIn and
-        end_datetime is null;
     if(
-      tempCount = 0 or 
-      nodeTypeIdIn is null
-     ) then
-      raise exception 'invalid input passed to ta.updateNode';
+      supportStartDateIn is null or
+      (
+        supportEndDateIn is not null and
+        supportStartDateIn >= supportEndDateIn
+      )
+    ) then
+      raise exception 'invalid support period passed to ta.createAlteryxVersion';
     end if;
     select * 
       into tempRow 
-      from ta.node
+      from ta.alteryx_version 
       where
         id = idIn and
         end_datetime is null;
     tempTimestamp := current_timestamp;
-    update ta.node
+    update ta.alteryx_version
       set end_datetime = tempTimestamp
       where 
         id = idIn and
         end_datetime is null;
-    insert into ta.node(
+    insert into ta.alteryx_version(
       id,
-      ip_address,
-      dns_name,
-      virtual_yn,
-      last_start_date,
+      version,
+      support_start_date,
+      support_end_date,
       create_datetime,
-      end_datetime,
-      node_type_id
+      end_datetime
     ) values(
       idIn,
-      tempRow.ip_address,
-      tempRow.dns_name,
-      virtualYnIn,
-      lastStartDateIn,
+      tempRow.version,
+      supportStartDateIn,
+      supportEndDateIn,
       tempTimestamp,
-      null,
-      nodeTypeIdIn
+      null
     );
     return(idIn);
     exception
@@ -292,13 +247,13 @@ language plpgsql;
 Delete function returns deleted entity's ID in a variable of type bigint, if the
 entity was found (and deleted), otherwise null.
 *******************************************************************************/
-create or replace function ta.deleteNode(idIn in bigint)
+create or replace function ta.deleteAlteryxVersion(idIn in bigint)
 returns bigint
 as $$
   declare
     tempId bigint;
   begin
-     update ta.node 
+     update ta.alteryx_version 
       set end_datetime = current_timestamp
       where
         id = idIn and

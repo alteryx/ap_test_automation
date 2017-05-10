@@ -2,6 +2,10 @@
 Test-Automation CRUD DDL for table ta.node_type
 History:
   02/27/2017  Todd Morley   initial file creation
+  03/08/2017  Todd Morley   added support for clock_speed_ghz
+  03/23/2017  Todd Morley   added getNodeTypeDescription, dropped update
+                            function, dropped description column
+  04/17/2017  Todd Morley   bug fixes
 *******************************************************************************/
 
 /*******************************************************************************
@@ -9,9 +13,9 @@ Create function returns ID in a variable of type bigint, whether or not the
 entity antedated the call.  (An attempt to re-create the entity is harmless.)
 *******************************************************************************/
 create or replace function ta.createNodeType(
-  descriptionIn in text,
   coreCountIn in integer,
   ramGbIn in integer,
+  clockSpeedGHzIn in numeric,
   operatingSystemTypeIdIn in bigint,
   databaseTypeIdIn in bigint,
   alteryxTypeIdIn in bigint
@@ -26,14 +30,14 @@ as $$
   begin
     select count(*)
       into tempOsTypeCount
-      from operating_system_type
+      from ta.operating_system_type
       where
         id = operatingSystemTypeIdIn and
         end_datetime is null;
     if(databaseTypeIdIn is not null) then
       select count(*)
         into tempDbTypeCount
-        from database_type
+        from ta.database_type
         where
           id = databaseTypeIdIn and
           end_datetime is null;
@@ -41,15 +45,15 @@ as $$
     if(alteryxTypeIdIn is not null) then
       select count(*)
         into tempAlteryxTypeCount
-        from alteryx_type
+        from ta.alteryx_type
         where
           id = alteryxTypeIdIn and
           end_datetime is null;
     end if;
     if(
-      descriptionIn is null or
       coreCountIn is null or
       ramGbIn is null or
+      clockSpeedGHzIn is null or
       operatingSystemTypeIdIn is null or
       tempOsTypeCount = 0 or
       (databaseTypeIdIn is not null and tempDbTypeCount = 0) or
@@ -64,6 +68,7 @@ as $$
         where 
           core_count = coreCountIn and
           ram_gb = ramGbIn and
+          clock_speed_ghz = clockSpeedGHzIn and
           operating_system_type_id = operatingSystemTypeIdIn and
           (
             (database_type_id is null and databaseTypeIdIn is null) or 
@@ -81,9 +86,9 @@ as $$
     select nextval('ta.node_type_id_s') into tempId;
     insert into ta.node_type(
       id,
-      description,
       core_count,
       ram_gb,
+      clock_speed_ghz,
       create_datetime,
       end_datetime,
       operating_system_type_id,
@@ -91,9 +96,9 @@ as $$
       alteryx_type_id
     ) values(
       tempId,
-      descriptionIn,
       coreCountIn,
       ramGbIn,
+      clockSpeedGHzIn,
       current_timestamp,
       null,
       operatingSystemTypeIdIn,
@@ -112,6 +117,7 @@ input natural-key value, or null if no entity with the input ID was found.
 create or replace function ta.getNodeTypeId(
   coreCountIn in integer,
   ramGbIn in integer,
+  clockSpeedGHzIn in numeric,
   operatingSystemTypeIdIn in bigint,
   databaseTypeIdIn in bigint,
   alteryxTypeIdIn in bigint
@@ -127,6 +133,7 @@ as $$
       where 
         core_count = coreCountIn and
         ram_gb = ramGbIn and
+        clock_speed_ghz_in = clockSpeedGHzIn and
         operating_system_type_id = operatingSystemTypeIdIn and
         (
           (database_type_id is null and databaseTypeIdIn is null) or 
@@ -168,8 +175,8 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-GetDescription function returns description in a variable of type text, or null 
-if no entity with the input ID was found.
+getNodeTypeDescription returns a text description of the node type with ID idIn,
+or null if no entity with the input ID was found.
 *******************************************************************************/
 create or replace function ta.getNodeTypeDescription(idIn in bigint)
 returns text
@@ -177,9 +184,20 @@ as $$
   declare
     tempDescription text;
   begin
-    select description
+    select
+      clock_speed_ghz ||
+      ' GHz ' ||
+      core_count ||
+      ' cores ' ||
+      ram_gb ||
+      ' GB ' ||
+      ta.getOperatingSystemTypeDescription(idIn = ta.node_type.operating_system_type_id) ||
+      ' ' ||
+      ta.getAlteryxTypeDescription(idIn = ta.node_type.alteryx_type_id) ||
+      ' ' ||
+      ta.getDatabaseTypeDescription(idIn = ta.node_type.database_type_id)
       into strict tempDescription
-      from ta.node_type 
+      from ta.node_type
       where 
         id = idIn and 
         end_datetime is null;
@@ -191,59 +209,9 @@ $$
 language plpgsql;
 
 /*******************************************************************************
-The update function upates all entity properties that are not part of the
-entity type's natural primary key.
+The node_type table doesn't have an update function, because all attribute
+columns belong to the natural primary key.
 *******************************************************************************/
-create or replace function ta.updateNodeType(
-  idIn in bigint,
-  descriptionIn in text
-)
-returns bigint
-as $$
-  declare
-    tempCount integer;
-    tempRow ta.node_type%rowtype;
-    tempTimestamp timestamp;
-  begin
-    select * 
-      into tempRow 
-      from ta.node_type
-      where
-        id = idIn and
-        end_datetime is null;
-    tempTimestamp := current_timestamp;
-    update ta.node_type
-      set end_datetime = tempTimestamp
-      where 
-        id = idIn and
-        end_datetime is null;
-    insert into ta.node_type(
-      id,
-      description,
-      core_count,
-      ram_gb,
-      create_datetime,
-      end_datetime,
-      operating_system_type_id,
-      database_type_id,
-      alteryx_type_id
-    ) values(
-      idIn,
-      descriptionIn,
-      tempRow.core_count,
-      tempRow.ram_gb,
-      tempTimestamp,
-      null,
-      tempRow.operating_system_type_id,
-      tempRow.database_type_id,
-      tempRow.alteryx_type_id
-    );
-    return(idIn);
-    exception
-      when no_data_found then return(null);
-  end
-$$
-language plpgsql;
 
 /*******************************************************************************
 Delete function returns deleted entity's ID in a variable of type bigint, if the
