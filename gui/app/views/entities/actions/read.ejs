@@ -96,14 +96,14 @@
                         <% if (data[j]['end_datetime'] == null ) { %>
                           <a
                             class="a-inside <%=edit_class%>"
-                            href="../crud/<%=table_name%>/edit/<%=data[j].id%>"
+                            href="../<%=table_name%>/edit/<%=data[j].id%>"
                             onclick="<%=edit_onclick%>"
                           >
                             Edit
                           </a>
                           <a
                             class="a-inside <%=delete_class%>"
-                            href="<%=table_name%>/delete/<%=data[j].id%>"
+                            href="../<%=table_name%>/delete/<%=data[j].id%>"
                             onclick="<%=delete_onclick%>"
                           >
                             Delete

@@ -217,7 +217,67 @@ exports.add = function(req, res){
         return obj;
       })
 
+      // determine which fields are natural keys - they are created, but
+      // cannot be edited. so we can look at which fields have a
+      // create_param_index but not an update_param_index value
+      // (and not a foreign key)
+      for (var i=0,l=cols_to_add.length;i<l;i++){
+        var col = cols_to_add[i];
+        if (
+          cols_to_add[i].create_param_index &&
+          !cols_to_add[i].update_param_index &&
+          !cols_to_add[i].props.dependency
+        ) {
+          cols_to_add[i].natural_key = true;
+        } else {
+          cols_to_add[i].natural_key = false;
+        }
+      }
+
+
+
       console.log(cols_to_add);
+
+      // compile list of reference tables
+      var reference_tables = [];
+      for (var i=0,l=cols_to_add.length;i<l;i++){
+        if (cols_to_add[i].props.dependency){
+          var reference_table = cols_to_add[i].props.dependent_table;
+          if (reference_tables.indexOf(reference_table) === -1) {
+            reference_tables.push(reference_table);
+          }
+        }
+      }
+
+      console.log(reference_tables);
+
+      console.log("-------------");
+      var test_query = `
+        with
+          t1 as (
+            select *, row_number() over (order by id) as rn
+            from ta.alteryx_type
+          ),
+          t2 as (
+            select *, row_number() over (order by id) as rn
+            from ta.source_control_server
+          )
+        select t1.*, t2.*
+        from t1 full outer join t2 on t1.rn = t2.rn
+        `
+      ;
+      //var test_query = "select * FROM information_schema.columns WHERE table_schema = 'ta' order by table_name, ordinal_position";
+      console.log(test_query);
+      var test_execution = postgres.db.any(test_query)
+        .then(data => {
+          console.log(data[0]);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      ;
+      console.log("-------------");
+
 
       res.render(
         'entities/actions/create',
@@ -236,6 +296,10 @@ exports.add = function(req, res){
   ;
 };
 
+// return object containing
+exports.renderDropdownRecord = function(table_name){
+
+}
 
 
 

@@ -1,7 +1,7 @@
 'use strict';
 
 
-var default_db = "customer_crud_test" ;
+var default_db = "tadb" ;
 
 
 function postgres(dbname){

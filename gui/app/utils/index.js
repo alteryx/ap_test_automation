@@ -20,7 +20,7 @@ function camelize(str) {
   ;
 }
 
-
+// infer properties about a column in our db tables based on its field name
 function columnNameProperties(name){
   // set default properties
   var props = {
@@ -41,7 +41,9 @@ function columnNameProperties(name){
   return props;
 };
 
-
+// Get the key names for an object and put them in an array
+// eg, getObjKeys({prop1:"value",prop2:"value",prop3:"value"})
+//     ==> ["prop1","prop2","prop3"]
 function getObjKeys(obj,first_keys=[]){
   var keys = [];
   for (var i=0,l=first_keys.length; i<l; i++){
@@ -62,7 +64,7 @@ function getObjKeys(obj,first_keys=[]){
 }
 
 
-// sort by one parameter
+// sort by one parameter (helper for dynamicSort function)
 function dynamicSortSingle(property) {
     var sortOrder = 1;
     if(property[0] === "-") {

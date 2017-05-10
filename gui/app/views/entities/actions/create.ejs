@@ -17,10 +17,21 @@
                   if (fields[i].data_type === "date") {
                     input_classes += " datepicker";
                   }
+
+                  var required_marker = "";
+                  if (fields[i].is_nullable === "NO") {
+                    required_marker = "*";
+                  }
+
               %>
 
                   <tr>
-                    <td class="label"><%=fields[i].column_name%>:</td>
+                    <td class="label">
+                      <% if (fields[i].natural_key) { %>
+                        <span class="ui-icon ui-icon-circle-triangle-e"></span>
+                      <% } %>
+                      <%=fields[i].column_name%><%=required_marker%>:
+                    </td>
                     <td>
                       <input
                         class="<%=input_classes%>"
