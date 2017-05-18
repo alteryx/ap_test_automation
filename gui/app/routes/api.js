@@ -114,6 +114,7 @@ exports.fkdropdown = function(req, res){
             value: rows[row_i].id
           };
           var nkvalues = [];
+          var name_values = [];
           // loop through columns (find relevant cols and concat values)
           for (var col_i=0,col_l=cols.length;col_i<col_l;col_i++){
             var col = cols[col_i];
@@ -125,10 +126,17 @@ exports.fkdropdown = function(req, res){
               (col.data_type === 'text')
             ) {
               var nkvalue = rows[row_i][col_name];
-              if (nkvalue) nkvalues.push(nkvalue);
+              if (col_name === "name") {
+                name_values.push(nkvalue);
+              } else if (nkvalue) {
+                nkvalues.push(col_name + "=" + nkvalue + "");
+              }
             }
           }
-          select_option.label = nkvalues.join(" || ");
+          var nkvalues_str = nkvalues.join(", ");
+          if (nkvalues_str) name_values.push(nkvalues_str);
+          var name_values_str = name_values.join(": ");
+          select_option.label = name_values_str;
           select_options.push(select_option);
         }
 

@@ -29,7 +29,7 @@
                     %>
 
                       <th class="<%=header_classes%>">
-                        <%=fields[i].column_name%>
+                        <%=fields[i].props.label%>
                         <% if (fields[i].props.dependency){ %>
                           <a
                             href="/crud/<%=fields[i].props.dependent_table%>"

@@ -14,10 +14,10 @@ $( function() {
 $( function() {
   $(".foreignkey-dropdown")
     .focus(function() {
-      var new_dropdown_options = "<option value='1'>one</option><option value='2'>two</option>";
-
       // get data table name from html data-table-name attribute on select
-      var table_name = $(this).data("table-name");
+      var $this = $(this);
+      var table_name = $this.data("table-name");
+
 
       $.ajax({
         url: "/api/" + table_name + "/fkdropdown",
@@ -25,9 +25,8 @@ $( function() {
           attr: ""
         },
         success: function( result ) {
-          $(".foreignkey-dropdown").html(result);
-          console.log("refresh?!?!");
-          $(".foreignkey-dropdown")
+          $this.html(result);
+          $this
             .selectmenu({
               close: function( event, ui ) {
                 $(".reference-data-panel").text("");

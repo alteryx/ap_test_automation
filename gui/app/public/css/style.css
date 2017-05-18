@@ -142,11 +142,14 @@ body {
 }
 */
 
+input[type="text"], .foreignkey-dropdown, .ui-selectmenu-button {
+  min-width:300px;
+  width:100%;
+}
+
 input[type="text"], .foreignkey-dropdown {
     border:1px solid #ddd;
     height:26px;
-    min-width:200px;
-    width:100%;
 }
 .cancel{
     background-color:#D23641;
