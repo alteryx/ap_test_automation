@@ -16,10 +16,11 @@ $( function() {
     .focus(function() {
       var new_dropdown_options = "<option value='1'>one</option><option value='2'>two</option>";
 
-      // get data table name from html data-table
+      // get data table name from html data-table-name attribute on select
+      var table_name = $(this).data("table-name");
 
       $.ajax({
-        url: "/api/whatever/dropdown",
+        url: "/api/" + table_name + "/fkdropdown",
         data: {
           attr: ""
         },
@@ -34,12 +35,9 @@ $( function() {
             })
             .selectmenu("open")
             ;
-          $(".reference-data-panel").text("ajax success!");
+          $(".reference-data-panel").text("success!");
         }
       });
-    })
-    .close(function() {
-      $(".reference-data-panel").text("");
     })
   ;
 });

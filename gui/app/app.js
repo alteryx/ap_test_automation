@@ -80,7 +80,8 @@ app.get('/crud/:table/add', crud.add);
 app.post('/crud/:table/add', crud.save);
 app.get('/crud/:table/delete/:id', crud.delete);
 
-app.get('/api/:table/dropdown', api.dropdowntest);
+app.get('/api/dropdowntest', api.dropdowntest);
+app.get('/api/:table/fkdropdown', api.fkdropdown);
 
 
 /*app.get('/customers/delete/:id', customers.delete_customer);
