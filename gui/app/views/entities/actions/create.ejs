@@ -3,7 +3,7 @@
     <div class="page-data">
       <div class="data-entry-panel">
         <form method="post" action="/crud/<%=table_name%>/add">
-            <table cellpadding="11">
+            <table cellpadding="5">
 
               <%
                 for(var i=0, l=fields.length;i < l;i++) {
@@ -24,13 +24,6 @@
                       <% if (fields[i].natural_key) { %>
                         <span class="ui-icon ui-icon-star" title="natural key"></span>
                       <% } %>
-                      <% if (fields[i].props.dependency){ %>
-                        <a
-                          href="/crud/<%=fields[i].props.dependent_table%>"
-                          title="reference table: <%=fields[i].props.dependent_table%>"
-                          target="_blank"
-                        ><span class="ui-icon ui-icon-extlink"></span></a>
-                      <% } %>
                       <%=fields[i].props.label%>:
                     </td>
                     <td>
@@ -49,6 +42,15 @@
                           name="<%=fields[i].column_name%>"
                           <%=required%>
                         >
+                      <% } %>
+                    </td>
+                    <td style="align:left;">
+                      <% if (fields[i].props.dependency){ %>
+                        <a
+                          href="/crud/<%=fields[i].props.dependent_table%>"
+                          title="reference table: <%=fields[i].props.dependent_table%>"
+                          target="_blank"
+                        ><span class="ui-icon ui-icon-extlink"></span></a>
                       <% } %>
                     </td>
                   </tr>

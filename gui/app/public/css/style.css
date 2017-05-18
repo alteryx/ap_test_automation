@@ -126,6 +126,9 @@ body {
 
 
 
+.ui-icon-extlink {
+  background-image: url("../images/ui-icons_2b5eb3_256x240.png");
+}
 
 /*
 .data-entry-panel {
