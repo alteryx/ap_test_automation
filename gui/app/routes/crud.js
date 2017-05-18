@@ -302,7 +302,7 @@ exports.delete = function(req,res){
 
   // execute deletion query (after generating query string)
   var query = postgres.db.any(
-    db_query.deleteDadb_queryString(
+    db_query.deleteDataQueryString(
       schema = postgres.config.schema,
       table = table_name,
       id = id,
