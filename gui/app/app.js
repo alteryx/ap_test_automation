@@ -12,6 +12,7 @@ var path = require('path');
 var customers = require('./routes/customers');
 var testPriorityLevel = require('./routes/testPriorityLevel');
 var crud = require('./routes/crud');
+var api = require('./routes/api');
 var app = express();
 
 //var connection  = require('express-myconnection');
@@ -79,12 +80,8 @@ app.get('/crud/:table/add', crud.add);
 app.post('/crud/:table/add', crud.save);
 app.get('/crud/:table/delete/:id', crud.delete);
 
-app.get('/db/:db', crud.defaultpath);
-app.get('/db/:db/tables', crud.navtables);
-app.get('/db/:db/crud/:table', crud.list);
-app.get('/db/:db/crud/:table/add', crud.add);
-app.post('/db/:db/crud/:table/add', crud.save);
-app.get('/db/:db/crud/:table/delete/:id', crud.delete);
+app.get('/api/:table/dropdown', api.dropdowntest);
+
 
 /*app.get('/customers/delete/:id', customers.delete_customer);
 app.get('/customers/edit/:id', customers.edit);

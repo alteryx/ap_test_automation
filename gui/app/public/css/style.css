@@ -53,6 +53,12 @@ body {
           box-sizing: border-box;
           display: -ms-flex; display: -webkit-flex; display: flex;
         }
+          .page-data .label.required {
+            font-weight:bold;
+          }
+          .page-data .label:not(.required){
+            font-style:italic;
+          }
           .page-data>* {
             float:left;
             height:100%;
@@ -136,10 +142,11 @@ body {
 }
 */
 
-input[type="text"]{
+input[type="text"], .foreignkey-dropdown {
     border:1px solid #ddd;
     height:26px;
-    width:300px;
+    min-width:200px;
+    width:100%;
 }
 .cancel{
     background-color:#D23641;
@@ -158,9 +165,6 @@ input[type="submit"]{
 textarea{
   border:1px solid #ddd;
   width:296px;
-}
-.label{
-  font-weight:bold;
 }
 
 input.create-input {

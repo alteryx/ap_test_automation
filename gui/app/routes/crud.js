@@ -5,35 +5,13 @@
 
 var _ = require("lodash");
 var db = require('../db');
-var taquery = require('../db/query');
+var db_query = require('../db/query');
 var utils = require('../utils');
+var utils_db = require('../utils/db');
 
 // print sql queries to console
 var log_query_strings = true;
 
-// DEVNOTE:
-// I created these two functions (dbname, connect) so that we could allow
-// a dynamic database pointer. For example, the URL would be able to take the
-// database name as a parameter (eg, /db/:db/tables == /tables, where the latter
-// would use a default database specified somewhere in code). While this would
-// be useful for development purposes (eg, another team could work with one
-// database, while I develop on another). But the problem was that this required
-// creating a new database connection with each page load, which would not scale
-// well. So I kept the logical infrastructure, but removed the dynamic aspect
-// from it.
-// (start) database connection setup
-  function dbname(req,default_db){
-    if (req.params.db) var dbname = req.params.db;
-    else var dbname = default_db;
-    return dbname;
-  }
-
-  function connect(req){
-  //  var database = dbname(req,db.default_db);
-  //  return db.postgres(database);
-    return db.postgres;
-  }
-// (end) database connection setup
 
 // if no path entered (after base url), redirect to tables page-data
 exports.defaultpath = function(req, res){
@@ -42,11 +20,11 @@ exports.defaultpath = function(req, res){
 
 // query list of tables in schema and render page with links
 exports.navtables = function(req, res){
-  var postgres = connect(req);
+  var postgres = utils_db.connect(req);
 
   // execute 'get tables' query (after generating query string)
   var query = postgres.db.any(
-    taquery.getTablesQueryString(
+    db_query.getTablesQueryString(
       schema = postgres.config.schema,
       debug = log_query_strings
     )
@@ -72,20 +50,20 @@ exports.navtables = function(req, res){
 
 // this renders the READ page for a specific table in our cRud webapp.
 exports.list = function(req, res){
-  var postgres = connect(req);
+  var postgres = utils_db.connect(req);
 
   // grab the table name from the request
   var table_name = req.params.table;
 
   // replace variable placeholders with actual values
-  var query_string = taquery.getDataQueryString(
+  var query_string = db_query.getDataQueryString(
       schema = postgres.config.schema,
       table = table_name,
       debug = log_query_strings
   );
 
   // create query string to get an array of field info for the specified table
-  var get_columns_query_string = taquery.getColumnsQueryString(
+  var get_columns_query_string = db_query.getColumnsQueryString(
     schema = postgres.config.schema,
     table = table_name,
     debug = log_query_strings
@@ -184,14 +162,14 @@ exports.edit = function(req, res){
 
 // this renders the CREATE page for a specific table in our Crud webapp.
 exports.add = function(req, res){
-  var postgres = connect(req);
+  var postgres = utils_db.connect(req);
 
   var table_name = req.params.table;
 
   // create query string to get an array of field info for the specified table
   // and then execute the query to save the data to the database
   var query = postgres.db.any(
-    taquery.getColumnsQueryString(
+    db_query.getColumnsQueryString(
       schema = postgres.config.schema,
       table = table_name,
       debug = log_query_strings
@@ -219,7 +197,7 @@ exports.add = function(req, res){
 
       // determine which fields are natural keys - they are created, but
       // cannot be edited. so we can look at which fields have a
-      // create_param_index but not an update_param_index value
+      // create_param_index value but not an update_param_index value
       // (and not a foreign key)
       for (var i=0,l=cols_to_add.length;i<l;i++){
         var col = cols_to_add[i];
@@ -307,7 +285,7 @@ exports.renderDropdownRecord = function(table_name){
 // in our CrUd webapp. it then redirects the user back to the READ page for
 // that table.
 exports.save = function(req,res){
-  var postgres = connect(req);
+  var postgres = utils_db.connect(req);
 
   // grab the table name from the request
   var table_name = req.params.table;
@@ -320,7 +298,7 @@ exports.save = function(req,res){
   var data = utils.convertObjectToSQLFunctionInputString(input);
 
   // now that we have all the pieces, generate the query string to save the data
-  var query_string = taquery.saveDataQueryString(
+  var query_string = db_query.saveDataQueryString(
     schema = postgres.config.schema,
     table = table_name,
     data = data,
@@ -344,7 +322,7 @@ exports.save = function(req,res){
 
 // this DELETES a row of data from the READ page in our cruD webapp.
 exports.delete = function(req,res){
-  var postgres = connect(req);
+  var postgres = utils_db.connect(req);
 
   // grab the table name from the request and convert it to camel case
   var table_name = req.params.table;
@@ -353,7 +331,7 @@ exports.delete = function(req,res){
 
   // execute deletion query (after generating query string)
   var query = postgres.db.any(
-    taquery.deleteDataQueryString(
+    db_query.deleteDadb_queryString(
       schema = postgres.config.schema,
       table = table_name,
       id = id,

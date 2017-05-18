@@ -17,28 +17,38 @@
                   if (fields[i].data_type === "date") {
                     input_classes += " datepicker";
                   }
-
-                  var required_marker = "";
-                  if (fields[i].is_nullable === "NO") {
-                    required_marker = "*";
-                  }
-
               %>
 
                   <tr>
-                    <td class="label">
+                    <td class="label <%=required%>">
                       <% if (fields[i].natural_key) { %>
-                        <span class="ui-icon ui-icon-circle-triangle-e"></span>
+                        <span class="ui-icon ui-icon-star" title="natural key"></span>
                       <% } %>
-                      <%=fields[i].column_name%><%=required_marker%>:
+                      <% if (fields[i].props.dependency){ %>
+                        <a
+                          href="/crud/<%=fields[i].props.dependent_table%>"
+                          title="reference table: <%=fields[i].props.dependent_table%>"
+                          target="_blank"
+                        ><span class="ui-icon ui-icon-extlink"></span></a>
+                      <% } %>
+                      <%=fields[i].column_name%>:
                     </td>
                     <td>
-                      <input
-                        class="<%=input_classes%>"
-                        type="text"
-                        name="<%=fields[i].column_name%>"
-                        <%=required%>
-                      >
+                      <% if (fields[i].props.dependency){ %>
+                        <select
+                          name="<%=fields[i].column_name%>"
+                          class="foreignkey-dropdown"
+                        >
+                          <option></option>
+                        </select>
+                      <% } else { %>
+                        <input
+                          class="<%=input_classes%>"
+                          type="text"
+                          name="<%=fields[i].column_name%>"
+                          <%=required%>
+                        >
+                      <% } %>
                     </td>
                   </tr>
               <% } %>
