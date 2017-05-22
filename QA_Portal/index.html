@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="./tachyons/css/tachyons.css">
+  <link rel="stylesheet" href="./css/styles.css">
+  <title>QA Portal</title>
+</head>
+
+<body>
+  <div id="main"></div>
+  <script src="main.js"></script>
+  <script>
+    var node = document.getElementById('main');
+    var app = Elm.Main.embed(node);
+    // Note: if your Elm module is named "MyThing.Root" you
+    // would call "Elm.MyThing.Root.embed(node)" instead.
+  </script>
+</body>
+
+</html>
