@@ -14,6 +14,29 @@ var testPriorityLevel = require('./routes/testPriorityLevel');
 var crud = require('./routes/crud');
 var api = require('./routes/api');
 var app = express();
+var expressWS = require('express-ws')(app);
+var rally = require('rally');
+var util = require('util');
+var queryUtils = rally.util.query
+var restApi = rally({
+  apiKey: '_lWhBr01mSf2lAIPLdTtjaDoMmIv0QnUgaVOAN2cY',
+  apiVersion: 'v2.0', // this is the default and may be omitted
+  server: 'https://rally1.rallydev.com'
+});
+
+var queryEpicStories = (message) => {
+  console.log('Message: ', message)
+  return restApi.query({
+    type: 'hierarchicalrequirement',
+    start: 1,
+    pageSize: 2,
+    limit: 10,
+    order: 'Rank',
+    // fetch: ['Project', 'FormattedID', 'Owner', 'Changeset', 'Description', 'Defects'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description'],
+    query: queryUtils.where('Project.Name', 'contains', message)
+  })
+};
 
 //var connection  = require('express-myconnection');
 //var mysql = require('mysql');
@@ -83,6 +106,19 @@ app.get('/crud/:table/delete/:id', crud.delete);
 app.get('/api/dropdowntest', api.dropdowntest);
 app.get('/api/:table/fkdropdown', api.fkdropdown);
 
+app.ws('/qaportal', (websocket, request) => {
+  console.log('A client connected!')
+
+  websocket.on('message', (message) => {
+    console.log(`A client sent a message: ${message}`)
+    queryEpicStories(message)
+      .then((response) => {
+        console.log('Success', util.inspect(response, {showHidden: false, depth: null}))
+        websocket.send(JSON.stringify(response))
+      })
+      .catch(onError)
+  })
+});
 
 /*app.get('/customers/delete/:id', customers.delete_customer);
 app.get('/customers/edit/:id', customers.edit);
