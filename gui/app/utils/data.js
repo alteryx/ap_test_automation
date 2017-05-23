@@ -48,7 +48,7 @@ function columnNameProperties(name){
     .replace(/_/g, ' ')
     // capitalize acronyms
     .replace(
-      /(?:\b(yn|dns|id|ip|guid|gb|ram)\b)/g,
+      /(?:\b(dns|id|ip|guid|gb|ram)\b)/g,
       function(acronym, index) {
         return acronym.toUpperCase();
       }
@@ -56,6 +56,7 @@ function columnNameProperties(name){
     // replace specific abbreviations
     .replace(/\bdim\b/g,'dimension')
     .replace(/\bmgt\b/g,'management')
+    .replace(/\byn\b/g,'(y/n)')
     // capitalize first letter of words
     .replace(
       /(?:^\w|[A-Z]|\b\w)/g,

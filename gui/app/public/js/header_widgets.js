@@ -22,16 +22,25 @@ $( function() {
       $.ajax({
         url: "/api/" + table_name + "/fk/dropdown",
         success: function( result ) {
-          $this.html(result);
-          $this
-            .selectmenu({
-              close: function( event, ui ) {
-                $(".reference-data-panel").text("");
-              }
-            })
-            .selectmenu("open")
-            ;
-          $(".reference-data-panel").text("success!");
+          if (result.replace(/\s/g,'').length>0){
+            $this.html(result);
+            $(".reference-data-panel").text("success!");
+          } else {
+            $this.addClass("fk-no-options");
+            $(".reference-data-panel").text("no foreign key values");
+          }
+            $this
+              .selectmenu({
+                close: function( event, ui ) {
+                  $(".reference-data-panel").text("");
+                }
+              })
+              .selectmenu("open")
+              ;
+
+        },
+        error: function(xhr,status){
+          $(".reference-data-panel").text("error");
         }
       });
     })

@@ -151,9 +151,14 @@ input[type="text"], .foreignkey-dropdown, .ui-selectmenu-button {
 }
 
 input[type="text"], .foreignkey-dropdown {
-    border:1px solid #ddd;
-    height:26px;
+  border:1px solid #ddd;
+  height:26px;
 }
+
+.foreignkey-dropdown.fk-no-options {
+  background-color: #ffcccc;
+}
+
 .cancel{
     background-color:#D23641;
     color:#fff;
