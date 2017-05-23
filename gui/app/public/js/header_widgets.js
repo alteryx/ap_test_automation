@@ -39,35 +39,23 @@ $( function() {
 });
 
 
-// foreign key value replacement on read page
 $( function() {
-  var foreignkey_tables = $(".read-header-class.fk")
-    .map(function(){
-      return $(this).data("fk-table-name")
-    })
-    .get()
-  ;
-
-  for (var i=0,l=foreignkey_tables.length;i<l;i++){
-    var fk_table = foreignkey_tables[i];
-
+  $(".read-header-class.fk").each(function(){
+    var fk_table = $(this).data("fk-table-name");
+    // grab lookup values for each fk reference table
     $.ajax({
       url: "/api/" + fk_table + "/fk/json",
       success: function( json ) {
-        $(".fk-"+fk_table).each(function(i){
+        $(".fk-"+fk_table).each(function(){
           var $this = $(this);
-
           // replace value with label
           $this.html(
             json.filter(function(obj){
               return obj.value === $this.data("fk-value").toString();
             })[0].label
           );
-
         })
       }
     });
-
-
-  }
+  });
 });
