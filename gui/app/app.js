@@ -94,8 +94,8 @@ app.get('/crud/:table/add', crud.add);
 app.post('/crud/:table/add', crud.save);
 app.get('/crud/:table/delete/:id', crud.delete);
 
-app.get('/api/dropdowntest', api.dropdowntest);
-app.get('/api/:table/fkdropdown', api.fkdropdown);
+//app.get('/api/dropdowntest', api.dropdowntest);
+app.get('/api/:table/fk/:html', api.foreignkey);
 
 app.ws('/qaportal', (websocket, request) => {
   console.log('A client connected!')

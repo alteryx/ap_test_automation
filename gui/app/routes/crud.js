@@ -8,6 +8,7 @@ var db = require('../db');
 var db_query = require('../db/query');
 var utils = require('../utils');
 var utils_db = require('../utils/db');
+var utils_data = require('../utils/data');
 
 // print sql queries to console
 var log_query_strings = true;
@@ -119,7 +120,7 @@ exports.list = function(req, res){
         // (eg, inferring dependencies, etc)
         cols.map(function(e){
           var obj = e;
-          obj.props = utils.columnNameProperties(obj.column_name);
+          obj.props = utils_data.columnNameProperties(obj.column_name);
           return obj;
         })
 
@@ -191,7 +192,7 @@ exports.add = function(req, res){
       // (eg, inferring dependencies, etc)
       cols_to_add.map(function(e){
         var obj = e;
-        obj.props = utils.columnNameProperties(obj.column_name);
+        obj.props = utils_data.columnNameProperties(obj.column_name);
         return obj;
       })
 
@@ -281,11 +282,11 @@ exports.save = function(req,res){
     query_string
   )
     .then(() => {
-      res.redirect('..');
+      res.redirect('/crud/' + table_name);
     })
     .catch(err => {
       console.log("Error inserting : %s ",err );
-      //res.redirect('/crud/' + table_name);
+      res.redirect('/crud/' + table_name);
     })
   ;
  // console.log(query.sql); get raw query
@@ -310,11 +311,11 @@ exports.delete = function(req,res){
     )
   )
     .then(() => {
-      res.redirect('../..');
+      res.redirect('/crud/' + table_name);
     })
     .catch(err => {
       console.log("Error deleting : %s ", err );
-      res.redirect('../..');
+      res.redirect('/crud/' + table_name);
     })
   ;
 

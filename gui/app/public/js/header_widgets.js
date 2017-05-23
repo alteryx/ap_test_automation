@@ -20,10 +20,7 @@ $( function() {
 
 
       $.ajax({
-        url: "/api/" + table_name + "/fkdropdown",
-        data: {
-          attr: ""
-        },
+        url: "/api/" + table_name + "/fk/dropdown",
         success: function( result ) {
           $this.html(result);
           $this
@@ -39,4 +36,38 @@ $( function() {
       });
     })
   ;
+});
+
+
+// foreign key value replacement on read page
+$( function() {
+  var foreignkey_tables = $(".read-header-class.fk")
+    .map(function(){
+      return $(this).data("fk-table-name")
+    })
+    .get()
+  ;
+
+  for (var i=0,l=foreignkey_tables.length;i<l;i++){
+    var fk_table = foreignkey_tables[i];
+
+    $.ajax({
+      url: "/api/" + fk_table + "/fk/json",
+      success: function( json ) {
+        $(".fk-"+fk_table).each(function(i){
+          var $this = $(this);
+
+          // replace value with label
+          $this.html(
+            json.filter(function(obj){
+              return obj.value === $this.data("fk-value").toString();
+            })[0].label
+          );
+
+        })
+      }
+    });
+
+
+  }
 });

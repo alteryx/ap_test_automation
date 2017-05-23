@@ -26,9 +26,16 @@
                         } else {
                           header_classes += " nondefault-column hidden-data";
                         }
+                        if (fields[i].props.dependency){
+                          header_classes += " fk";
+                        }
                     %>
 
-                      <th class="<%=header_classes%>">
+                      <th
+                        class="<%=header_classes%>"
+                        id="<%=fields[i].column_name%>"
+                        data-fk-table-name="<%=fields[i].props.dependent_table%>"
+                      >
                         <%=fields[i].props.label%>
                         <% if (fields[i].props.dependency){ %>
                           <a
@@ -88,22 +95,30 @@
                           } else {
                             var td_class = "default-column";
                           }
+                          if (fields[i].props.dependency){
+                            td_class += " fk-"+fields[i].props.dependent_table
+                            var fk_value = data[j][fields[i].column_name];
+                          } else {
+                            var fk_value = "";
+                          }
                         %>
-                        <td class="<%=td_class%>"><%=data[j][fields[i].column_name]%></td>
+                        <td class="<%=td_class%>" data-fk-value="<%=fk_value%>">
+                          <%=data[j][fields[i].column_name]%>
+                        </td>
                       <% } %>
                       <td>
 
                         <% if (data[j]['end_datetime'] == null ) { %>
                           <a
                             class="a-inside <%=edit_class%>"
-                            href="../<%=table_name%>/edit/<%=data[j].id%>"
+                            href="/crud/<%=table_name%>/edit/<%=data[j].id%>"
                             onclick="<%=edit_onclick%>"
                           >
                             Edit
                           </a>
                           <a
                             class="a-inside <%=delete_class%>"
-                            href="../<%=table_name%>/delete/<%=data[j].id%>"
+                            href="/crud/<%=table_name%>/delete/<%=data[j].id%>"
                             onclick="<%=delete_onclick%>"
                           >
                             Delete
