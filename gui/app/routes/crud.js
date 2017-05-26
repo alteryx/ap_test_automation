@@ -12,6 +12,8 @@ var utils_data = require('../utils/data');
 
 // print sql queries to console
 var log_query_strings = true;
+var debug_logging = true;
+
 
 
 // if no path entered (after base url), redirect to tables page-data
@@ -79,7 +81,6 @@ exports.list = function(req, res){
     .then(data => {
         var cols = data[0];
         var rows = data[1];
-        //console.log(cols);
 
         // if create/end datetime columns exist, then sort data by them
         if (cols.filter(function(e){
@@ -122,9 +123,13 @@ exports.list = function(req, res){
           var obj = e;
           obj.props = utils_data.columnNameProperties(obj.column_name);
           return obj;
-        })
+        });
 
-        console.log(cols);
+        utils.debugLogging(
+          cols,
+          debug_logging,
+          "table list: cols"
+        );
 
         res.render(
             'entities/actions/read',
@@ -146,26 +151,29 @@ exports.list = function(req, res){
   ;
 };
 
-// this renders the UPDATE page for a specific table in our crUd webapp.
-// [not yet in place]
+
+
+// this renders the CREATE/UPDATE pages for a specific table in our Crud webapp.
 exports.edit = function(req, res){
-    var id = req.params.id;
-    req.getConnection(function(err,connection){
-        var query = connection.query('SELECT * FROM customer WHERE id = ?',[id],function(err,rows)
-        {
-            if(err)
-                console.log("Error Selecting : %s ",err );
-            res.render('edit_customer',{page_title:"Edit Customers - Node.js",data:rows});
-         });
-    });
-};
-
-
-// this renders the CREATE page for a specific table in our Crud webapp.
-exports.add = function(req, res){
   var postgres = utils_db.connect(req);
 
   var table_name = req.params.table;
+
+  // adding a new item or editing an existing one?
+  var delta = {"id_mode":req.params.id};
+  if (delta.id_mode === "new") {
+    delta.edit_mode = "create";
+    delta.id = null;
+  } else {
+    delta.edit_mode = "update";
+    delta.id = id_mode;
+  }
+
+  utils.debugLogging(
+    delta.id_mode,
+    debug_logging,
+    "edit: delta.id_mode"
+  );
 
   // create query string to get an array of field info for the specified table
   // and then execute the query to save the data to the database
@@ -213,9 +221,11 @@ exports.add = function(req, res){
         }
       }
 
-
-
-      console.log(cols_to_add);
+      utils.debugLogging(
+        cols_to_add,
+        debug_logging,
+        "edit page: cols_to_add"
+      );
 
       // compile list of reference tables
       var reference_tables = [];
@@ -228,14 +238,21 @@ exports.add = function(req, res){
         }
       }
 
-      console.log(reference_tables);
+      utils.debugLogging(
+        reference_tables,
+        debug_logging,
+        "edit page: reference_tables"
+      );
+
+
       res.render(
         'entities/actions/create',
         {
           page_name: table_name,
           table_name: table_name,
           fields: cols_to_add,
-          dbconfig: postgres.config
+          dbconfig: postgres.config,
+          delta:delta
         }
       );
     })
@@ -245,12 +262,6 @@ exports.add = function(req, res){
     })
   ;
 };
-
-// return object containing
-exports.renderDropdownRecord = function(table_name){
-
-}
-
 
 
 // this saves data after the user CREATES or UPDATES data on a specific table
@@ -262,6 +273,16 @@ exports.save = function(req,res){
   // grab the table name from the request
   var table_name = req.params.table;
 
+  // adding a new item or editing an existing one?
+  var delta = {"id_mode":req.params.id};
+  if (delta.id_mode === "new") {
+    delta.edit_mode = "create";
+    delta.id = null;
+  } else {
+    delta.edit_mode = "update";
+    delta.id = id_mode;
+  }
+
   // grab the user-specified values from the request
   var input = JSON.parse(JSON.stringify(req.body));
 
@@ -270,9 +291,10 @@ exports.save = function(req,res){
   var data = utils.convertObjectToSQLFunctionInputString(input);
 
   // now that we have all the pieces, generate the query string to save the data
-  var query_string = db_query.saveDataQueryString(
+  var query_string = db_query.editDataQueryString(
     schema = postgres.config.schema,
     table = table_name,
+    edit_mode = delta.edit_mode,
     data = data,
     debug = log_query_strings
   );

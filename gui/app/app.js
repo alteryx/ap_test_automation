@@ -90,9 +90,16 @@ app.get('/testPriorityLevel/delete/:id', testPriorityLevel.delete);
 app.get('/', crud.defaultpath);
 app.get('/tables', crud.navtables);
 app.get('/crud/:table', crud.list);
+app.get('/crud/:table/delete/:id', crud.delete);
+app.get('/crud/:table/edit/:id', crud.edit);
+app.post('/crud/:table/save/:id', crud.save);
+
+/*
 app.get('/crud/:table/add', crud.add);
 app.post('/crud/:table/add', crud.save);
-app.get('/crud/:table/delete/:id', crud.delete);
+app.get('/crud/:table/edit/:id', crud.edit);
+app.post('/crud/:table/edit/:id',crud.save_edit);
+*/
 
 //app.get('/api/dropdowntest', api.dropdowntest);
 app.get('/api/:table/fk/:html', api.foreignkey);

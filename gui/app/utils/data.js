@@ -39,9 +39,7 @@ function columnNameProperties(name){
 
   // generate human readable/friendly label for column
   // first, remove _id suffix from label
-  if (props.label.slice(-3)==="_id") props.label = dep_table;
-  // next, identify abbreviations to be replaced
-  if (props.label)
+  if (props.label.slice(-3)==="_id") props.label = props.label.slice(0,-3);
   // next, some regexes for additonal cleanup
   props.label = props.label
     // convert underscores to spaces

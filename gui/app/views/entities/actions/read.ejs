@@ -36,7 +36,9 @@
                         id="<%=fields[i].column_name%>"
                         data-fk-table-name="<%=fields[i].props.dependent_table%>"
                       >
-                        <%=fields[i].props.label%>
+                        <span title="<%=fields[i].column_name%>">
+                          <%=fields[i].props.label%>
+                        </span>
                         <% if (fields[i].props.dependency){ %>
                           <a
                             href="/crud/<%=fields[i].props.dependent_table%>"

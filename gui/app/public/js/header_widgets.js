@@ -2,9 +2,11 @@ $(function() {
   $(".datepicker").datepicker();
 });
 
-$( function() {
-  $( document ).tooltip();
-} );
+$(function() {
+  $(document).tooltip()
+    .tooltip("option","position", { my: "right+1 center", at: "left top" })
+  ;
+});
 
 
 
@@ -17,7 +19,6 @@ $( function() {
       // get data table name from html data-table-name attribute on select
       var $this = $(this);
       var table_name = $this.data("table-name");
-
 
       $.ajax({
         url: "/api/" + table_name + "/fk/dropdown",
@@ -47,7 +48,7 @@ $( function() {
   ;
 });
 
-
+// read page: replace fk id's with readable values
 $( function() {
   $(".read-header-class.fk").each(function(){
     var fk_table = $(this).data("fk-table-name");

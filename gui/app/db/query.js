@@ -11,8 +11,13 @@ var utils = require('../utils');
   `;
 }*/
 
-function debug_query(str){
-  console.log("QUERY: " + str);
+function debug_query(query,debug,fn){
+  //console.log("QUERY: " + str);
+  utils.debugLogging(
+    query,
+    debug,
+    "QUERY: " + fn
+  );
 }
 
 /*function getTablesQueryString(schema,debug=false){
@@ -59,7 +64,7 @@ function getTablesQueryString(schema,debug=false){
   GROUP BY a.table_name, a.column_count, a.id_field_exists, a.create_datetime_field_exists, a.end_datetime_field_exists
   ORDER BY a.table_name
   `;
-  if (debug) debug_query(str);
+  debug_query(str,debug,"getTablesQueryString");
   return str;
 }
 
@@ -100,31 +105,31 @@ function getTablesQueryString2(schema,debug=false){
   /*) c
   ORDER BY c.table_name
   `;*/
-  if (debug) debug_query(str);
+  debug_query(str,debug,"getTablesQueryString2");
   return str;
 }
 
 
 function getDataQueryString(schema,table,debug=false){
   var str = `SELECT * FROM ${schema}.${table} `;
-  if (debug) debug_query(str);
+  debug_query(str,debug,"getDataQueryString");
   return str;
 }
 
-function saveDataQueryString(schema,table,data='[[data]]'){
+function editDataQueryString(schema,table,edit_mode='create',data,debug=false){
   // example: SELECT ta.createTestPriorityLevel('Low')
   // need to generate comma separated list of data inputs
   var TableNameAsCamelCase = utils.camelize(table);
-  var str = `SELECT ${schema}.create${TableNameAsCamelCase}(${data})`;
-  if (debug) debug_query(str);
+  var str = `SELECT ${schema}.${edit_mode}${TableNameAsCamelCase}(${data})`;
+  debug_query(str,debug,"editDataQueryString");
   return str;
 }
 
 
-function deleteDataQueryString(schema,table,id){
+function deleteDataQueryString(schema,table,id,debug=false){
   var TableNameAsCamelCase = utils.camelize(table);
   var str = `SELECT ${schema}.delete${TableNameAsCamelCase}(${id})`;
-  if (debug) debug_query(str);
+  debug_query(str,debug,"deleteDataQueryString");
   return str;
 }
 
@@ -183,7 +188,7 @@ function getColumnsQueryString(schema,table,debug=false){
       	ON a.param_name = d.param_name
     ORDER BY a.column_index
   `;
-  if (debug) debug_query(str);
+  debug_query(str,debug,"getColumnsQueryString");
   return str;
 }
 
@@ -191,7 +196,7 @@ function getColumnsQueryString(schema,table,debug=false){
 module.exports = {
   getTablesQueryString: getTablesQueryString,
   getDataQueryString: getDataQueryString,
-  saveDataQueryString: saveDataQueryString,
+  editDataQueryString: editDataQueryString,
   deleteDataQueryString: deleteDataQueryString,
   getColumnsQueryString: getColumnsQueryString
 };

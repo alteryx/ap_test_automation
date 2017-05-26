@@ -2,6 +2,19 @@
 
 var _ = require("lodash");
 
+function debugLogging(msg,on,label) {
+  if (on) {
+    console.log  ("==============================================");
+    if (label){
+      console.log("=== " + label + " ===");
+      console.log("----------------------------------------------");
+    }
+    console.log(msg);
+    console.log  ("==============================================");
+  }
+}
+
+
 // helper function to convert strings to camel case
 // eg, test_priority_level --> TestPriorityLevel
 function camelize(str) {
@@ -99,6 +112,7 @@ function convertObjectToSQLFunctionInputString(obj){
 /////////////////////////////////////////////////////////////////////////////
 
 module.exports = {
+  debugLogging:debugLogging,
   camelize: camelize,
   dynamicSort: dynamicSort,
   convertObjectToSQLFunctionInputString: convertObjectToSQLFunctionInputString,
