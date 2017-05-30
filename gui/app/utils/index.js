@@ -42,11 +42,9 @@ function getObjKeys(obj,first_keys=[]){
   for (var i=0,l=first_keys.length; i<l; i++){
     var first_key = first_keys[i];
     if (first_key in obj){
-      //console.log("true");
       _.concat(keys,first_key);
     }
   }
-  //console.log(keys);
   for (var key in obj) {
     if (_.includes(keys,key)==false){
       if (!obj.hasOwnProperty(key)) continue;

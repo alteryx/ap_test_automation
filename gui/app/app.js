@@ -15,8 +15,6 @@ var routes = require('./routes');
 var http = require('http');
 var path = require('path');
 
-var customers = require('./routes/customers');
-var testPriorityLevel = require('./routes/testPriorityLevel');
 var crud = require('./routes/crud');
 var api = require('./routes/api');
 var app = express();
@@ -77,32 +75,14 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.get('/customers', customers.list);
-app.get('/customers/add', customers.add);
-app.post('/customers/add', customers.save);
-
-app.get('/testPriorityLevel', testPriorityLevel.list);
-app.get('/testPriorityLevel/add', testPriorityLevel.add);
-app.post('/testPriorityLevel/add', testPriorityLevel.save);
-app.get('/testPriorityLevel/delete/:id', testPriorityLevel.delete);
-
-
 app.get('/', crud.defaultpath);
 app.get('/tables', crud.navtables);
 app.get('/crud/:table', crud.list);
 app.get('/crud/:table/delete/:id', crud.delete);
 app.get('/crud/:table/edit/:id', crud.edit);
 app.post('/crud/:table/save/:id', crud.save);
-
-/*
-app.get('/crud/:table/add', crud.add);
-app.post('/crud/:table/add', crud.save);
-app.get('/crud/:table/edit/:id', crud.edit);
-app.post('/crud/:table/edit/:id',crud.save_edit);
-*/
-
-//app.get('/api/dropdowntest', api.dropdowntest);
 app.get('/api/:table/fk/:html', api.foreignkey);
+
 
 app.ws('/qaportal', (websocket, request) => {
   console.log('A client connected!')

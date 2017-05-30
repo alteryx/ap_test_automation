@@ -152,6 +152,18 @@ exports.list = function(req, res){
 };
 
 
+function deltaModeObj(id_mode){
+  // adding a new item or editing an existing one?
+  var delta = {"id_mode":id_mode};
+  if (delta.id_mode === "new") {
+    delta.edit_mode = "create";
+    delta.id = null;
+  } else {
+    delta.edit_mode = "update";
+    delta.id = delta.id_mode;
+  }
+  return delta;
+}
 
 // this renders the CREATE/UPDATE pages for a specific table in our Crud webapp.
 exports.edit = function(req, res){
@@ -160,14 +172,7 @@ exports.edit = function(req, res){
   var table_name = req.params.table;
 
   // adding a new item or editing an existing one?
-  var delta = {"id_mode":req.params.id};
-  if (delta.id_mode === "new") {
-    delta.edit_mode = "create";
-    delta.id = null;
-  } else {
-    delta.edit_mode = "update";
-    delta.id = id_mode;
-  }
+  var delta = deltaModeObj(req.params.id);
 
   utils.debugLogging(
     delta.id_mode,
@@ -274,14 +279,7 @@ exports.save = function(req,res){
   var table_name = req.params.table;
 
   // adding a new item or editing an existing one?
-  var delta = {"id_mode":req.params.id};
-  if (delta.id_mode === "new") {
-    delta.edit_mode = "create";
-    delta.id = null;
-  } else {
-    delta.edit_mode = "update";
-    delta.id = id_mode;
-  }
+  var delta = deltaModeObj(req.params.id);
 
   // grab the user-specified values from the request
   var input = JSON.parse(JSON.stringify(req.body));

@@ -68,10 +68,10 @@ exports.foreignkey = function(req, res){
           return obj;
         });
 
-        console.log("[COLUMNS]:");
+        /*console.log("[COLUMNS]:");
         console.log(cols);
         console.log("[ROWS (DATA)]:");
-        console.log(rows)
+        console.log(rows)*/
 
         // start putting together select menu options
         var select_options = [];
