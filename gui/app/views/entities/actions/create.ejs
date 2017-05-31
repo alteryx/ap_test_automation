@@ -5,6 +5,10 @@
         <form method="post" action="/crud/<%=table_name%>/save/<%=delta.id_mode%>">
             <table cellpadding="5">
 
+              <% if (delta.edit_mode==="update") { %>
+                <input type="hidden" name="id" value="<%=delta.id%>">
+              <% } %>
+
               <%
                 for(var i=0, l=fields.length;i < l;i++) {
                   if (fields[i].is_nullable==='NO') {

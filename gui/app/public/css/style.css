@@ -124,7 +124,9 @@ body {
 .nondefault-column{background-color:#fafafa;}
 .hidden-data{visibility:collapse;display:none;}
 
-
+td.data {
+  text-align: center;
+}
 
 .ui-icon-extlink {
   background-image: url("../images/ui-icons_2b5eb3_256x240.png");

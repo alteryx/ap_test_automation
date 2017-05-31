@@ -62,6 +62,8 @@ function columnNameProperties(name){
         return letter.toUpperCase();
       }
     )
+    // replace case specific abbreviations
+    .replace(/\bghz\b/gi,'GHz')
   ;
 
   return props;

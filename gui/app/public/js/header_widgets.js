@@ -55,7 +55,6 @@ $( function() {
     var $this = $(this);
     var table_name = $this.data("fk-table-name");
     var id_value = $this.data("fk-id-value");
-    console.log("at least we tried: "+table_name + " "+id_value);
 
     $.ajax({
       url: "/api/" + table_name + "/fk/dropdown",

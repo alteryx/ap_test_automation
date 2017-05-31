@@ -111,8 +111,18 @@ function getTablesQueryString2(schema,debug=false){
 
 
 function getDataQueryString(schema,table,id,debug=false){
-  var str = `SELECT * FROM ${schema}.${table} `;
-  if (typeof id === "string") str += `WHERE id=${id}`;
+  var TableNameAsCamelCase = utils.camelize(table);
+  if (typeof id === "string") {
+    //var str = `SELECT ${schema}.get${TableNameAsCamelCase}(${id})`;
+    var str = `
+      SELECT * FROM ${schema}.${table}
+      WHERE
+        id='${id}'
+        and end_datetime is null
+    `;
+  } else {
+    var str = `SELECT * FROM ${schema}.${table} `;
+  }
   debug_query(str,debug,"getDataQueryString");
   return str;
 }

@@ -92,10 +92,11 @@
                     <tr class="<%=row_class%>">
                       <% for(var i=0, l=fields.length;i < l;i++) { %>
                         <%
+                          var td_class = "data";
                           if (fields[i].props.display===false) {
-                            var td_class = "nondefault-column hidden-data";
+                            td_class += " nondefault-column hidden-data";
                           } else {
-                            var td_class = "default-column";
+                            td_class += " default-column";
                           }
                           if (fields[i].props.dependency){
                             td_class += " fk-"+fields[i].props.dependent_table
