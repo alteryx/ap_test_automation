@@ -52,7 +52,7 @@ exports.navtables = function(req, res){
 
 
 // this renders the READ page for a specific table in our cRud webapp.
-exports.list = function(req, res){
+exports.read = function(req, res){
   var postgres = utils_db.connect(req);
 
   // grab the table name from the request
@@ -180,16 +180,54 @@ exports.edit = function(req, res){
     "edit: delta.id_mode"
   );
 
-  // create query string to get an array of field info for the specified table
-  // and then execute the query to save the data to the database
-  var query = postgres.db.any(
-    db_query.getColumnsQueryString(
+
+  var get_columns_query_string = db_query.getColumnsQueryString(
+    schema = postgres.config.schema,
+    table = table_name,
+    debug = log_query_strings
+  );
+
+  var edit_page_queries = [];
+  edit_page_queries.push(get_columns_query_string);
+
+  // load existing data when editing a row
+  if (delta.id){
+    var get_data_query_string = db_query.getDataQueryString(
       schema = postgres.config.schema,
       table = table_name,
+      id = delta.id,
       debug = log_query_strings
-    )
-  )
-    .then(cols => {
+    );
+    edit_page_queries.push(get_data_query_string);
+  }
+
+
+  // execute queries to read columns (and data, if editing) from database
+  postgres.db.tx(t => {
+      return t.batch(
+        edit_page_queries.map(function(query){
+          return t.any(query)
+        })
+      );
+  })
+    .then(data => {
+      var cols = data[0];
+
+      if (data.length > 1){
+        var rows = data[1];
+        var values = rows[0];
+      } else {
+        var values = {id:null};
+      }
+
+
+      utils.debugLogging(
+        values,
+        debug_logging,
+        "edit: values"
+      );
+
+
       // filter out columns that do not have create_param_index
       // (this is the input parameter of the api function to add a new record)
       var cols_to_add = cols.filter(function(e){
@@ -257,7 +295,8 @@ exports.edit = function(req, res){
           table_name: table_name,
           fields: cols_to_add,
           dbconfig: postgres.config,
-          delta:delta
+          delta:delta,
+          values:values
         }
       );
     })

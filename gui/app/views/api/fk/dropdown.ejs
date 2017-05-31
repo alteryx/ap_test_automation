@@ -2,7 +2,15 @@
 
 
   <% for (var i=0,l=select_options.length;i<l;i++){ %>
-    <option value="<%=select_options[i].value%>">
-      <%=select_options[i].label%>
-    </option>
+  <%   var option = select_options[i] %>
+
+      <option
+        value="<%=option.value%>"
+        <% if (option.selected) { %>
+          selected
+        <% } %>
+      >
+        <%=select_options[i].label%>
+      </option>
+
   <% } %>

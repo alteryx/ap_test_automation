@@ -7,6 +7,7 @@ var utils_db = require('../utils/db');
 var utils_data = require('../utils/data');
 
 var log_query_strings = true;
+var debug_logging = true;
 
 
 
@@ -16,6 +17,16 @@ exports.foreignkey = function(req, res){
 
   // grab the table name from the request
   var table_name = req.params.table;
+
+  // grab the id to be selected in dropdown list, if provided
+  var selected_id = req.query.id;
+  if (!selected_id) selected_id = "n/a";
+
+  utils.debugLogging(
+    selected_id,
+    debug_logging,
+    "foreign key: selected_id"
+  );
 
   // grab the html element to be rendered
   var html = req.params.html;
@@ -81,9 +92,17 @@ exports.foreignkey = function(req, res){
           //if (!row.end_datetime){
             var nkvalues = [];
             var name_values = [];
+            var id = row.id;
             var select_option = {
-              value: row.id
+              value: id
             };
+
+            if (id === selected_id){
+              select_option.selected = true;
+            } else {
+              select_option.selected = false;
+            }
+
             // loop through columns (find relevant cols and concat values)
             for (var col_i=0,col_l=cols.length;col_i<col_l;col_i++){
               var col = cols[col_i];
@@ -110,7 +129,11 @@ exports.foreignkey = function(req, res){
           //}
         }
 
-        console.log(select_options);
+        utils.debugLogging(
+          select_options,
+          debug_logging,
+          "foreign key: select_options"
+        );
 
         if (html==="json"){
           res.send(select_options);

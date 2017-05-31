@@ -3,14 +3,17 @@
 var _ = require("lodash");
 
 function debugLogging(msg,on,label) {
+  var separater_bar = "======================================================================";
+  var separater_bar_n = separater_bar.length;
   if (on) {
-    console.log  ("==============================================");
+    console.log  (separater_bar);
     if (label){
-      console.log("=== " + label + " ===");
-      console.log("----------------------------------------------");
+      var label_bar = "=== " + label + " " + separater_bar;
+      console.log(label_bar.substring(0,separater_bar.length));
+      console.log(Array(separater_bar_n + 1).join("-"));
     }
     console.log(msg);
-    console.log  ("==============================================");
+    console.log(separater_bar);
   }
 }
 

@@ -10,15 +10,15 @@ $(function() {
 
 
 
-// foreign key dropdown
+// foreign key dropdown (on 'create new' page)
 // [note: the loading of dropdown options only happens once since the selectmenu
 // function changes the DOM, eliminating the "foreignkey-dropdown" class]
 $( function() {
-  $(".foreignkey-dropdown")
+  $(".foreignkey-dropdown.create-mode")
     .focus(function() {
       // get data table name from html data-table-name attribute on select
       var $this = $(this);
-      var table_name = $this.data("table-name");
+      var table_name = $this.data("fk-table-name");
 
       $.ajax({
         url: "/api/" + table_name + "/fk/dropdown",
@@ -47,6 +47,44 @@ $( function() {
     })
   ;
 });
+
+// foreign key dropdown (on 'update' page)
+$( function() {
+  $(".foreignkey-dropdown.update-mode").each(function(){
+
+    var $this = $(this);
+    var table_name = $this.data("fk-table-name");
+    var id_value = $this.data("fk-id-value");
+    console.log("at least we tried: "+table_name + " "+id_value);
+
+    $.ajax({
+      url: "/api/" + table_name + "/fk/dropdown",
+      data: {id:id_value},
+      success: function( result ) {
+        if (result.replace(/\s/g,'').length>0){
+          $this.html(result);
+          $(".reference-data-panel").text("success!");
+        } else {
+          $this.addClass("fk-no-options");
+          $(".reference-data-panel").text("no foreign key values");
+        }
+          $this
+            .selectmenu({
+              close: function( event, ui ) {
+                $(".reference-data-panel").text("");
+              }
+            })
+            .selectmenu("open")
+            ;
+
+      },
+      error: function(xhr,status){
+        $(".reference-data-panel").text("error");
+      }
+    });
+  })
+});
+
 
 // read page: replace fk id's with readable values
 $( function() {

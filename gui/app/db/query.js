@@ -110,8 +110,9 @@ function getTablesQueryString2(schema,debug=false){
 }
 
 
-function getDataQueryString(schema,table,debug=false){
+function getDataQueryString(schema,table,id,debug=false){
   var str = `SELECT * FROM ${schema}.${table} `;
+  if (typeof id === "string") str += `WHERE id=${id}`;
   debug_query(str,debug,"getDataQueryString");
   return str;
 }

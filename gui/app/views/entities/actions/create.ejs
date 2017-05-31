@@ -14,9 +14,28 @@
                   }
 
                   var input_classes = "create-input";
+                  var fk_dropdown_classes = "foreignkey-dropdown";
+                  var addl_classes = "";
+
                   if (fields[i].data_type === "date") {
                     input_classes += " datepicker";
                   }
+
+                  var value = "";
+                  var disabled = "";
+                  if (delta.edit_mode === "update"){
+                    var value = values[fields[i].column_name];
+                    addl_classes += " update-mode";
+                    if (fields[i].update_param_index === null){
+                      var disabled = "disabled";
+                      addl_classes += " disabled";
+                    }
+                  } else if (delta.edit_mode === "create"){
+                    addl_classes += " create-mode";
+                  }
+
+                  input_classes += addl_classes;
+                  fk_dropdown_classes += addl_classes;
               %>
 
                   <tr>
@@ -30,8 +49,10 @@
                       <% if (fields[i].props.dependency){ %>
                         <select
                           name="<%=fields[i].column_name%>"
-                          class="foreignkey-dropdown"
-                          data-table-name="<%=fields[i].props.dependent_table%>"
+                          class="<%=fk_dropdown_classes%>"
+                          data-fk-table-name="<%=fields[i].props.dependent_table%>"
+                          data-fk-id-value="<%=value%>"
+                          <%=disabled%>
                         >
                           <option></option>
                         </select>
@@ -40,7 +61,9 @@
                           class="<%=input_classes%>"
                           type="text"
                           name="<%=fields[i].column_name%>"
+                          value="<%=value%>"
                           <%=required%>
+                          <%=disabled%>
                         >
                       <% } %>
                     </td>
