@@ -5,7 +5,14 @@
     "license": "BSD3",
     "source-directories": [
         ".",
-        "./src"
+        "./src",
+        "./src/init",
+        "./src/model",
+        "./src/msgs",
+        "./src/view",
+        "./src/update",
+        "./src/subscriptions",
+        "./src/models"
     ],
     "exposed-modules": [],
     "dependencies": {

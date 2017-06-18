@@ -3,10 +3,14 @@ module Tests exposing (..)
 import ElmTest.Extra exposing (..)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (text, tag, classes)
+import UserStory exposing (..)
 import Expect
-import Portal exposing (..)
 import Fuzz exposing (list, int, tuple, string)
-import String
+import Portal exposing (add)
+import Update exposing (..)
+import Msg exposing (..)
+import Init exposing (..)
+import Navigation exposing (navigation)
 
 
 all : Test
@@ -14,20 +18,20 @@ all =
     describe "Portal"
         [ test "should have correct number of list items" <|
             \() ->
-                Portal.navigation model
+                navigation model
                     |> Query.fromHtml
                     |> Query.findAll [ tag "li" ]
                     |> Query.count (Expect.equal 6)
         , test "first list item should have correct text" <|
             \() ->
-                Portal.navigation model
+                navigation model
                     |> Query.fromHtml
                     |> Query.findAll [ tag "li" ]
                     |> Query.first
                     |> Query.has [ text "Dashboard" ]
         , test "should have a class of alteryx-hover-link" <|
             \() ->
-                Portal.navigation model
+                navigation model
                     |> Query.fromHtml
                     |> Query.findAll [ tag "li" ]
                     |> Query.first
@@ -67,6 +71,9 @@ all =
         , test "should have correct number of teams" <|
             \() ->
                 Expect.equal (List.length model.listOfTeams) 16
+        , test "should add numbers together" <|
+            \() ->
+                Expect.equal (add 1 1) 2
         ]
 
 

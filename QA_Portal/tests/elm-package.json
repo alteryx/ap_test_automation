@@ -9,7 +9,14 @@
         "..",
         "../node_modules/lobo/runner",
         "../node_modules/lobo/plugin/elm-test-extra",
-        "../css"
+        "../css",
+        "../src/init",
+        "../src/model",
+        "../src/msgs",
+        "../src/view",
+        "../src/update",
+        "../src/subscriptions",
+        "../src/models"
     ],
     "exposed-modules": [],
     "dependencies": {
