@@ -4,19 +4,20 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Msg exposing (..)
 import Model exposing (..)
+import UserStory
 
 
-mergedToITBTable : String -> Html Msg
-mergedToITBTable string =
+mergedToITBTable : Model -> UserStory.Result -> Html Msg
+mergedToITBTable model result =
     tr
         [ class "system-sans-serif f7" ]
-        [ td [ class "m0 pl3 pa2 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
+        [ td [ class "m0 pl3 pa2 truncate" ] [ text model.selectedTeam ]
+        , td [ class "m0 pl3 truncate" ] [ text result.formattedID ]
+        , td [ class "m0 pl3 truncate" ] [ text result.owner.refObjectName ]
+        , td [ class "m0 pl3 truncate" ] [ text "string" ]
+        , td [ class "m0 pl3 truncate" ] [ text "string" ]
+        , td [ class "m0 pl3 truncate" ] [ text "string" ]
+        , td [ class "m0 pl3 truncate" ] [ text "string" ]
         , td [ style [ ( "padding-left", "4em" ) ] ] [ input [ type_ "checkbox" ] [] ]
         ]
 

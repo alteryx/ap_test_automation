@@ -82,7 +82,7 @@ mergeInfo model =
                     , div [ classList [ ( "dn", model.selected /= "Merged to ITB" ) ] ]
                         [ mergedToITBTableHeader model
                         , tbody []
-                            (List.map mergedToITBTable model.listOfLinks)
+                            (List.map (mergedToITBTable model) model.userStory.results)
                         ]
                     , div [ classList [ ( "dn", model.selected /= "Defect Status" ) ] ]
                         [ defectStatusTableHeader model
