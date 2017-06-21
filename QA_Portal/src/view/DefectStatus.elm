@@ -4,19 +4,28 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Msg exposing (..)
 import Model exposing (..)
+import UserStory exposing (..)
 
 
-defectStatusTable : String -> Html Msg
-defectStatusTable string =
+defectStatusTable : Model -> UserStory.Result -> Html Msg
+defectStatusTable model result =
     tr
         [ class "system-sans-serif f7" ]
-        [ td [ class "m0 pl3 pa2 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
+        [ td
+            [ class "m0 pl3 pa2 truncate"
+            , style [ ( "min-width", "8em" ) ]
+            ]
+            [ text model.selectedTeam ]
+        , td [ class "m0 pl3 truncate" ] [ text result.formattedID ]
+        , td [ class "m0 pl3 truncate" ] [ text result.owner.refObjectName ]
+        , td [ class "m0 pl3 truncate" ] [ text "string" ]
+        , td [ class "m0 pl3 truncate" ] [ text "string" ]
+        , td
+            [ class "m0 pl3 truncate"
+            , style [ ( "min-width", "16em" ) ]
+            ]
+            [ text result.description ]
+        , td [ class "m0 pl3 truncate" ] [ text "string" ]
         ]
 
 

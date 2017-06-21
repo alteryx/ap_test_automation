@@ -4,18 +4,19 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Model exposing (..)
 import Msg exposing (..)
+import UserStory exposing (..)
 
 
-featureStatusTable : String -> Html Msg
-featureStatusTable string =
+featureStatusTable : Model -> UserStory.Result -> Html Msg
+featureStatusTable model result =
     tr
         [ class "system-sans-serif f7" ]
-        [ td [ class "m0 pl3 pa2 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
-        , td [ class "m0 pl3 truncate" ] [ text string ]
+        [ td [ class "m0 pl3 pa2 truncate" ] [ text model.selectedTeam ]
+        , td [ class "m0 pl3 truncate" ] [ text "string" ]
+        , td [ class "m0 pl3 truncate" ] [ text result.owner.refObjectName ]
+        , td [ class "m0 pl3 truncate" ] [ text "string" ]
+        , td [ class "m0 pl3 truncate" ] [ text result.description ]
+        , td [ class "m0 pl3 truncate" ] [ text "string" ]
         ]
 
 

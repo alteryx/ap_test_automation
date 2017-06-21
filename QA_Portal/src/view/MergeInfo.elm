@@ -87,12 +87,12 @@ mergeInfo model =
                     , div [ classList [ ( "dn", model.selected /= "Defect Status" ) ] ]
                         [ defectStatusTableHeader model
                         , tbody []
-                            (List.map defectStatusTable model.listOfLinks)
+                            (List.map (defectStatusTable model) model.userStory.results)
                         ]
                     , div [ classList [ ( "dn", model.selected /= "Feature Status" ) ] ]
                         [ featureStatusTableHeader model
                         , tbody []
-                            (List.map featureStatusTable model.listOfLinks)
+                            (List.map (featureStatusTable model) model.userStory.results)
                         ]
                     ]
                 ]

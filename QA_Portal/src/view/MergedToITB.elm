@@ -8,12 +8,12 @@ import UserStory
 
 
 mergedToITBTable : Model -> UserStory.Result -> Html Msg
-mergedToITBTable model result =
+mergedToITBTable { selectedTeam } { formattedID, owner } =
     tr
         [ class "system-sans-serif f7" ]
-        [ td [ class "m0 pl3 pa2 truncate" ] [ text model.selectedTeam ]
-        , td [ class "m0 pl3 truncate" ] [ text result.formattedID ]
-        , td [ class "m0 pl3 truncate" ] [ text result.owner.refObjectName ]
+        [ td [ class "m0 pl3 pa2 truncate" ] [ text selectedTeam ]
+        , td [ class "m0 pl3 truncate" ] [ text formattedID ]
+        , td [ class "m0 pl3 truncate" ] [ text owner.refObjectName ]
         , td [ class "m0 pl3 truncate" ] [ text "string" ]
         , td [ class "m0 pl3 truncate" ] [ text "string" ]
         , td [ class "m0 pl3 truncate" ] [ text "string" ]
