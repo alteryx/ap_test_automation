@@ -30,7 +30,7 @@ readyToMergeTable model result =
             [ class "m0 pl3 truncate mw3"
             , style [ ( "min-width", "4em" ) ]
             ]
-            [ text result.changesets.ref ]
+            [ a [href result.changesets.ref] [text "click here"] ]
         , td
             [ class "m0 pl3 truncate mw5"
             , style [ ( "min-width", "16em" ) ]

@@ -1,4 +1,4 @@
-module Portal exposing (..)
+module Portal exposing (onChange)
 
 import Html exposing (..)
 import Html.Events exposing (..)

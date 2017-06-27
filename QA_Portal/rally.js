@@ -12,7 +12,13 @@ const restApi = rally({
   server: 'https://rally1.rallydev.com'
 })
 
-const queryEpicStories = (message) => {
+const queryStringBuilder = message => {
+  let query = queryUtils.where('Project.Name', 'contains', message)
+  query = query.and('c_KanbanStateAlteryxSuperSet', '=', 'Ready for Merge to ITB')
+  return query.toQueryString()
+}
+
+const queryReadyToMerge = (message) => {
   console.log('Message: ', message)
   return restApi.query({
     type: 'hierarchicalrequirement',
@@ -20,9 +26,9 @@ const queryEpicStories = (message) => {
     pageSize: 2,
     limit: 3,
     order: 'Rank',
-    // fetch: ['Project', 'FormattedID', 'Owner', 'Changeset', 'Description', 'Defects'],
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description'],
-    query: queryUtils.where('Project.Name', 'contains', message)
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus'],
+    // query: queryUtils.where('Project.Name', 'contains', message)
+    query: queryStringBuilder(message)
   })
 }
 
@@ -35,7 +41,7 @@ const queryDefectStories = (message) => {
     order: 'Rank',
     fetch: ['Project', 'Defect', 'Owner', 'Changeset', 'Description'],
     // fetch: ['FormattedID', 'Defect', 'Owner', 'Project', 'Name', 'Changeset', 'Description'],
-    query: queryUtils.where('Name', 'contains', message)
+    query: queryUtils.where(['Name', 'contains', message], ['c_KanbanStateAlteryxSuperSet', '=', 'Ready for Merge to ITB'])
   })
 }
 
@@ -51,32 +57,32 @@ const onError = error => {
 app.listen(portNumber, () => {
   console.log(`Listening on port ${portNumber}`)
 })
-app.ws('/qaportal', (websocket, request) => {
+
+app.ws('/qaportal/readytomerge', (websocket, request) => {
   console.log('A client connected!')
 
   websocket.on('message', (message) => {
     console.log(`A client sent a message: ${message}`)
-    queryEpicStories(message)
+    queryReadyToMerge(message)
       .then((response) => {
-        // console.log(response)
         console.log('Success', util.inspect(response, {showHidden: false, depth: null}))
         websocket.send(JSON.stringify(response))
-        // console.log(response.Changesets)
       })
       .catch(onError)
+  })
+})
 
-    // queryDefectStories(message)
-    //   .then((response) => {
-    //     defects = response
-    //     websocket.send(JSON.stringify(response))
-    //   })
-    //   .then(() => {
-    //     output = Object.assign({}, userStory, defects)
-    //   })
-    //   .then(() => console.log('Success', util.inspect(output, {showHidden: false, depth: null})))
-  //  Object.assign({}, userStory, defects)
-    // console.log('Success', util.inspect(output, {showHidden: false, depth: null}))
-  // websocket.send('Hello, world!')
+app.ws('/qaportal/mergedtoitb', (websocket, request) => {
+  console.log('A client connected!')
+
+  websocket.on('message', (message) => {
+    console.log(`A client sent a message: ${message}`)
+    queryReadyToMerge(message)
+      .then((response) => {
+        console.log('Success', util.inspect(response, {showHidden: false, depth: null}))
+        websocket.send(JSON.stringify(response))
+      })
+      .catch(onError)
   })
 })
 

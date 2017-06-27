@@ -5,11 +5,13 @@ import Msg exposing (..)
 import Model exposing (..)
 import UserStory exposing (..)
 import Json.Decode exposing (..)
+import Update exposing (formatString)
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    WebSocket.listen "ws://localhost:1234/qaportal" parseGetUserStory
+    WebSocket.listen (formatString model.selected) parseGetUserStory
+    
 
 
 parseGetUserStory : String -> Msg

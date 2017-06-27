@@ -1,8 +1,15 @@
-module Update exposing (..)
+module Update exposing (update, formatString)
 
 import Model exposing (..)
 import Msg exposing (..)
 import WebSocket
+
+formatString : String -> String
+formatString string = 
+    String.split " " string
+        |> String.join ""
+        |> String.append "ws://localhost:1234/qaportal/"
+        |> String.toLower
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -21,4 +28,4 @@ update msg model =
             (Debug.log msg ( model, Cmd.none ))
 
         SetSelectedTeam string ->
-            ( { model | selectedTeam = string }, WebSocket.send "ws://localhost:1234/qaportal" string )
+            ( { model | selectedTeam = string }, WebSocket.send (formatString model.selected) string )
