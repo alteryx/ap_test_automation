@@ -1,9 +1,9 @@
 module Banner exposing (banner)
 
-import Model exposing (..)
-import Html exposing (..)
-import Msg exposing (..)
-import Html.Attributes exposing (..)
+import Model exposing (Model)
+import Html exposing (Html, div)
+import Msg exposing (Msg)
+import Html.Attributes exposing (class, style)
 
 
 banner : Model -> Html Msg

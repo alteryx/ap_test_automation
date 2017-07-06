@@ -1,9 +1,9 @@
 module Navigation exposing (navigation)
 
-import Model exposing (..)
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Msg exposing (..)
+import Model exposing (Model)
+import Html exposing (Html, a, li, div, ul, text)
+import Html.Attributes exposing (href, class)
+import Msg exposing (Msg)
 
 
 navigationListItems : String -> Html Msg

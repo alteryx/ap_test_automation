@@ -1,8 +1,8 @@
 module Card exposing (card)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Msg exposing (..)
+import Html exposing (div, span, text, option, select, Html)
+import Html.Attributes exposing (class, selected, style)
+import Msg exposing (Msg)
 
 
 card : String -> Html Msg

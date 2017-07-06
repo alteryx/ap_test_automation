@@ -1,12 +1,12 @@
 module Init exposing (..)
 
-import Model exposing (..)
-import UserStory exposing (..)
+import Model exposing (Model)
+import UserStory
 
 
-userStory : UserStory
+userStory : UserStory.UserStory
 userStory =
-    UserStory "0" "0" 0 0 0 []
+    UserStory.UserStory "0" "0" 0 0 0 []
 
 
 model : Model

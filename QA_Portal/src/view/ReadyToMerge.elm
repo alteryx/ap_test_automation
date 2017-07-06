@@ -1,10 +1,10 @@
 module ReadyToMerge exposing (..)
 
-import UserStory exposing (..)
-import Model exposing (..)
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Msg exposing (..)
+import UserStory
+import Model exposing (Model)
+import Html exposing (Html, div, tr, td, text, a, thead, th, input, ul, li)
+import Html.Attributes exposing (style, class, href, type_, classList)
+import Msg exposing (Msg)
 
 
 readyToMergeTable : Model -> UserStory.Result -> Html Msg
@@ -30,7 +30,7 @@ readyToMergeTable model result =
             [ class "m0 pl3 truncate mw3"
             , style [ ( "min-width", "4em" ) ]
             ]
-            [ a [href result.changesets.ref] [text "click here"] ]
+            [ a [ href result.changesets.ref ] [ text "click here" ] ]
         , td
             [ class "m0 pl3 truncate mw5"
             , style [ ( "min-width", "16em" ) ]

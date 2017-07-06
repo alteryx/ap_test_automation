@@ -24,12 +24,14 @@ type alias Result =
     , refObjectName : String
     , changesets : ResultChangesets
     , description : String
-    , formattedID : String
-    , directChildrenCount : Int
+    , formattedID :
+        String
+        -- , directChildrenCount : Int
     , name : String
     , owner : ResultOwner
-    , project : ResultProject
-    , defects : ResultDefects
+    , project :
+        ResultProject
+        -- , defects : ResultDefects
     , rtype : String
     }
 
@@ -79,13 +81,14 @@ type alias ResultProject =
     }
 
 
-type alias ResultDefects =
-    { rallyAPIMajor : String
-    , rallyAPIMinor : String
-    , ref : String
-    , rtype : String
-    , count : Int
-    }
+
+-- type alias ResultDefects =
+--     { rallyAPIMajor : String
+--     , rallyAPIMinor : String
+--     , ref : String
+--     , rtype : String
+--     , count : Int
+--     }
 
 
 decodeUserStory : Json.Decode.Decoder UserStory
@@ -123,12 +126,14 @@ decodeResult =
         |> Json.Decode.Pipeline.required "Changesets" (decodeResultChangesets)
         |> Json.Decode.Pipeline.required "Description" (Json.Decode.string)
         |> Json.Decode.Pipeline.required "FormattedID" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "DirectChildrenCount" (Json.Decode.int)
-        |> Json.Decode.Pipeline.required "Name" (Json.Decode.string)
+        -- |> Json.Decode.Pipeline.required "DirectChildrenCount" (Json.Decode.int)
+        |>
+            Json.Decode.Pipeline.required "Name" (Json.Decode.string)
         |> Json.Decode.Pipeline.required "Owner" (decodeResultOwner)
         |> Json.Decode.Pipeline.required "Project" (decodeResultProject)
-        |> Json.Decode.Pipeline.required "Defects" (decodeResultDefects)
-        |> Json.Decode.Pipeline.required "_type" (Json.Decode.string)
+        -- |> Json.Decode.Pipeline.required "Defects" (decodeResultDefects)
+        |>
+            Json.Decode.Pipeline.required "_type" (Json.Decode.string)
 
 
 decodeResultChangesets : Json.Decode.Decoder ResultChangesets
@@ -180,14 +185,15 @@ decodeResultProject =
         |> Json.Decode.Pipeline.required "_type" (Json.Decode.string)
 
 
-decodeResultDefects : Json.Decode.Decoder ResultDefects
-decodeResultDefects =
-    Json.Decode.map5 ResultDefects
-        (field "_rallyAPIMajor" Json.Decode.string)
-        (field "_rallyAPIMinor" Json.Decode.string)
-        (field "_ref" Json.Decode.string)
-        (field "_type" Json.Decode.string)
-        (field "Count" Json.Decode.int)
+
+-- decodeResultDefects : Json.Decode.Decoder ResultDefects
+-- decodeResultDefects =
+--     Json.Decode.map5 ResultDefects
+--         (field "_rallyAPIMajor" Json.Decode.string)
+--         (field "_rallyAPIMinor" Json.Decode.string)
+--         (field "_ref" Json.Decode.string)
+--         (field "_type" Json.Decode.string)
+--         (field "Count" Json.Decode.int)
 
 
 encodeResult : Result -> Json.Encode.Value
@@ -202,11 +208,11 @@ encodeResult record =
         , ( "Changesets", encodeResultChangesets <| record.changesets )
         , ( "Description", Json.Encode.string <| record.description )
         , ( "FormattedID", Json.Encode.string <| record.formattedID )
-        , ( "DirectChildrenCount", Json.Encode.int <| record.directChildrenCount )
+          -- , ( "DirectChildrenCount", Json.Encode.int <| record.directChildrenCount )
         , ( "Name", Json.Encode.string <| record.name )
         , ( "Owner", encodeResultOwner <| record.owner )
         , ( "Project", encodeResultProject <| record.project )
-        , ( "Defects", encodeResultDefects <| record.defects )
+          -- , ( "Defects", encodeResultDefects <| record.defects )
         , ( "_type", Json.Encode.string <| record.rtype )
         ]
 
@@ -264,12 +270,13 @@ encodeResultProject record =
         ]
 
 
-encodeResultDefects : ResultDefects -> Json.Encode.Value
-encodeResultDefects record =
-    Json.Encode.object
-        [ ( "_rallyAPIMajor", Json.Encode.string <| record.rallyAPIMajor )
-        , ( "_rallyAPIMinor", Json.Encode.string <| record.rallyAPIMinor )
-        , ( "_ref", Json.Encode.string <| record.ref )
-        , ( "_type", Json.Encode.string <| record.rtype )
-        , ( "Count", Json.Encode.int <| record.count )
-        ]
+
+-- encodeResultDefects : ResultDefects -> Json.Encode.Value
+-- encodeResultDefects record =
+--     Json.Encode.object
+--         [ ( "_rallyAPIMajor", Json.Encode.string <| record.rallyAPIMajor )
+--         , ( "_rallyAPIMinor", Json.Encode.string <| record.rallyAPIMinor )
+--         , ( "_ref", Json.Encode.string <| record.ref )
+--         , ( "_type", Json.Encode.string <| record.rtype )
+--         , ( "Count", Json.Encode.int <| record.count )
+--         ]

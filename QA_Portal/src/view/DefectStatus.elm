@@ -1,10 +1,10 @@
 module DefectStatus exposing (..)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Msg exposing (..)
-import Model exposing (..)
-import UserStory exposing (..)
+import Html exposing (tr, td, thead, text, Html, th)
+import Html.Attributes exposing (class, style)
+import Msg exposing (Msg)
+import Model exposing (Model)
+import UserStory
 
 
 defectStatusTable : Model -> UserStory.Result -> Html Msg

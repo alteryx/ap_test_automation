@@ -1,10 +1,10 @@
 module Tabs exposing (tabs)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-import Model exposing (..)
-import Msg exposing (..)
+import Html exposing (Html, span, text, div)
+import Html.Attributes exposing (classList, style, class)
+import Html.Events exposing (onClick)
+import Model exposing (Model)
+import Msg exposing (Msg)
 
 
 tab : Model -> String -> Html Msg
@@ -14,7 +14,7 @@ tab model tabName =
             [ ( "pb3 pa4 pointer ", True )
             , ( "tab-focused", model.selected == tabName )
             ]
-        , onClick (SetActive tabName)
+        , onClick (Msg.SetActive tabName)
         ]
         [ text tabName ]
 

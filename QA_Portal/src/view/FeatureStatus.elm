@@ -1,10 +1,10 @@
 module FeatureStatus exposing (..)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Model exposing (..)
-import Msg exposing (..)
-import UserStory exposing (..)
+import Html exposing (Html, tr, td, thead, text, th, ul, li)
+import Html.Attributes exposing (class, style, classList)
+import Model exposing (Model)
+import Msg exposing (Msg)
+import UserStory
 
 
 featureStatusTable : Model -> UserStory.Result -> Html Msg

@@ -1,9 +1,9 @@
 module SearchInput exposing (searchInput)
 
-import Model exposing (..)
-import Html exposing (..)
-import Msg exposing (..)
-import Html.Attributes exposing (..)
+import Model exposing (Model)
+import Html exposing (Html, input)
+import Msg exposing (Msg)
+import Html.Attributes exposing (placeholder, type_, class, style)
 
 
 searchInput : Model -> Html Msg

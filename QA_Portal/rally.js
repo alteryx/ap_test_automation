@@ -12,42 +12,38 @@ const restApi = rally({
   server: 'https://rally1.rallydev.com'
 })
 
-const queryStringBuilder = message => {
+const queryStringBuilder = (message, kbState) => {
   let query = queryUtils.where('Project.Name', 'contains', message)
-  query = query.and('c_KanbanStateAlteryxSuperSet', '=', 'Ready for Merge to ITB')
+  query = query.and('c_KanbanStateAlteryxSuperSet', '=', kbState)
   return query.toQueryString()
 }
 
-const queryReadyToMerge = (message) => {
+const queryReadyToMerge = (message, apiEndpoint) => {
   console.log('Message: ', message)
   return restApi.query({
-    type: 'hierarchicalrequirement',
+    type: apiEndpoint,
     start: 1,
     pageSize: 2,
-    limit: 3,
+    limit: 8,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked'],
     // query: queryUtils.where('Project.Name', 'contains', message)
-    query: queryStringBuilder(message)
+    query: queryStringBuilder(message, 'Ready for Merge to ITB')
   })
 }
 
-const queryDefectStories = (message) => {
+const queryMergedToITB = (message, apiEndpoint) => {
+  console.log('Message: ', message)
   return restApi.query({
-    type: 'defect',
+    type: apiEndpoint,
     start: 1,
     pageSize: 2,
     limit: 10,
     order: 'Rank',
-    fetch: ['Project', 'Defect', 'Owner', 'Changeset', 'Description'],
-    // fetch: ['FormattedID', 'Defect', 'Owner', 'Project', 'Name', 'Changeset', 'Description'],
-    query: queryUtils.where(['Name', 'contains', message], ['c_KanbanStateAlteryxSuperSet', '=', 'Ready for Merge to ITB'])
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked'],
+    // query: queryUtils.where('Project.Name', 'contains', message)
+    query: queryStringBuilder(message, 'Merged to Integration')
   })
-}
-
-const onSuccess = result => {
-  return util.inspect(result, {showHidden: false, depth: null})
-// console.log('Success', util.inspect(result, {showHidden: false, depth: null}))
 }
 
 const onError = error => {
@@ -63,10 +59,19 @@ app.ws('/qaportal/readytomerge', (websocket, request) => {
 
   websocket.on('message', (message) => {
     console.log(`A client sent a message: ${message}`)
-    queryReadyToMerge(message)
-      .then((response) => {
-        console.log('Success', util.inspect(response, {showHidden: false, depth: null}))
-        websocket.send(JSON.stringify(response))
+    if (message === 'All Teams') {
+      message = 'Blue Group'
+    }
+    queryReadyToMerge(message, 'hierarchicalrequirement')
+      .then((response) => response)
+      .then((res) => {
+        queryReadyToMerge(message, 'defect')
+          .then((response) => {
+            res.Results = res.Results.concat(response.Results)
+            websocket.send(JSON.stringify(res))
+            // console.log('Success', util.inspect(res, {showHidden: false, depth: null}))
+          })
+          .catch(onError)
       })
       .catch(onError)
   })
@@ -77,27 +82,16 @@ app.ws('/qaportal/mergedtoitb', (websocket, request) => {
 
   websocket.on('message', (message) => {
     console.log(`A client sent a message: ${message}`)
-    queryReadyToMerge(message)
-      .then((response) => {
-        console.log('Success', util.inspect(response, {showHidden: false, depth: null}))
-        websocket.send(JSON.stringify(response))
+    queryMergedToITB(message, 'hierarchicalrequirement')
+      .then((response) => response)
+      .then((res) => {
+        queryMergedToITB(message, 'defect')
+         .then((response) => {
+           res.Results = res.Results.concat(response.Results)
+           websocket.send(JSON.stringify(res))
+         })
+         .catch(onError)
       })
       .catch(onError)
   })
 })
-
-// queryEpicStories()
-//   .then(onSuccess)
-//   .catch(onError)
-
-// app.get('/', function (req, res) {
-//   // res.send('Hello World!')
-//   queryEpicStories()
-//     .then((response) => {
-//       res.send(response)
-//     })
-//     .catch(onError)
-// })
-// app.listen(8000, function () {
-//   console.log('Example app listening on port 8000!')
-// })

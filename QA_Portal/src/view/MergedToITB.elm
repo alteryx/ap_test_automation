@@ -1,9 +1,9 @@
 module MergedToITB exposing (..)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Msg exposing (..)
-import Model exposing (..)
+import Html exposing (tr, td, thead, th, text, input, Html)
+import Html.Attributes exposing (class, type_, style)
+import Msg exposing (Msg)
+import Model exposing (Model)
 import UserStory
 
 

@@ -1,6 +1,6 @@
 module Model exposing (..)
 
-import UserStory exposing (..)
+import UserStory exposing (UserStory)
 
 
 type alias Model =

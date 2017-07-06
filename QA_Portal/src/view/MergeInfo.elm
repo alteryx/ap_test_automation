@@ -1,12 +1,12 @@
 module MergeInfo exposing (..)
 
-import Model exposing (..)
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Msg exposing (..)
+import Model exposing (Model)
+import Html exposing (div, span, text, Html, select, option, table, tbody)
+import Html.Attributes exposing (style, class, classList)
+import Msg exposing (Msg)
 import Tabs exposing (tabs)
-import Portal exposing (..)
-import FeatureStatus exposing (..)
+import Portal exposing (onChange)
+import FeatureStatus exposing (featureStatusTableHeader, featureStatusTable)
 import DefectStatus exposing (defectStatusTable, defectStatusTableHeader)
 import ReadyToMerge exposing (..)
 import SearchInput exposing (searchInput)
@@ -40,7 +40,7 @@ mergeInfo model =
                     []
                 , select
                     [ class "dib w5 pa2 relative outline-0 bn br0"
-                    , onChange SetSelectedTeam
+                    , onChange Msg.SetSelectedTeam
                     , style
                         [ ( "background-color", "#efefef" )
                         , ( "background-image", "url(../assets/chevron-small-down.png)" )
