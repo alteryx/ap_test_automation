@@ -58,6 +58,14 @@ select {
   cursor: pointer;
 }
 
+.paging-btns {
+  position: absolute;
+  bottom: -225px;
+  display: block;
+  margin: auto;
+  width: 100%;
+}
+
 
 
 

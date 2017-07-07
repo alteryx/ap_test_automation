@@ -3,6 +3,7 @@ module SearchInput exposing (searchInput)
 import Model exposing (Model)
 import Html exposing (Html, input)
 import Msg exposing (Msg)
+import Html.Events exposing (onInput)
 import Html.Attributes exposing (placeholder, type_, class, style)
 
 
@@ -12,6 +13,7 @@ searchInput model =
         [ placeholder "Search..."
         , type_ "search"
         , class "fr mr4 pb2 f6 pt2 relative"
+        , onInput Msg.Find
         , style
             [ ( "border", "none" )
             , ( "padding-left", "25px" )

@@ -11,7 +11,7 @@ import DefectStatus exposing (defectStatusTable, defectStatusTableHeader)
 import ReadyToMerge exposing (..)
 import SearchInput exposing (searchInput)
 import MergedToITB exposing (..)
-import Pagination exposing (paginatedButtonView)
+import Pagination exposing (paginatedButtonView, itemsPerPageSelector)
 
 
 mergeInfo : Model -> Html Msg
@@ -65,6 +65,7 @@ mergeInfo model =
                         )
                         model.listOfTeams
                     )
+                , itemsPerPageSelector
                 , searchInput model
                 ]
             , div

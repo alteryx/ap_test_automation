@@ -24,7 +24,12 @@ update msg model =
             ( { model | sortCategory = category }, Cmd.none )
 
         Msg.GetUserStory userStory ->
-            ( { model | userStory = userStory }, Cmd.none )
+            ( { model
+                | userStory = userStory
+                , paginated = (Paginate.fromList 5 <| (List.map (\s -> s.formattedID) <| Debug.log "results: " userStory.results))
+              }
+            , Cmd.none
+            )
 
         Msg.FailedToParseUserStory msg ->
             (Debug.log msg ( model, Cmd.none ))
@@ -50,7 +55,7 @@ update msg model =
         Msg.ChangePageSize size ->
             let
                 sizeAsInt =
-                    Result.withDefault 10 <| String.toInt size
+                    Result.withDefault 5 <| String.toInt size
             in
                 ( { model | paginated = Paginate.changeItemsPerPage sizeAsInt model.paginated }, Cmd.none )
 

@@ -30,71 +30,74 @@ filterAndSortThings model =
         Paginate.map (filter >> sort) model.paginated
 
 
+itemsPerPageSelector : Html Msg
+itemsPerPageSelector =
+    div [ class "dib relative ml5", style [ ( "top", "-11px" ), ( "paddingLeft", "18px" ) ] ]
+        [ text "show"
+        , select [ class "dib w3 pa2 relative outline-0 br0 ma1 bn", onInput ChangePageSize ]
+            [ option [ value "5" ] [ text "5" ]
+            , option [ value "10" ] [ text "10" ]
+            , option [ value "20" ] [ text "20" ]
+            , option [ value "30" ] [ text "30" ]
+            ]
+        , text "items per page"
+        ]
+
+
 paginatedButtonView : PaginatedList String -> Html Msg
 paginatedButtonView filteredSortedThings =
     let
-        displayInfoView =
-            div []
-                [ div []
-                    [ text <|
-                        String.join " " <|
-                            [ "showing"
-                            , (toString <| List.length <| Paginate.page filteredSortedThings)
-                            , "of"
-                            , (toString <| Paginate.length filteredSortedThings)
-                            , "items"
-                            ]
-                    , u [ onClick <| AddItem, style [ ( "cursor", "pointer" ) ] ] [ text " (add more!)" ]
-                    ]
-                , text <|
-                    String.join " "
-                        [ "page"
-                        , toString <| Paginate.currentPage filteredSortedThings
-                        , "of"
-                        , toString <| Paginate.totalPages filteredSortedThings
-                        ]
-                , div []
-                    [ text <|
-                        String.join " "
-                            [ "including"
-                            , Paginate.foldMap
-                                (List.filter (String.contains "new item") >> List.length >> toString)
-                                filteredSortedThings
-                            , "new items"
-                            ]
-                    ]
-                ]
-
+        -- displayInfoView =
+        -- div []
+        -- [ div []
+        -- [ text <|
+        --     String.join " " <|
+        --         [ "showing"
+        --         , (toString <| List.length <| Paginate.page filteredSortedThings)
+        --         , "of"
+        --         , (toString <| Paginate.length filteredSortedThings)
+        --         , "items"
+        --         ]
+        -- , u [ onClick <| AddItem, style [ ( "cursor", "pointer" ) ] ] [ text " (add more!)" ]
+        -- ]
+        -- , text <|
+        --     String.join " "
+        --         [ "page"
+        --         , toString <| Paginate.currentPage filteredSortedThings
+        --         , "of"
+        --         , toString <| Paginate.totalPages filteredSortedThings
+        --         ]
+        -- div [] []
+        -- [ text <|
+        --     String.join " "
+        --         [ "including"
+        --         , Paginate.foldMap
+        --             (List.filter (String.contains "new item") >> List.length >> toString)
+        --             filteredSortedThings
+        --         , "new items"
+        --         ]
+        -- ]
+        -- ]
         itemView item =
             li []
                 [ span [] [ text item ]
                 , u [ onClick <| DeleteItem item, style [ ( "cursor", "pointer" ) ] ] [ text " (delete)" ]
                 ]
 
-        itemsPerPageSelector =
-            div []
-                [ text "show"
-                , select [ onInput ChangePageSize ]
-                    [ option [ value "10" ] [ text "10" ]
-                    , option [ value "20" ] [ text "20" ]
-                    , option [ value "30" ] [ text "30" ]
-                    ]
-                , text "items per page"
-                ]
-
         prevButtons =
-            [ button [ onClick First, disabled <| Paginate.isFirst filteredSortedThings ] [ text "<<" ]
-            , button [ onClick Prev, disabled <| Paginate.isFirst filteredSortedThings ] [ text "<" ]
+            [ button [ class "dib w2 pa2 relative outline-0 br0 ma1", onClick First, disabled <| Paginate.isFirst filteredSortedThings ] [ text "<<" ]
+            , button [ class "dib w2 pa2 relative outline-0 br0 ma1", onClick Prev, disabled <| Paginate.isFirst filteredSortedThings ] [ text "<" ]
             ]
 
         nextButtons =
-            [ button [ onClick Next, disabled <| Paginate.isLast filteredSortedThings ] [ text ">" ]
-            , button [ onClick Last, disabled <| Paginate.isLast filteredSortedThings ] [ text ">>" ]
+            [ button [ class "dib w2 pa2 relative outline-0 br0 ma1", onClick Next, disabled <| Paginate.isLast filteredSortedThings ] [ text ">" ]
+            , button [ class "dib w2 pa2 relative outline-0 br0 ma1", onClick Last, disabled <| Paginate.isLast filteredSortedThings ] [ text ">>" ]
             ]
 
         pagerButtonView index isActive =
             button
-                [ style
+                [ class "dib w2 pa2 relative outline-0 br0 ma1"
+                , style
                     [ ( "font-weight"
                       , if isActive then
                             "bold"
@@ -107,12 +110,18 @@ paginatedButtonView filteredSortedThings =
                 [ text <| toString index ]
     in
         div [] <|
-            [ displayInfoView
-            , itemsPerPageSelector
-            , button [ onClick Reverse ] [ text "Reverse list" ]
-            , input [ placeholder "Search...", onInput Find ] []
-            , ul [] (List.map itemView <| Paginate.page filteredSortedThings)
+            [ --displayInfoView
+              -- button [ class "dib w4 pa2 relative outline-0 br0 ma1", onClick Reverse ] [ text "Reverse list" ]
+              ul [] (List.map itemView <| Paginate.page filteredSortedThings)
+            , span [ class "paging-btns tc" ] <|
+                []
+                    ++ prevButtons
+                    ++ [ span [] <| Paginate.pager pagerButtonView filteredSortedThings ]
+                    ++ nextButtons
             ]
-                ++ prevButtons
-                ++ [ span [] <| Paginate.pager pagerButtonView filteredSortedThings ]
-                ++ nextButtons
+
+
+
+-- ++ prevButtons
+-- ++ [ span [] <| Paginate.pager pagerButtonView filteredSortedThings ]
+-- ++ nextButtons

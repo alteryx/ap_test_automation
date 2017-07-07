@@ -3,11 +3,17 @@ module Init exposing (..)
 import Model exposing (Model)
 import UserStory
 import Paginate exposing (PaginatedList)
+import Debug
 
 
 userStory : UserStory.UserStory
 userStory =
     UserStory.UserStory "0" "0" 0 0 0 []
+
+
+getName : UserStory.Result -> String
+getName { name } =
+    name
 
 
 model : Model
@@ -36,7 +42,8 @@ model =
         , "Web Team"
         ]
         ""
-        (Paginate.fromList 10 <| List.map (\s -> s.formattedID) <| userStory.results)
+        -- (Paginate.fromList 5 <| List.map (toString >> (++) "item") <| List.range 1 37)
+        (Paginate.fromList 5 <| (List.map getName <| Debug.log "results: " userStory.results))
         False
         ""
 
