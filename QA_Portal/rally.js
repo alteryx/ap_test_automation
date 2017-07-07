@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const expressWS = require('express-ws')(app)
 const portNumber = 1234
+const R = require('ramda')
 
 const rally = require('rally')
 const queryUtils = rally.util.query
