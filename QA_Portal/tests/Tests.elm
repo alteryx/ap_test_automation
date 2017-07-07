@@ -5,12 +5,16 @@ import Test.Html.Query as Query
 import Test.Html.Selector exposing (text, tag, classes)
 import UserStory exposing (..)
 import Expect
-import Fuzz exposing (list, int, tuple, string)
+
+
+-- import Fuzz exposing (list, int, tuple, string)
+
 import Portal exposing (add)
 import Update exposing (..)
 import Msg exposing (..)
 import Init exposing (..)
 import Navigation exposing (navigation)
+import Paginate exposing (..)
 
 
 all : Test
@@ -67,6 +71,9 @@ all =
                             , "Web Team"
                             ]
                         , selectedTeam = ""
+                        , paginated = (Paginate.fromList 10 <| List.map (toString >> (++) "item") <| [])
+                        , reversed = False
+                        , query = ""
                         }
         , test "should have correct number of teams" <|
             \() ->
