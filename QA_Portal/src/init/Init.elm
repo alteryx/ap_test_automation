@@ -2,6 +2,7 @@ module Init exposing (..)
 
 import Model exposing (Model)
 import UserStory
+import Paginate exposing (PaginatedList)
 
 
 userStory : UserStory.UserStory
@@ -34,6 +35,9 @@ model =
         , "Tool Experience"
         , "Web Team"
         ]
+        ""
+        (Paginate.fromList 10 <| List.map (\s -> s.formattedID) <| userStory.results)
+        False
         ""
 
 

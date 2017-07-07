@@ -9,3 +9,13 @@ type Msg
     | GetUserStory UserStory
     | FailedToParseUserStory String
     | SetSelectedTeam String
+    | Next
+    | Prev
+    | First
+    | Last
+    | GoTo Int
+    | ChangePageSize String
+    | DeleteItem String
+    | AddItem
+    | Reverse
+    | Find String

@@ -1,6 +1,7 @@
 module Model exposing (..)
 
 import UserStory exposing (UserStory)
+import Paginate exposing (PaginatedList)
 
 
 type alias Model =
@@ -12,4 +13,7 @@ type alias Model =
     , userStory : UserStory
     , listOfTeams : List String
     , selectedTeam : String
+    , paginated : PaginatedList String
+    , reversed : Bool
+    , query : String
     }

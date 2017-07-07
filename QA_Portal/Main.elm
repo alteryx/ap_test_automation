@@ -1,8 +1,10 @@
 module Main exposing (..)
 
-import Portal exposing (..)
 import Html
-import TimeTravel.Html as TimeTravel
+
+
+-- import TimeTravel.Html as TimeTravel
+
 import Init
 import Update
 import View

@@ -11,6 +11,7 @@ import DefectStatus exposing (defectStatusTable, defectStatusTableHeader)
 import ReadyToMerge exposing (..)
 import SearchInput exposing (searchInput)
 import MergedToITB exposing (..)
+import Pagination exposing (paginatedButtonView)
 
 
 mergeInfo : Model -> Html Msg
@@ -94,6 +95,7 @@ mergeInfo model =
                         , tbody []
                             (List.map (featureStatusTable model) model.userStory.results)
                         ]
+                    , div [] [ paginatedButtonView model.paginated ]
                     ]
                 ]
             ]

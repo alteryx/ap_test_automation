@@ -41,7 +41,6 @@ const queryMergedToITB = (message, apiEndpoint) => {
     limit: 10,
     order: 'Rank',
     fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked'],
-    // query: queryUtils.where('Project.Name', 'contains', message)
     query: queryStringBuilder(message, 'Merged to Integration')
   })
 }
