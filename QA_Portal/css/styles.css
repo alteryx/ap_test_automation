@@ -20,6 +20,11 @@
   color: black;
 }
 
+.table-container {
+  min-height: 275px;
+  max-height: 275px;
+}
+
 .card-shadow {
   box-shadow: -1px 1px 3px 0px #9DB4C6
 }

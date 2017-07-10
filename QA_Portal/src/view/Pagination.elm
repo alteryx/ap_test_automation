@@ -34,8 +34,20 @@ filterAndSortThings model =
 itemsPerPageSelector : Html Msg
 itemsPerPageSelector =
     div [ class "dib relative ml5", style [ ( "top", "-11px" ), ( "paddingLeft", "18px" ) ] ]
-        [ text "show"
-        , select [ class "dib w3 pa2 relative outline-0 br0 ma1 bn", onInput ChangePageSize ]
+        [ text "Show"
+        , select
+            [ class "dib w3 pa2 relative outline-0 br0 ma1 bn"
+            , onInput ChangePageSize
+            , style
+                [ ( "background-color", "rgb(239, 239, 239)" )
+                , ( "background-color", "#efefef" )
+                , ( "background-image", "url(../assets/chevron-small-down.png)" )
+                , ( "background-repeat", "no-repeat" )
+                , ( "background-position", "76% 52%" )
+                , ( "cursor", "pointer" )
+                , ( "background-size", "10px" )
+                ]
+            ]
             [ option [ value "5" ] [ text "5" ]
             , option [ value "10" ] [ text "10" ]
             , option [ value "20" ] [ text "20" ]
