@@ -66,12 +66,6 @@ update msg model =
             in
             ( { model | paginated = Paginate.map removeItem model.paginated }, Cmd.none )
 
-        -- Msg.AddItem ->
-        --     let
-        --         addItem existing =
-        --             existing ++ List.repeat 1 "new item"
-        --     in
-        --     ( { model | paginated = Paginate.map addItem model.paginated }, Cmd.none )
         Msg.Reverse ->
             ( { model | reversed = not model.reversed }, Cmd.none )
 
