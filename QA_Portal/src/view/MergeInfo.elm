@@ -93,8 +93,8 @@ mergeInfo model =
                         [ featureStatusTableHeader model
                         , paginatedButtonView model model.paginated
                         ]
-                    , pagerButtons model.paginated
                     ]
                 ]
             ]
+        , pagerButtons model.paginated
         ]

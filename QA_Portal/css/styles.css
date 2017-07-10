@@ -65,10 +65,11 @@ select {
 
 .paging-btns {
   position: absolute;
-  bottom: -225px;
+  bottom: 42px; 
   display: block;
   margin: auto;
-  width: 100%;
+  width: 99.99%; 
+  left: 20px;
 }
 
 
