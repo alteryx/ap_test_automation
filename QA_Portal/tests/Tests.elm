@@ -74,6 +74,7 @@ all =
                         , paginated = (Paginate.fromList 5 <| List.map (\s -> s) <| userStory.results)
                         , reversed = False
                         , query = ""
+                        , pageSize = 5
                         }
         , test "should have correct number of teams" <|
             \() ->
