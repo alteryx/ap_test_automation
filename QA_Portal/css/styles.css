@@ -21,8 +21,8 @@
 }
 
 .table-container {
-  min-height: 275px;
-  max-height: 275px;
+  min-height: 16.5em;
+  max-height: 16.5em;
 }
 
 .card-shadow {
