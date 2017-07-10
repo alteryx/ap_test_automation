@@ -18,7 +18,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Msg.SetActive tabName ->
-            ( { model | selected = tabName }, Cmd.none )
+            ( { model | selected = tabName }, WebSocket.send (formatString tabName) model.selectedTeam )
 
         Msg.ChooseSortOrder category ->
             ( { model | sortCategory = category }, Cmd.none )
@@ -26,7 +26,7 @@ update msg model =
         Msg.GetUserStory userStory ->
             ( { model
                 | userStory = userStory
-                , paginated = Paginate.fromList 5 <| (List.map (\s -> s) <| Debug.log "results: " userStory.results)
+                , paginated = Paginate.fromList model.pageSize <| (List.map (\s -> s) <| Debug.log "results: " userStory.results)
               }
             , Cmd.none
             )
@@ -57,7 +57,7 @@ update msg model =
                 sizeAsInt =
                     Result.withDefault 5 <| String.toInt size
             in
-            ( { model | paginated = Paginate.changeItemsPerPage sizeAsInt model.paginated }, Cmd.none )
+            ( { model | paginated = Paginate.changeItemsPerPage sizeAsInt model.paginated, pageSize = sizeAsInt }, Cmd.none )
 
         Msg.DeleteItem item ->
             let

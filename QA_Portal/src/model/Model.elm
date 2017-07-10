@@ -16,4 +16,5 @@ type alias Model =
     , paginated : PaginatedList UserStory.Result
     , reversed : Bool
     , query : String
+    , pageSize : Int
     }

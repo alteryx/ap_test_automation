@@ -45,6 +45,7 @@ model =
         (Paginate.fromList 5 <| (List.map identity <| Debug.log "results: " userStory.results))
         False
         ""
+        5
 
 
 init : ( Model, Cmd msg )
