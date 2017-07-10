@@ -48,104 +48,58 @@ itemsPerPageSelector =
 paginatedButtonView : Model -> PaginatedList UserStory.Result -> Html Msg
 paginatedButtonView model filteredSortedThings =
     let
-        -- displayInfoView =
-        -- div []
-        -- [ div []
-        -- [ text <|
-        --     String.join " " <|
-        --         [ "showing"
-        --         , (toString <| List.length <| Paginate.page filteredSortedThings)
-        --         , "of"
-        --         , (toString <| Paginate.length filteredSortedThings)
-        --         , "items"
-        --         ]
-        -- , u [ onClick <| AddItem, style [ ( "cursor", "pointer" ) ] ] [ text " (add more!)" ]
-        -- ]
-        -- , text <|
-        --     String.join " "
-        --         [ "page"
-        --         , toString <| Paginate.currentPage filteredSortedThings
-        --         , "of"
-        --         , toString <| Paginate.totalPages filteredSortedThings
-        --         ]
-        -- div [] []
-        -- [ text <|
-        --     String.join " "
-        --         [ "including"
-        --         , Paginate.foldMap
-        --             (List.filter (String.contains "new item") >> List.length >> toString)
-        --             filteredSortedThings
-        --         , "new items"
-        --         ]
-        -- ]
-        -- ]
-        -- itemView item =
-        --     li []
-        --         [ span [] [ text item ]
-        --         , u [ onClick <| DeleteItem item, style [ ( "cursor", "pointer" ) ] ] [ text " (delete)" ]
-        --         ]
-        mergeInfo model list =
-            table []
-                [ div [ classList [ ( "dn", model.selected /= "Ready to Merge" ) ] ]
-                    [ readyToMergeTableHeader model
-                    , tbody []
-                        (List.map (readyToMergeTable model) model.userStory.results)
-                    ]
-                , div [ classList [ ( "dn", model.selected /= "Merged to ITB" ) ] ]
-                    [ mergedToITBTableHeader model
-                    , tbody []
-                        (List.map (mergedToITBTable model) model.userStory.results)
-                    ]
-                , div [ classList [ ( "dn", model.selected /= "Defect Status" ) ] ]
-                    [ defectStatusTableHeader model
-                    , tbody []
-                        (List.map (defectStatusTable model) model.userStory.results)
-                    ]
-                , div [ classList [ ( "dn", model.selected /= "Feature Status" ) ] ]
-                    [ featureStatusTableHeader model
-                    , tbody []
-                        (List.map (featureStatusTable model) model.userStory.results)
-                    ]
-                ]
+        itemView model result =
+            case model.selected of
+                "Ready to Merge" ->
+                    readyToMergeTable model result
 
-        prevButtons =
-            [ button [ class "dib w2 pa2 relative outline-0 br0 ma1", onClick First, disabled <| Paginate.isFirst filteredSortedThings ] [ text "<<" ]
-            , button [ class "dib w2 pa2 relative outline-0 br0 ma1", onClick Prev, disabled <| Paginate.isFirst filteredSortedThings ] [ text "<" ]
-            ]
+                "Merged to ITB" ->
+                    mergedToITBTable model result
 
-        nextButtons =
-            [ button [ class "dib w2 pa2 relative outline-0 br0 ma1", onClick Next, disabled <| Paginate.isLast filteredSortedThings ] [ text ">" ]
-            , button [ class "dib w2 pa2 relative outline-0 br0 ma1", onClick Last, disabled <| Paginate.isLast filteredSortedThings ] [ text ">>" ]
-            ]
+                "Defect Status" ->
+                    defectStatusTable model result
 
-        pagerButtonView index isActive =
-            button
-                [ class "dib w2 pa2 relative outline-0 br0 ma1"
-                , style
-                    [ ( "font-weight"
-                      , if isActive then
-                            "bold"
-                        else
-                            "normal"
-                      )
-                    ]
-                , onClick <| GoTo index
-                ]
-                [ text <| toString index ]
+                "Feature Status" ->
+                    featureStatusTable model result
+
+                _ ->
+                    div [] []
     in
-    div [] <|
-        [ --displayInfoView
-          -- button [ class "dib w4 pa2 relative outline-0 br0 ma1", onClick Reverse ] [ text "Reverse list" ]
-          ul [] (List.map (mergeInfo model) <| Paginate.page filteredSortedThings)
-        , span [ class "paging-btns tc" ] <|
-            []
-                ++ prevButtons
-                ++ [ span [] <| Paginate.pager pagerButtonView filteredSortedThings ]
-                ++ nextButtons
+    tbody []
+        (List.map (itemView model) <| Paginate.page filteredSortedThings)
+
+
+pagerButtonView index isActive =
+    button
+        [ class "dib w2 pa2 relative outline-0 br0 ma1"
+        , style
+            [ ( "font-weight"
+              , if isActive then
+                    "bold"
+                else
+                    "normal"
+              )
+            ]
+        , onClick <| GoTo index
         ]
+        [ text <| toString index ]
 
 
+prevButtons filteredSortedThings =
+    [ button [ class "dib w2 pa2 relative outline-0 br0 ma1", onClick First, disabled <| Paginate.isFirst filteredSortedThings ] [ text "<<" ]
+    , button [ class "dib w2 pa2 relative outline-0 br0 ma1", onClick Prev, disabled <| Paginate.isFirst filteredSortedThings ] [ text "<" ]
+    ]
 
--- ++ prevButtons
--- ++ [ span [] <| Paginate.pager pagerButtonView filteredSortedThings ]
--- ++ nextButtons
+
+nextButtons filteredSortedThings =
+    [ button [ class "dib w2 pa2 relative outline-0 br0 ma1", onClick Next, disabled <| Paginate.isLast filteredSortedThings ] [ text ">" ]
+    , button [ class "dib w2 pa2 relative outline-0 br0 ma1", onClick Last, disabled <| Paginate.isLast filteredSortedThings ] [ text ">>" ]
+    ]
+
+
+pagerButtons filteredSortedThings =
+    span [ class "paging-btns tc" ] <|
+        []
+            ++ prevButtons filteredSortedThings
+            ++ [ span [] <| Paginate.pager pagerButtonView filteredSortedThings ]
+            ++ nextButtons filteredSortedThings

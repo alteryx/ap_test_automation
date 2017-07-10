@@ -7,7 +7,7 @@ import Html.Attributes exposing (class, classList, style)
 import MergedToITB exposing (..)
 import Model exposing (Model)
 import Msg exposing (Msg)
-import Pagination exposing (itemsPerPageSelector, paginatedButtonView)
+import Pagination exposing (itemsPerPageSelector, pagerButtons, paginatedButtonView)
 import Portal exposing (onChange)
 import ReadyToMerge exposing (..)
 import SearchInput exposing (searchInput)
@@ -77,27 +77,23 @@ mergeInfo model =
                     ]
                 ]
                 [ table []
-                    [ --     div [ classList [ ( "dn", model.selected /= "Ready to Merge" ) ] ]
-                      --     [ readyToMergeTableHeader model
-                      --     , tbody []
-                      --         (List.map (readyToMergeTable model) model.userStory.results)
-                      --     ]
-                      -- , div [ classList [ ( "dn", model.selected /= "Merged to ITB" ) ] ]
-                      --     [ mergedToITBTableHeader model
-                      --     , tbody []
-                      --         (List.map (mergedToITBTable model) model.userStory.results)
-                      --     ]
-                      -- , div [ classList [ ( "dn", model.selected /= "Defect Status" ) ] ]
-                      --     [ defectStatusTableHeader model
-                      --     , tbody []
-                      --         (List.map (defectStatusTable model) model.userStory.results)
-                      --     ]
-                      -- , div [ classList [ ( "dn", model.selected /= "Feature Status" ) ] ]
-                      --     [ featureStatusTableHeader model
-                      --     , tbody []
-                      --         (List.map (featureStatusTable model) model.userStory.results)
-                      --     ]
-                      div [] [ paginatedButtonView model model.paginated ]
+                    [ div [ classList [ ( "dn", model.selected /= "Ready to Merge" ) ] ]
+                        [ readyToMergeTableHeader model
+                        , paginatedButtonView model model.paginated
+                        ]
+                    , div [ classList [ ( "dn", model.selected /= "Merged to ITB" ) ] ]
+                        [ mergedToITBTableHeader model
+                        , paginatedButtonView model model.paginated
+                        ]
+                    , div [ classList [ ( "dn", model.selected /= "Defect Status" ) ] ]
+                        [ defectStatusTableHeader model
+                        , paginatedButtonView model model.paginated
+                        ]
+                    , div [ classList [ ( "dn", model.selected /= "Feature Status" ) ] ]
+                        [ featureStatusTableHeader model
+                        , paginatedButtonView model model.paginated
+                        ]
+                    , pagerButtons model.paginated
                     ]
                 ]
             ]
