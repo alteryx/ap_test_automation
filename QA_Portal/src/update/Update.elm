@@ -1,9 +1,9 @@
-module Update exposing (update, formatString)
+module Update exposing (formatString, update)
 
 import Model exposing (Model)
 import Msg exposing (Msg)
-import WebSocket
 import Paginate
+import WebSocket
 
 
 formatString : String -> String
@@ -26,13 +26,13 @@ update msg model =
         Msg.GetUserStory userStory ->
             ( { model
                 | userStory = userStory
-                , paginated = (Paginate.fromList 5 <| (List.map (\s -> s.formattedID) <| Debug.log "results: " userStory.results))
+                , paginated = Paginate.fromList 5 <| (List.map (\s -> s) <| Debug.log "results: " userStory.results)
               }
             , Cmd.none
             )
 
         Msg.FailedToParseUserStory msg ->
-            (Debug.log msg ( model, Cmd.none ))
+            Debug.log msg ( model, Cmd.none )
 
         Msg.SetSelectedTeam string ->
             ( { model | selectedTeam = string }, WebSocket.send (formatString model.selected) string )
@@ -57,22 +57,21 @@ update msg model =
                 sizeAsInt =
                     Result.withDefault 5 <| String.toInt size
             in
-                ( { model | paginated = Paginate.changeItemsPerPage sizeAsInt model.paginated }, Cmd.none )
+            ( { model | paginated = Paginate.changeItemsPerPage sizeAsInt model.paginated }, Cmd.none )
 
         Msg.DeleteItem item ->
             let
                 removeItem =
                     List.filter ((/=) item)
             in
-                ( { model | paginated = Paginate.map removeItem model.paginated }, Cmd.none )
+            ( { model | paginated = Paginate.map removeItem model.paginated }, Cmd.none )
 
-        Msg.AddItem ->
-            let
-                addItem existing =
-                    existing ++ (List.repeat 1 "new item")
-            in
-                ( { model | paginated = Paginate.map addItem model.paginated }, Cmd.none )
-
+        -- Msg.AddItem ->
+        --     let
+        --         addItem existing =
+        --             existing ++ List.repeat 1 "new item"
+        --     in
+        --     ( { model | paginated = Paginate.map addItem model.paginated }, Cmd.none )
         Msg.Reverse ->
             ( { model | reversed = not model.reversed }, Cmd.none )
 

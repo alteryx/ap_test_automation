@@ -15,7 +15,7 @@ type Msg
     | Last
     | GoTo Int
     | ChangePageSize String
-    | DeleteItem String
-    | AddItem
+    | DeleteItem UserStory.Result
+      -- | AddItem
     | Reverse
     | Find String

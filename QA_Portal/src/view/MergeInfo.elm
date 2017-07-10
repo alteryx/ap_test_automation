@@ -1,17 +1,17 @@
 module MergeInfo exposing (..)
 
-import Model exposing (Model)
-import Html exposing (div, span, text, Html, select, option, table, tbody)
-import Html.Attributes exposing (style, class, classList)
-import Msg exposing (Msg)
-import Tabs exposing (tabs)
-import Portal exposing (onChange)
-import FeatureStatus exposing (featureStatusTableHeader, featureStatusTable)
 import DefectStatus exposing (defectStatusTable, defectStatusTableHeader)
+import FeatureStatus exposing (featureStatusTable, featureStatusTableHeader)
+import Html exposing (Html, div, option, select, span, table, tbody, text)
+import Html.Attributes exposing (class, classList, style)
+import MergedToITB exposing (..)
+import Model exposing (Model)
+import Msg exposing (Msg)
+import Pagination exposing (itemsPerPageSelector, paginatedButtonView)
+import Portal exposing (onChange)
 import ReadyToMerge exposing (..)
 import SearchInput exposing (searchInput)
-import MergedToITB exposing (..)
-import Pagination exposing (paginatedButtonView, itemsPerPageSelector)
+import Tabs exposing (tabs)
 
 
 mergeInfo : Model -> Html Msg
@@ -48,10 +48,11 @@ mergeInfo model =
                         , ( "background-repeat", "no-repeat" )
                         , ( "background-position", "90% 52%" )
                         , ( "cursor", "pointer" )
-                          -- , ( "-webkit-appearance", "none" )
-                          -- , ( "-moz-appearance", "none" )
-                          -- , ( "text-indent", "8px" )
-                          -- , ( "text-overflow", "" )
+
+                        -- , ( "-webkit-appearance", "none" )
+                        -- , ( "-moz-appearance", "none" )
+                        -- , ( "text-indent", "8px" )
+                        -- , ( "text-overflow", "" )
                         , ( "background-size", "10px" )
                         , ( "top", "-12px" )
                         ]
@@ -76,27 +77,27 @@ mergeInfo model =
                     ]
                 ]
                 [ table []
-                    [ div [ classList [ ( "dn", model.selected /= "Ready to Merge" ) ] ]
-                        [ readyToMergeTableHeader model
-                        , tbody []
-                            (List.map (readyToMergeTable model) model.userStory.results)
-                        ]
-                    , div [ classList [ ( "dn", model.selected /= "Merged to ITB" ) ] ]
-                        [ mergedToITBTableHeader model
-                        , tbody []
-                            (List.map (mergedToITBTable model) model.userStory.results)
-                        ]
-                    , div [ classList [ ( "dn", model.selected /= "Defect Status" ) ] ]
-                        [ defectStatusTableHeader model
-                        , tbody []
-                            (List.map (defectStatusTable model) model.userStory.results)
-                        ]
-                    , div [ classList [ ( "dn", model.selected /= "Feature Status" ) ] ]
-                        [ featureStatusTableHeader model
-                        , tbody []
-                            (List.map (featureStatusTable model) model.userStory.results)
-                        ]
-                    , div [] [ paginatedButtonView model.paginated ]
+                    [ --     div [ classList [ ( "dn", model.selected /= "Ready to Merge" ) ] ]
+                      --     [ readyToMergeTableHeader model
+                      --     , tbody []
+                      --         (List.map (readyToMergeTable model) model.userStory.results)
+                      --     ]
+                      -- , div [ classList [ ( "dn", model.selected /= "Merged to ITB" ) ] ]
+                      --     [ mergedToITBTableHeader model
+                      --     , tbody []
+                      --         (List.map (mergedToITBTable model) model.userStory.results)
+                      --     ]
+                      -- , div [ classList [ ( "dn", model.selected /= "Defect Status" ) ] ]
+                      --     [ defectStatusTableHeader model
+                      --     , tbody []
+                      --         (List.map (defectStatusTable model) model.userStory.results)
+                      --     ]
+                      -- , div [ classList [ ( "dn", model.selected /= "Feature Status" ) ] ]
+                      --     [ featureStatusTableHeader model
+                      --     , tbody []
+                      --         (List.map (featureStatusTable model) model.userStory.results)
+                      --     ]
+                      div [] [ paginatedButtonView model model.paginated ]
                     ]
                 ]
             ]

@@ -1,9 +1,9 @@
 module Init exposing (..)
 
-import Model exposing (Model)
-import UserStory
-import Paginate exposing (PaginatedList)
 import Debug
+import Model exposing (Model)
+import Paginate exposing (PaginatedList)
+import UserStory
 
 
 userStory : UserStory.UserStory
@@ -11,9 +11,8 @@ userStory =
     UserStory.UserStory "0" "0" 0 0 0 []
 
 
-getName : UserStory.Result -> String
-getName { name } =
-    name
+identity a =
+    a
 
 
 model : Model
@@ -43,7 +42,7 @@ model =
         ]
         ""
         -- (Paginate.fromList 5 <| List.map (toString >> (++) "item") <| List.range 1 37)
-        (Paginate.fromList 5 <| (List.map getName <| Debug.log "results: " userStory.results))
+        (Paginate.fromList 5 <| (List.map identity <| Debug.log "results: " userStory.results))
         False
         ""
 
