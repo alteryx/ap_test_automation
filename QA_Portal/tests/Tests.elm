@@ -71,7 +71,7 @@ all =
                             , "Web Team"
                             ]
                         , selectedTeam = ""
-                        , paginated = (Paginate.fromList 5 <| List.map (toString >> (++) "item") <| [])
+                        , paginated = (Paginate.fromList 5 <| List.map (\s -> s) <| userStory.results)
                         , reversed = False
                         , query = ""
                         }
