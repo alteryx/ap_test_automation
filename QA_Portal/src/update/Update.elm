@@ -14,6 +14,11 @@ formatString string =
         |> String.toLower
 
 
+identity : a -> a
+identity thing =
+    thing
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -26,7 +31,7 @@ update msg model =
         Msg.GetUserStory userStory ->
             ( { model
                 | userStory = userStory
-                , paginated = Paginate.fromList model.pageSize <| (List.map (\s -> s) <| Debug.log "results: " userStory.results)
+                , paginated = Paginate.fromList model.pageSize <| (List.map identity <| Debug.log "results: " userStory.results)
               }
             , Cmd.none
             )
@@ -57,14 +62,14 @@ update msg model =
                 sizeAsInt =
                     Result.withDefault 5 <| String.toInt size
             in
-            ( { model | paginated = Paginate.changeItemsPerPage sizeAsInt model.paginated, pageSize = sizeAsInt }, Cmd.none )
+                ( { model | paginated = Paginate.changeItemsPerPage sizeAsInt model.paginated, pageSize = sizeAsInt }, Cmd.none )
 
         Msg.DeleteItem item ->
             let
                 removeItem =
                     List.filter ((/=) item)
             in
-            ( { model | paginated = Paginate.map removeItem model.paginated }, Cmd.none )
+                ( { model | paginated = Paginate.map removeItem model.paginated }, Cmd.none )
 
         Msg.Reverse ->
             ( { model | reversed = not model.reversed }, Cmd.none )

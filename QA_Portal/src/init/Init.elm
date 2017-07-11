@@ -11,10 +11,6 @@ userStory =
     UserStory.UserStory "0" "0" 0 0 0 []
 
 
-identity a =
-    a
-
-
 model : Model
 model =
     Model "Ready to Merge"
@@ -41,7 +37,6 @@ model =
         , "Web Team"
         ]
         ""
-        -- (Paginate.fromList 5 <| List.map (toString >> (++) "item") <| List.range 1 37)
         (Paginate.fromList 5 <| (List.map identity <| Debug.log "results: " userStory.results))
         False
         ""

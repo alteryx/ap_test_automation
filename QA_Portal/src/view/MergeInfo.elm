@@ -48,11 +48,10 @@ mergeInfo model =
                         , ( "background-repeat", "no-repeat" )
                         , ( "background-position", "90% 52%" )
                         , ( "cursor", "pointer" )
-
-                        -- , ( "-webkit-appearance", "none" )
-                        -- , ( "-moz-appearance", "none" )
-                        -- , ( "text-indent", "8px" )
-                        -- , ( "text-overflow", "" )
+                          -- , ( "-webkit-appearance", "none" )
+                          -- , ( "-moz-appearance", "none" )
+                          -- , ( "text-indent", "8px" )
+                          -- , ( "text-overflow", "" )
                         , ( "background-size", "10px" )
                         , ( "top", "-12px" )
                         ]
@@ -74,6 +73,7 @@ mergeInfo model =
                 , style
                     [ ( "width", "94.3%" )
                     , ( "border-top", "1px solid #eee" )
+                    , ( "overflow-x", "auto" )
                     ]
                 ]
                 [ table []
