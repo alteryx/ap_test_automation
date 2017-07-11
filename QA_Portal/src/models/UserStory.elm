@@ -1,8 +1,8 @@
 module UserStory exposing (..)
 
-import Json.Encode
 import Json.Decode exposing (..)
 import Json.Decode.Pipeline
+import Json.Encode
 
 
 type alias UserStory =
@@ -24,14 +24,10 @@ type alias Result =
     , refObjectName : String
     , changesets : ResultChangesets
     , description : String
-    , formattedID :
-        String
-        -- , directChildrenCount : Int
+    , formattedID : String
     , name : String
     , owner : ResultOwner
-    , project :
-        ResultProject
-        -- , defects : ResultDefects
+    , project : ResultProject
     , rtype : String
     }
 
@@ -81,24 +77,14 @@ type alias ResultProject =
     }
 
 
-
--- type alias ResultDefects =
---     { rallyAPIMajor : String
---     , rallyAPIMinor : String
---     , ref : String
---     , rtype : String
---     , count : Int
---     }
-
-
 decodeUserStory : Json.Decode.Decoder UserStory
 decodeUserStory =
     Json.Decode.Pipeline.decode UserStory
-        |> Json.Decode.Pipeline.required "_rallyAPIMajor" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_rallyAPIMinor" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "TotalResultCount" (Json.Decode.int)
-        |> Json.Decode.Pipeline.required "StartIndex" (Json.Decode.int)
-        |> Json.Decode.Pipeline.required "PageSize" (Json.Decode.int)
+        |> Json.Decode.Pipeline.required "_rallyAPIMajor" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
+        |> Json.Decode.Pipeline.required "TotalResultCount" Json.Decode.int
+        |> Json.Decode.Pipeline.required "StartIndex" Json.Decode.int
+        |> Json.Decode.Pipeline.required "PageSize" Json.Decode.int
         |> Json.Decode.Pipeline.required "Results" (Json.Decode.list decodeResult)
 
 
@@ -117,23 +103,19 @@ encodeUserStory record =
 decodeResult : Json.Decode.Decoder Result
 decodeResult =
     Json.Decode.Pipeline.decode Result
-        |> Json.Decode.Pipeline.required "_rallyAPIMajor" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_rallyAPIMinor" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_ref" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_refObjectUUID" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_objectVersion" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_refObjectName" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "Changesets" (decodeResultChangesets)
-        |> Json.Decode.Pipeline.required "Description" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "FormattedID" (Json.Decode.string)
-        -- |> Json.Decode.Pipeline.required "DirectChildrenCount" (Json.Decode.int)
-        |>
-            Json.Decode.Pipeline.required "Name" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "Owner" (decodeResultOwner)
-        |> Json.Decode.Pipeline.required "Project" (decodeResultProject)
-        -- |> Json.Decode.Pipeline.required "Defects" (decodeResultDefects)
-        |>
-            Json.Decode.Pipeline.required "_type" (Json.Decode.string)
+        |> Json.Decode.Pipeline.required "_rallyAPIMajor" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_ref" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_refObjectUUID" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_refObjectName" Json.Decode.string
+        |> Json.Decode.Pipeline.required "Changesets" decodeResultChangesets
+        |> Json.Decode.Pipeline.required "Description" Json.Decode.string
+        |> Json.Decode.Pipeline.required "FormattedID" Json.Decode.string
+        |> Json.Decode.Pipeline.required "Name" Json.Decode.string
+        |> Json.Decode.Pipeline.required "Owner" decodeResultOwner
+        |> Json.Decode.Pipeline.required "Project" decodeResultProject
+        |> Json.Decode.Pipeline.required "_type" Json.Decode.string
 
 
 decodeResultChangesets : Json.Decode.Decoder ResultChangesets
@@ -149,51 +131,40 @@ decodeResultChangesets =
 decodeResultOwner : Json.Decode.Decoder ResultOwner
 decodeResultOwner =
     Json.Decode.Pipeline.decode ResultOwner
-        |> Json.Decode.Pipeline.required "_rallyAPIMajor" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_rallyAPIMinor" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_ref" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_refObjectUUID" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_objectVersion" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_refObjectName" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_type" (Json.Decode.string)
+        |> Json.Decode.Pipeline.required "_rallyAPIMajor" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_ref" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_refObjectUUID" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_refObjectName" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_type" Json.Decode.string
 
 
 decodeResultProjectOwner : Json.Decode.Decoder ResultProjectOwner
 decodeResultProjectOwner =
     Json.Decode.Pipeline.decode ResultProjectOwner
-        |> Json.Decode.Pipeline.required "_rallyAPIMajor" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_rallyAPIMinor" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_ref" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_refObjectUUID" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_objectVersion" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_refObjectName" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_type" (Json.Decode.string)
+        |> Json.Decode.Pipeline.required "_rallyAPIMajor" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_ref" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_refObjectUUID" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_refObjectName" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_type" Json.Decode.string
 
 
 decodeResultProject : Json.Decode.Decoder ResultProject
 decodeResultProject =
     Json.Decode.Pipeline.decode ResultProject
-        |> Json.Decode.Pipeline.required "_rallyAPIMajor" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_rallyAPIMinor" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_ref" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_refObjectUUID" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_objectVersion" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "_refObjectName" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "Description" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "Name" (Json.Decode.string)
-        |> Json.Decode.Pipeline.required "Owner" (decodeResultProjectOwner)
-        |> Json.Decode.Pipeline.required "_type" (Json.Decode.string)
-
-
-
--- decodeResultDefects : Json.Decode.Decoder ResultDefects
--- decodeResultDefects =
---     Json.Decode.map5 ResultDefects
---         (field "_rallyAPIMajor" Json.Decode.string)
---         (field "_rallyAPIMinor" Json.Decode.string)
---         (field "_ref" Json.Decode.string)
---         (field "_type" Json.Decode.string)
---         (field "Count" Json.Decode.int)
+        |> Json.Decode.Pipeline.required "_rallyAPIMajor" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_ref" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_refObjectUUID" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_refObjectName" Json.Decode.string
+        |> Json.Decode.Pipeline.required "Description" Json.Decode.string
+        |> Json.Decode.Pipeline.required "Name" Json.Decode.string
+        |> Json.Decode.Pipeline.required "Owner" decodeResultProjectOwner
+        |> Json.Decode.Pipeline.required "_type" Json.Decode.string
 
 
 encodeResult : Result -> Json.Encode.Value
@@ -208,11 +179,9 @@ encodeResult record =
         , ( "Changesets", encodeResultChangesets <| record.changesets )
         , ( "Description", Json.Encode.string <| record.description )
         , ( "FormattedID", Json.Encode.string <| record.formattedID )
-          -- , ( "DirectChildrenCount", Json.Encode.int <| record.directChildrenCount )
         , ( "Name", Json.Encode.string <| record.name )
         , ( "Owner", encodeResultOwner <| record.owner )
         , ( "Project", encodeResultProject <| record.project )
-          -- , ( "Defects", encodeResultDefects <| record.defects )
         , ( "_type", Json.Encode.string <| record.rtype )
         ]
 
@@ -268,15 +237,3 @@ encodeResultProject record =
         , ( "Owner", encodeResultProjectOwner <| record.owner )
         , ( "_type", Json.Encode.string <| record.rtype )
         ]
-
-
-
--- encodeResultDefects : ResultDefects -> Json.Encode.Value
--- encodeResultDefects record =
---     Json.Encode.object
---         [ ( "_rallyAPIMajor", Json.Encode.string <| record.rallyAPIMajor )
---         , ( "_rallyAPIMinor", Json.Encode.string <| record.rallyAPIMinor )
---         , ( "_ref", Json.Encode.string <| record.ref )
---         , ( "_type", Json.Encode.string <| record.rtype )
---         , ( "Count", Json.Encode.int <| record.count )
---         ]

@@ -26,7 +26,7 @@ update msg model =
         Msg.GetUserStory userStory ->
             ( { model
                 | userStory = userStory
-                , paginated = Paginate.fromList model.pageSize <| (List.map (\s -> s) <| Debug.log "results: " userStory.results)
+                , paginated = Paginate.fromList model.pageSize <| (List.map identity <| Debug.log "results: " userStory.results)
               }
             , Cmd.none
             )

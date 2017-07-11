@@ -11,10 +11,6 @@ userStory =
     UserStory.UserStory "0" "0" 0 0 0 []
 
 
-identity a =
-    a
-
-
 model : Model
 model =
     Model "Ready to Merge"
