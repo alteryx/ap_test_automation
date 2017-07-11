@@ -1,7 +1,7 @@
 module FeatureStatus exposing (..)
 
-import Html exposing (Html, tr, td, thead, text, th, ul, li)
-import Html.Attributes exposing (class, style, classList)
+import Html exposing (Html, li, td, text, th, thead, tr, ul)
+import Html.Attributes exposing (class, classList, style)
 import Model exposing (Model)
 import Msg exposing (Msg)
 import UserStory
@@ -11,12 +11,12 @@ featureStatusTable : Model -> UserStory.Result -> Html Msg
 featureStatusTable model result =
     tr
         [ class "system-sans-serif f7" ]
-        [ td [ class "m0 pl3 pa2 truncate" ] [ text model.selectedTeam ]
-        , td [ class "m0 pl3 truncate" ] [ text "string" ]
-        , td [ class "m0 pl3 truncate" ] [ text result.owner.refObjectName ]
-        , td [ class "m0 pl3 truncate" ] [ text "string" ]
-        , td [ class "m0 pl3 truncate" ] [ text result.description ]
-        , td [ class "m0 pl3 truncate" ] [ text "string" ]
+        [ td [ class "m0 pl3 pa2 truncate mw4" ] [ text model.selectedTeam ]
+        , td [ class "m0 pl3 truncate mw4" ] [ text "string" ]
+        , td [ class "m0 pl3 truncate mw4" ] [ text result.owner.refObjectName ]
+        , td [ class "m0 pl3 truncate mw4" ] [ text "string" ]
+        , td [ class "m0 pl3 truncate mw4" ] [ text result.description ]
+        , td [ class "m0 pl3 truncate mw4" ] [ text "string" ]
         ]
 
 

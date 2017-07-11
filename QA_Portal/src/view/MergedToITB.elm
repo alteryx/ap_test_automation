@@ -1,9 +1,9 @@
 module MergedToITB exposing (..)
 
-import Html exposing (tr, td, thead, th, text, input, Html)
-import Html.Attributes exposing (class, type_, style)
-import Msg exposing (Msg)
+import Html exposing (Html, input, td, text, th, thead, tr)
+import Html.Attributes exposing (class, style, type_)
 import Model exposing (Model)
+import Msg exposing (Msg)
 import UserStory
 
 
@@ -32,13 +32,13 @@ mergedToITBTableHeader model =
             ]
         ]
         [ tr []
-            [ th [ class "tl pa2 pl3 w4 arrow" ] [ text "TEAM" ]
-            , th [ class "tl pa2 pl3 arrow", style [ ( "width", "12em" ) ] ] [ text "STORY/DEFECT" ]
-            , th [ class "tl pa2 pl3 w3 arrow" ] [ text "OWNER" ]
-            , th [ class "tl pa2 pl3 w5" ] [ text "ITB QA" ]
-            , th [ class "tl pa2 pl3 w4" ] [ text "STATUS" ]
-            , th [ class "tl pa2 pl3 w4" ] [ text "DEFECTS FILED" ]
-            , th [ class "tl pa2 pl3 w4" ] [ text "TASK" ]
-            , th [ class "tl pa2 pl3 w4" ] [ text "AUTOMATION" ]
+            [ th [ class "tl pa2 pl3 arrow w-10", style [ ( "min-width", "12em" ) ] ] [ text "TEAM" ]
+            , th [ class "tl pa2 pl3 arrow w-10", style [ ( "min-width", "12em" ) ] ] [ text "STORY/DEFECT" ]
+            , th [ class "tl pa2 pl3 arrow w-10", style [ ( "min-width", "14em" ) ] ] [ text "OWNER" ]
+            , th [ class "tl pa2 pl3 w-15", style [ ( "min-width", "10em" ) ] ] [ text "ITB QA" ]
+            , th [ class "tl pa2 pl3 w-15", style [ ( "min-width", "12em" ) ] ] [ text "STATUS" ]
+            , th [ class "tl pa2 pl3 w-10", style [ ( "min-width", "12em" ) ] ] [ text "DEFECTS FILED" ]
+            , th [ class "tl pa2 pl3 w-10", style [ ( "min-width", "12em" ) ] ] [ text "TASK" ]
+            , th [ class "tl pa2 pl3 w-10", style [ ( "min-width", "12em" ) ] ] [ text "AUTOMATION" ]
             ]
         ]
