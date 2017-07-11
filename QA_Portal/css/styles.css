@@ -25,6 +25,10 @@
   max-height: 16.5em;
 }
 
+table {
+  width: 100%;
+}
+
 .card-shadow {
   box-shadow: -1px 1px 3px 0px #9DB4C6
 }

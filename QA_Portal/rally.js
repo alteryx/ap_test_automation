@@ -25,7 +25,11 @@ const queryReadyToMerge = (message, apiEndpoint) => {
     type: apiEndpoint,
     start: 1,
     pageSize: 2,
+<<<<<<< HEAD
     limit: 1,
+=======
+    limit: 20,
+>>>>>>> 0aae1394da8debcdb03a343fb3f38f0257deb61d
     order: 'Rank',
     fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked'],
     // query: queryUtils.where('Project.Name', 'contains', message)
@@ -39,7 +43,11 @@ const queryMergedToITB = (message, apiEndpoint) => {
     type: apiEndpoint,
     start: 1,
     pageSize: 2,
+<<<<<<< HEAD
     limit: 1,
+=======
+    limit: 20,
+>>>>>>> 0aae1394da8debcdb03a343fb3f38f0257deb61d
     order: 'Rank',
     fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked'],
     query: queryStringBuilder(message, 'Merged to Integration')
