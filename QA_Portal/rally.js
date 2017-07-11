@@ -25,7 +25,7 @@ const queryReadyToMerge = (message, apiEndpoint) => {
     type: apiEndpoint,
     start: 1,
     pageSize: 2,
-    limit: 8,
+    limit: 1,
     order: 'Rank',
     fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked'],
     // query: queryUtils.where('Project.Name', 'contains', message)
@@ -39,7 +39,7 @@ const queryMergedToITB = (message, apiEndpoint) => {
     type: apiEndpoint,
     start: 1,
     pageSize: 2,
-    limit: 10,
+    limit: 1,
     order: 'Rank',
     fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked'],
     query: queryStringBuilder(message, 'Merged to Integration')
@@ -69,7 +69,7 @@ app.ws('/qaportal/readytomerge', (websocket, request) => {
           .then((response) => {
             res.Results = res.Results.concat(response.Results)
             websocket.send(JSON.stringify(res))
-            // console.log('Success', util.inspect(res, {showHidden: false, depth: null}))
+            console.log('Success', util.inspect(res, {showHidden: false, depth: null}))
           })
           .catch(onError)
       })
