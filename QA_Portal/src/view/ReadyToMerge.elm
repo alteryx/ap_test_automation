@@ -1,10 +1,10 @@
 module ReadyToMerge exposing (..)
 
-import UserStory
+import Html exposing (Html, a, div, input, li, td, text, th, thead, tr, ul)
+import Html.Attributes exposing (class, classList, href, style, type_)
 import Model exposing (Model)
-import Html exposing (Html, div, tr, td, text, a, thead, th, input, ul, li)
-import Html.Attributes exposing (style, class, href, type_, classList)
 import Msg exposing (Msg)
+import UserStory
 
 
 readyToMergeTable : Model -> UserStory.Result -> Html Msg
@@ -35,7 +35,7 @@ readyToMergeTable model result =
             [ class "m0 pl3 truncate mw5"
             , style [ ( "min-width", "16em" ) ]
             ]
-            [ text result.description ]
+            [ text result.name ]
         , td
             [ style
                 [ ( "padding-left", "3em" )

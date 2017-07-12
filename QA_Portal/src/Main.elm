@@ -1,12 +1,12 @@
 module Main exposing (..)
 
-import TimeTravel.Html as TimeTravel
 import Init
+import Model exposing (Model)
+import Msg exposing (Msg)
+import Subscriptions
+import TimeTravel.Html as TimeTravel
 import Update
 import View
-import Subscriptions
-import Msg exposing (Msg)
-import Model exposing (Model)
 
 
 --uncomment if needed -- import Html.App as App
@@ -14,8 +14,8 @@ import Model exposing (Model)
 
 main : Program Never Model Msg
 main =
-    -- TimeTravel.program
-    Html.program
+    TimeTravel.program
+        -- Html.program
         -- Platform.program
         { init = Init.init
         , view = View.view

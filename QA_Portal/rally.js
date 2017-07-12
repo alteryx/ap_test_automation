@@ -46,6 +46,29 @@ const queryMergedToITB = (message, apiEndpoint) => {
   })
 }
 
+const queryDefectStatus = (message, apiEndpoint) => {
+  console.log('Message: ', message)
+  return restApi.query({
+    type: apiEndpoint,
+    start: 1,
+    pageSize: 2,
+    limit: 20,
+    order: 'Rank',
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked'],
+    query: queryStringBuilder(message, 'Ready for Merge to ITB')
+  })
+}
+
+const updateMergedToITB = (result) => {
+  return restApi.update({
+    ref: result.object,
+    data: {
+      Name: 'Some update message'
+    },
+    fetch: ['Name']
+  })
+}
+
 const onError = error => {
   console.log('Failure!', error.message, error.errors)
 }
@@ -69,7 +92,7 @@ app.ws('/qaportal/readytomerge', (websocket, request) => {
           .then((response) => {
             res.Results = res.Results.concat(response.Results)
             websocket.send(JSON.stringify(res))
-            // console.log('Success', util.inspect(res, {showHidden: false, depth: null}))
+            console.log('Success', util.inspect(res, {showHidden: false, depth: null}))
           })
           .catch(onError)
       })
@@ -86,11 +109,25 @@ app.ws('/qaportal/mergedtoitb', (websocket, request) => {
       .then((response) => response)
       .then((res) => {
         queryMergedToITB(message, 'defect')
-         .then((response) => {
-           res.Results = res.Results.concat(response.Results)
-           websocket.send(JSON.stringify(res))
-         })
-         .catch(onError)
+          .then((response) => {
+            res.Results = res.Results.concat(response.Results)
+            websocket.send(JSON.stringify(res))
+          })
+          .catch(onError)
+      })
+      .catch(onError)
+  })
+})
+
+app.ws('/qaportal/defectstatus', (websocket, request) => {
+  console.log('A client connected!')
+
+  websocket.on('message', (message) => {
+    console.log(`A client sent a message: ${message}`)
+
+    queryDefectStatus(message, 'defect')
+      .then((response) => {
+        websocket.send(JSON.stringify(response))
       })
       .catch(onError)
   })

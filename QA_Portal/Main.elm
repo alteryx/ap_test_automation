@@ -1,14 +1,11 @@
 module Main exposing (..)
 
 import Html
-
-
--- import TimeTravel.Html as TimeTravel
-
 import Init
+import Subscriptions
+-- import TimeTravel.Html as TimeTravel
 import Update
 import View
-import Subscriptions
 
 
 --uncomment if needed -- import Html.App as App
@@ -17,7 +14,7 @@ import Subscriptions
 
 main =
     -- TimeTravel.program
-    Html.program
+        Html.program
         -- Platform.program
         { init = Init.init
         , view = View.view
