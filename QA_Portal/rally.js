@@ -157,7 +157,7 @@ app.ws('/qaportal/featurestatus', (websocket, request) => {
       .then((res) => {
         queryReadyToMerge(message, 'defect')
           .then((response) => {
-            res.Results = res.Results.concat(response.Results)
+            res.Results = res.Results.concat(response.Results).filter((result) => result.Feature !== null)
             websocket.send(JSON.stringify(res))
           })
           .catch(onError)

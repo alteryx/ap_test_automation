@@ -86,7 +86,7 @@ type alias ResultFeature =
     , rallyAPIMinor : String
     , ref : String
     , refObjectUUID : String
-    , objectVersion : Int
+    , objectVersion : String
     , refObjectName : String
     , creationDate : String
     , createdAt : String
@@ -107,7 +107,7 @@ type alias FeatureWorkspaceOwner =
     , rallyAPIMinor : String
     , ref : String
     , refObjectUUID : String
-    , objectVersion : Int
+    , objectVersion : String
     , refObjectName : String
     , rtype : String
     }
@@ -118,7 +118,7 @@ type alias FeatureWorkspace =
     , rallyAPIMinor : String
     , ref : String
     , refObjectUUID : String
-    , objectVersion : Int
+    , objectVersion : String
     , refObjectName : String
     , creationDate : String
     , createdAt : String
@@ -143,7 +143,7 @@ type alias FeatureOwner =
     , rallyAPIMinor : String
     , ref : String
     , refObjectUUID : String
-    , objectVersion : Int
+    , objectVersion : String
     , refObjectName : String
     , rtype : String
     }
@@ -154,7 +154,7 @@ type alias FeatureProjectOwner =
     , rallyAPIMinor : String
     , ref : String
     , refObjectUUID : String
-    , objectVersion : Int
+    , objectVersion : String
     , refObjectName : String
     , rtype : String
     }
@@ -165,7 +165,7 @@ type alias FeatureProjectWorkspaceOwner =
     , rallyAPIMinor : String
     , ref : String
     , refObjectUUID : String
-    , objectVersion : Int
+    , objectVersion : String
     , refObjectName : String
     , rtype : String
     }
@@ -176,7 +176,7 @@ type alias FeatureProjectWorkspace =
     , rallyAPIMinor : String
     , ref : String
     , refObjectUUID : String
-    , objectVersion : Int
+    , objectVersion : String
     , refObjectName : String
     , creationDate : String
     , createdAt : String
@@ -192,7 +192,7 @@ type alias FeatureProject =
     , rallyAPIMinor : String
     , ref : String
     , refObjectUUID : String
-    , objectVersion : Int
+    , objectVersion : String
     , refObjectName : String
     , creationDate : String
     , createdAt : String
@@ -211,18 +211,18 @@ decodeFeature =
         |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
         |> Json.Decode.Pipeline.required "_ref" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectUUID" Json.Decode.string
-        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.int
+        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectName" Json.Decode.string
-        |> Json.Decode.Pipeline.required "creationDate" Json.Decode.string
+        |> Json.Decode.Pipeline.required "CreationDate" Json.Decode.string
         |> Json.Decode.Pipeline.required "_CreatedAt" Json.Decode.string
-        |> Json.Decode.Pipeline.required "workspace" decodeFeatureWorkspace
-        |> Json.Decode.Pipeline.required "changesets" decodeFeatureChangesets
-        |> Json.Decode.Pipeline.required "description" Json.Decode.string
-        |> Json.Decode.Pipeline.required "formattedID" Json.Decode.string
-        |> Json.Decode.Pipeline.required "directChildrenCount" Json.Decode.int
-        |> Json.Decode.Pipeline.required "name" Json.Decode.string
-        |> Json.Decode.Pipeline.required "owner" decodeFeatureOwner
-        |> Json.Decode.Pipeline.required "project" decodeFeatureProject
+        |> Json.Decode.Pipeline.required "Workspace" decodeFeatureWorkspace
+        |> Json.Decode.Pipeline.required "Changesets" decodeFeatureChangesets
+        |> Json.Decode.Pipeline.required "Description" Json.Decode.string
+        |> Json.Decode.Pipeline.required "FormattedID" Json.Decode.string
+        |> Json.Decode.Pipeline.required "DirectChildrenCount" Json.Decode.int
+        |> Json.Decode.Pipeline.required "Name" Json.Decode.string
+        |> Json.Decode.Pipeline.required "Owner" decodeFeatureOwner
+        |> Json.Decode.Pipeline.required "Project" decodeFeatureProject
         |> Json.Decode.Pipeline.required "_type" Json.Decode.string
 
 
@@ -233,7 +233,7 @@ decodeFeatureWorkspaceOwner =
         |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
         |> Json.Decode.Pipeline.required "_ref" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectUUID" Json.Decode.string
-        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.int
+        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectName" Json.Decode.string
         |> Json.Decode.Pipeline.required "_type" Json.Decode.string
 
@@ -245,13 +245,13 @@ decodeFeatureWorkspace =
         |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
         |> Json.Decode.Pipeline.required "_ref" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectUUID" Json.Decode.string
-        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.int
+        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectName" Json.Decode.string
-        |> Json.Decode.Pipeline.required "creationDate" Json.Decode.string
+        |> Json.Decode.Pipeline.required "CreationDate" Json.Decode.string
         |> Json.Decode.Pipeline.required "_CreatedAt" Json.Decode.string
-        |> Json.Decode.Pipeline.required "description" Json.Decode.string
-        |> Json.Decode.Pipeline.required "name" Json.Decode.string
-        |> Json.Decode.Pipeline.required "owner" decodeFeatureWorkspaceOwner
+        |> Json.Decode.Pipeline.required "Description" Json.Decode.string
+        |> Json.Decode.Pipeline.required "Name" Json.Decode.string
+        |> Json.Decode.Pipeline.required "Owner" decodeFeatureWorkspaceOwner
         |> Json.Decode.Pipeline.required "_type" Json.Decode.string
 
 
@@ -262,7 +262,7 @@ decodeFeatureChangesets =
         |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
         |> Json.Decode.Pipeline.required "_ref" Json.Decode.string
         |> Json.Decode.Pipeline.required "_type" Json.Decode.string
-        |> Json.Decode.Pipeline.required "count" Json.Decode.int
+        |> Json.Decode.Pipeline.required "Count" Json.Decode.int
 
 
 decodeFeatureOwner : Json.Decode.Decoder FeatureOwner
@@ -272,7 +272,7 @@ decodeFeatureOwner =
         |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
         |> Json.Decode.Pipeline.required "_ref" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectUUID" Json.Decode.string
-        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.int
+        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectName" Json.Decode.string
         |> Json.Decode.Pipeline.required "_type" Json.Decode.string
 
@@ -284,7 +284,7 @@ decodeFeatureProjectOwner =
         |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
         |> Json.Decode.Pipeline.required "_ref" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectUUID" Json.Decode.string
-        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.int
+        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectName" Json.Decode.string
         |> Json.Decode.Pipeline.required "_type" Json.Decode.string
 
@@ -296,7 +296,7 @@ decodeFeatureProjectWorkspaceOwner =
         |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
         |> Json.Decode.Pipeline.required "_ref" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectUUID" Json.Decode.string
-        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.int
+        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectName" Json.Decode.string
         |> Json.Decode.Pipeline.required "_type" Json.Decode.string
 
@@ -308,13 +308,13 @@ decodeFeatureProjectWorkspace =
         |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
         |> Json.Decode.Pipeline.required "_ref" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectUUID" Json.Decode.string
-        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.int
+        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectName" Json.Decode.string
-        |> Json.Decode.Pipeline.required "creationDate" Json.Decode.string
+        |> Json.Decode.Pipeline.required "CreationDate" Json.Decode.string
         |> Json.Decode.Pipeline.required "_CreatedAt" Json.Decode.string
-        |> Json.Decode.Pipeline.required "description" Json.Decode.string
-        |> Json.Decode.Pipeline.required "name" Json.Decode.string
-        |> Json.Decode.Pipeline.required "owner" decodeFeatureProjectWorkspaceOwner
+        |> Json.Decode.Pipeline.required "Description" Json.Decode.string
+        |> Json.Decode.Pipeline.required "Name" Json.Decode.string
+        |> Json.Decode.Pipeline.required "Owner" decodeFeatureProjectWorkspaceOwner
         |> Json.Decode.Pipeline.required "_type" Json.Decode.string
 
 
@@ -325,14 +325,14 @@ decodeFeatureProject =
         |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
         |> Json.Decode.Pipeline.required "_ref" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectUUID" Json.Decode.string
-        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.int
+        |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectName" Json.Decode.string
-        |> Json.Decode.Pipeline.required "creationDate" Json.Decode.string
+        |> Json.Decode.Pipeline.required "CreationDate" Json.Decode.string
         |> Json.Decode.Pipeline.required "_CreatedAt" Json.Decode.string
-        |> Json.Decode.Pipeline.required "description" Json.Decode.string
-        |> Json.Decode.Pipeline.required "name" Json.Decode.string
-        |> Json.Decode.Pipeline.required "owner" decodeFeatureProjectOwner
-        |> Json.Decode.Pipeline.required "workspace" decodeFeatureProjectWorkspace
+        |> Json.Decode.Pipeline.required "Description" Json.Decode.string
+        |> Json.Decode.Pipeline.required "Name" Json.Decode.string
+        |> Json.Decode.Pipeline.required "Owner" decodeFeatureProjectOwner
+        |> Json.Decode.Pipeline.required "Workspace" decodeFeatureProjectWorkspace
         |> Json.Decode.Pipeline.required "_type" Json.Decode.string
 
 
@@ -346,18 +346,18 @@ encodeFeature maybeRecord =
                     , ( "_rallyAPIMinor", Json.Encode.string <| record.rallyAPIMinor )
                     , ( "_ref", Json.Encode.string <| record.ref )
                     , ( "_refObjectUUID", Json.Encode.string <| record.refObjectUUID )
-                    , ( "_objectVersion", Json.Encode.int <| record.objectVersion )
+                    , ( "_objectVersion", Json.Encode.string <| record.objectVersion )
                     , ( "_refObjectName", Json.Encode.string <| record.refObjectName )
-                    , ( "creationDate", Json.Encode.string <| record.creationDate )
+                    , ( "CreationDate", Json.Encode.string <| record.creationDate )
                     , ( "_CreatedAt", Json.Encode.string <| record.createdAt )
-                    , ( "workspace", encodeFeatureWorkspace <| record.workspace )
-                    , ( "changesets", encodeFeatureChangesets <| record.changesets )
-                    , ( "description", Json.Encode.string <| record.description )
-                    , ( "formattedID", Json.Encode.string <| record.formattedID )
-                    , ( "directChildrenCount", Json.Encode.int <| record.directChildrenCount )
-                    , ( "name", Json.Encode.string <| record.name )
-                    , ( "owner", encodeFeatureOwner <| record.owner )
-                    , ( "project", encodeFeatureProject <| record.project )
+                    , ( "Workspace", encodeFeatureWorkspace <| record.workspace )
+                    , ( "Changesets", encodeFeatureChangesets <| record.changesets )
+                    , ( "Description", Json.Encode.string <| record.description )
+                    , ( "FormattedID", Json.Encode.string <| record.formattedID )
+                    , ( "DirectChildrenCount", Json.Encode.int <| record.directChildrenCount )
+                    , ( "Name", Json.Encode.string <| record.name )
+                    , ( "Owner", encodeFeatureOwner <| record.owner )
+                    , ( "Project", encodeFeatureProject <| record.project )
                     , ( "_type", Json.Encode.string <| record.rtype )
                     ]
 
@@ -372,7 +372,7 @@ encodeFeatureWorkspaceOwner record =
         , ( "_rallyAPIMinor", Json.Encode.string <| record.rallyAPIMinor )
         , ( "_ref", Json.Encode.string <| record.ref )
         , ( "_refObjectUUID", Json.Encode.string <| record.refObjectUUID )
-        , ( "_objectVersion", Json.Encode.int <| record.objectVersion )
+        , ( "_objectVersion", Json.Encode.string <| record.objectVersion )
         , ( "_refObjectName", Json.Encode.string <| record.refObjectName )
         , ( "_type", Json.Encode.string <| record.rtype )
         ]
@@ -385,13 +385,13 @@ encodeFeatureWorkspace record =
         , ( "_rallyAPIMinor", Json.Encode.string <| record.rallyAPIMinor )
         , ( "_ref", Json.Encode.string <| record.ref )
         , ( "_refObjectUUID", Json.Encode.string <| record.refObjectUUID )
-        , ( "_objectVersion", Json.Encode.int <| record.objectVersion )
+        , ( "_objectVersion", Json.Encode.string <| record.objectVersion )
         , ( "_refObjectName", Json.Encode.string <| record.refObjectName )
-        , ( "creationDate", Json.Encode.string <| record.creationDate )
+        , ( "CreationDate", Json.Encode.string <| record.creationDate )
         , ( "_CreatedAt", Json.Encode.string <| record.createdAt )
-        , ( "description", Json.Encode.string <| record.description )
-        , ( "name", Json.Encode.string <| record.name )
-        , ( "owner", encodeFeatureWorkspaceOwner <| record.owner )
+        , ( "Description", Json.Encode.string <| record.description )
+        , ( "Name", Json.Encode.string <| record.name )
+        , ( "Owner", encodeFeatureWorkspaceOwner <| record.owner )
         , ( "_type", Json.Encode.string <| record.rtype )
         ]
 
@@ -403,7 +403,7 @@ encodeFeatureChangesets record =
         , ( "_rallyAPIMinor", Json.Encode.string <| record.rallyAPIMinor )
         , ( "_ref", Json.Encode.string <| record.ref )
         , ( "_type", Json.Encode.string <| record.rtype )
-        , ( "count", Json.Encode.int <| record.count )
+        , ( "Count", Json.Encode.int <| record.count )
         ]
 
 
@@ -414,7 +414,7 @@ encodeFeatureOwner record =
         , ( "_rallyAPIMinor", Json.Encode.string <| record.rallyAPIMinor )
         , ( "_ref", Json.Encode.string <| record.ref )
         , ( "_refObjectUUID", Json.Encode.string <| record.refObjectUUID )
-        , ( "_objectVersion", Json.Encode.int <| record.objectVersion )
+        , ( "_objectVersion", Json.Encode.string <| record.objectVersion )
         , ( "_refObjectName", Json.Encode.string <| record.refObjectName )
         , ( "_type", Json.Encode.string <| record.rtype )
         ]
@@ -427,7 +427,7 @@ encodeFeatureProjectOwner record =
         , ( "_rallyAPIMinor", Json.Encode.string <| record.rallyAPIMinor )
         , ( "_ref", Json.Encode.string <| record.ref )
         , ( "_refObjectUUID", Json.Encode.string <| record.refObjectUUID )
-        , ( "_objectVersion", Json.Encode.int <| record.objectVersion )
+        , ( "_objectVersion", Json.Encode.string <| record.objectVersion )
         , ( "_refObjectName", Json.Encode.string <| record.refObjectName )
         , ( "_type", Json.Encode.string <| record.rtype )
         ]
@@ -440,7 +440,7 @@ encodeFeatureProjectWorkspaceOwner record =
         , ( "_rallyAPIMinor", Json.Encode.string <| record.rallyAPIMinor )
         , ( "_ref", Json.Encode.string <| record.ref )
         , ( "_refObjectUUID", Json.Encode.string <| record.refObjectUUID )
-        , ( "_objectVersion", Json.Encode.int <| record.objectVersion )
+        , ( "_objectVersion", Json.Encode.string <| record.objectVersion )
         , ( "_refObjectName", Json.Encode.string <| record.refObjectName )
         , ( "_type", Json.Encode.string <| record.rtype )
         ]
@@ -453,13 +453,13 @@ encodeFeatureProjectWorkspace record =
         , ( "_rallyAPIMinor", Json.Encode.string <| record.rallyAPIMinor )
         , ( "_ref", Json.Encode.string <| record.ref )
         , ( "_refObjectUUID", Json.Encode.string <| record.refObjectUUID )
-        , ( "_objectVersion", Json.Encode.int <| record.objectVersion )
+        , ( "_objectVersion", Json.Encode.string <| record.objectVersion )
         , ( "_refObjectName", Json.Encode.string <| record.refObjectName )
-        , ( "creationDate", Json.Encode.string <| record.creationDate )
+        , ( "CreationDate", Json.Encode.string <| record.creationDate )
         , ( "_CreatedAt", Json.Encode.string <| record.createdAt )
-        , ( "description", Json.Encode.string <| record.description )
-        , ( "name", Json.Encode.string <| record.name )
-        , ( "owner", encodeFeatureProjectWorkspaceOwner <| record.owner )
+        , ( "Description", Json.Encode.string <| record.description )
+        , ( "Name", Json.Encode.string <| record.name )
+        , ( "Owner", encodeFeatureProjectWorkspaceOwner <| record.owner )
         , ( "_type", Json.Encode.string <| record.rtype )
         ]
 
@@ -471,14 +471,14 @@ encodeFeatureProject record =
         , ( "_rallyAPIMinor", Json.Encode.string <| record.rallyAPIMinor )
         , ( "_ref", Json.Encode.string <| record.ref )
         , ( "_refObjectUUID", Json.Encode.string <| record.refObjectUUID )
-        , ( "_objectVersion", Json.Encode.int <| record.objectVersion )
+        , ( "_objectVersion", Json.Encode.string <| record.objectVersion )
         , ( "_refObjectName", Json.Encode.string <| record.refObjectName )
-        , ( "creationDate", Json.Encode.string <| record.creationDate )
+        , ( "CreationDate", Json.Encode.string <| record.creationDate )
         , ( "_CreatedAt", Json.Encode.string <| record.createdAt )
-        , ( "description", Json.Encode.string <| record.description )
-        , ( "name", Json.Encode.string <| record.name )
-        , ( "owner", encodeFeatureProjectOwner <| record.owner )
-        , ( "workspace", encodeFeatureProjectWorkspace <| record.workspace )
+        , ( "Description", Json.Encode.string <| record.description )
+        , ( "Name", Json.Encode.string <| record.name )
+        , ( "Owner", encodeFeatureProjectOwner <| record.owner )
+        , ( "Workspace", encodeFeatureProjectWorkspace <| record.workspace )
         , ( "_type", Json.Encode.string <| record.rtype )
         ]
 
@@ -525,7 +525,7 @@ decodeResult =
         |> Json.Decode.Pipeline.required "Project" decodeResultProject
         |> Json.Decode.Pipeline.required "_type" Json.Decode.string
         |> Json.Decode.Pipeline.optional "c_DefectSource" Json.Decode.string ""
-        |> Json.Decode.Pipeline.optional "Feature" (Json.Decode.nullable decodeFeature) Nothing
+        |> Json.Decode.Pipeline.optional "Feature" (Json.Decode.map Just decodeFeature) Nothing
 
 
 decodeResultChangesets : Json.Decode.Decoder ResultChangesets
