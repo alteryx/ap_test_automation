@@ -19,7 +19,7 @@ featureStatusTable model result =
                         a.formattedID
 
                     _ ->
-                        ""
+                        "Defect"
                 )
             ]
         , td [ class "m0 pl3 truncate mw4" ] [ text result.owner.refObjectName ]

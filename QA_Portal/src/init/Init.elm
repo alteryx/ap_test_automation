@@ -14,7 +14,7 @@ userStory =
 model : Model
 model =
     Model "Ready to Merge"
-        [ "Ready to Merge", "Merged to ITB", "Defect Status", "Feature Status" ]
+        [ "Ready to Merge", "Merged to ITB", "ITB Defects", "Feature Status" ]
         [ "Defect Status", "Automated Test Results", "Release Status" ]
         [ "Dashboard", "Defects", "Automated Tests", "Release Status", "Benchmarking", "QA Corner" ]
         ""

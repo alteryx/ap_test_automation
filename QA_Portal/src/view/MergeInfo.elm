@@ -1,6 +1,6 @@
 module MergeInfo exposing (..)
 
-import DefectStatus exposing (defectStatusTable, defectStatusTableHeader)
+import ITBDefects exposing (itbDefectsTable, itbDefectsTableHeader)
 import FeatureStatus exposing (featureStatusTable, featureStatusTableHeader)
 import Html exposing (Html, div, option, select, span, table, tbody, text)
 import Html.Attributes exposing (class, classList, style)
@@ -85,8 +85,8 @@ mergeInfo model =
                         [ mergedToITBTableHeader model
                         , paginatedButtonView model model.paginated
                         ]
-                    , div [ classList [ ( "dn", model.selected /= "Defect Status" ) ] ]
-                        [ defectStatusTableHeader model
+                    , div [ classList [ ( "dn", model.selected /= "ITB Defects" ) ] ]
+                        [ itbDefectsTableHeader model
                         , paginatedButtonView model model.paginated
                         ]
                     , div [ classList [ ( "dn", model.selected /= "Feature Status" ) ] ]

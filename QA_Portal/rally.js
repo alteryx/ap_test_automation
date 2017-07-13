@@ -27,7 +27,7 @@ const queryReadyToMerge = (message, apiEndpoint) => {
     pageSize: 2,
     limit: 20,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus'],
     // query: queryUtils.where('Project.Name', 'contains', message)
     query: queryStringBuilder(message, 'Ready for Merge to ITB')
   })
@@ -41,12 +41,12 @@ const queryMergedToITB = (message, apiEndpoint) => {
     pageSize: 2,
     limit: 20,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus'],
     query: queryStringBuilder(message, 'Merged to Integration')
   })
 }
 
-const queryDefectStatus = (message, apiEndpoint) => {
+const queryITBDefects = (message, apiEndpoint) => {
   console.log('Message: ', message)
   return restApi.query({
     type: apiEndpoint,
@@ -54,8 +54,8 @@ const queryDefectStatus = (message, apiEndpoint) => {
     pageSize: 2,
     limit: 20,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource'],
-    query: queryStringBuilder(message, 'Ready for Merge to ITB')
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus'],
+    query: queryStringBuilder(message, 'Merged to Integration')
   })
 }
 
@@ -133,13 +133,13 @@ app.ws('/qaportal/mergedtoitb', (websocket, request) => {
   })
 })
 
-app.ws('/qaportal/defectstatus', (websocket, request) => {
+app.ws('/qaportal/itbdefects', (websocket, request) => {
   console.log('A client connected!')
 
   websocket.on('message', (message) => {
     console.log(`A client sent a message: ${message}`)
 
-    queryDefectStatus(message, 'defect')
+    queryITBDefects(message, 'defect')
       .then((response) => {
         websocket.send(JSON.stringify(response))
       })

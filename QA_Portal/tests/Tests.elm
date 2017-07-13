@@ -47,7 +47,7 @@ all =
                     |> Tuple.first
                     |> Expect.equal
                         { selected = "Merged to ITB"
-                        , tabs = [ "Ready to Merge", "Merged to ITB", "Defect Status", "Feature Status" ]
+                        , tabs = [ "Ready to Merge", "Merged to ITB", "ITB Defects", "Feature Status" ]
                         , cards = [ "Defect Status", "Automated Test Results", "Release Status" ]
                         , listOfLinks = [ "Dashboard", "Defects", "Automated Tests", "Release Status", "Benchmarking", "QA Corner" ]
                         , sortCategory = ""
