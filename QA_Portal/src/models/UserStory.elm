@@ -22,6 +22,7 @@ type alias Result =
     , refObjectUUID : String
     , objectVersion : String
     , refObjectName : String
+    , createdAt : String
     , changesets : ResultChangesets
     , description : String
     , formattedID : String
@@ -109,6 +110,7 @@ decodeResult =
         |> Json.Decode.Pipeline.required "_refObjectUUID" Json.Decode.string
         |> Json.Decode.Pipeline.required "_objectVersion" Json.Decode.string
         |> Json.Decode.Pipeline.required "_refObjectName" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_CreatedAt" Json.Decode.string
         |> Json.Decode.Pipeline.required "Changesets" decodeResultChangesets
         |> Json.Decode.Pipeline.required "Description" Json.Decode.string
         |> Json.Decode.Pipeline.required "FormattedID" Json.Decode.string
@@ -176,6 +178,7 @@ encodeResult record =
         , ( "_refObjectUUID", Json.Encode.string <| record.refObjectUUID )
         , ( "_objectVersion", Json.Encode.string <| record.objectVersion )
         , ( "_refObjectName", Json.Encode.string <| record.refObjectName )
+        , ( "_CreatedAt", Json.Encode.string <| record.createdAt )
         , ( "Changesets", encodeResultChangesets <| record.changesets )
         , ( "Description", Json.Encode.string <| record.description )
         , ( "FormattedID", Json.Encode.string <| record.formattedID )
