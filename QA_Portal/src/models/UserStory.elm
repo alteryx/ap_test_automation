@@ -34,6 +34,9 @@ type alias Result =
     , c_DefectSource : String
     , feature : Maybe ResultFeature
     , objectId : Int
+    , c_TestingStatus : String
+    , blocked : Bool
+    , blockedReason : String
     }
 
 
@@ -528,6 +531,9 @@ decodeResult =
         |> Json.Decode.Pipeline.optional "c_DefectSource" Json.Decode.string ""
         |> Json.Decode.Pipeline.optional "Feature" (Json.Decode.map Just decodeFeature) Nothing
         |> Json.Decode.Pipeline.required "ObjectID" Json.Decode.int
+        |> Json.Decode.Pipeline.optional "c_TestingStatus" Json.Decode.string "N/A"
+        |> Json.Decode.Pipeline.required "Blocked" Json.Decode.bool
+        |> Json.Decode.Pipeline.optional "BlockedReason" Json.Decode.string ""
 
 
 decodeResultChangesets : Json.Decode.Decoder ResultChangesets
@@ -600,6 +606,9 @@ encodeResult record =
         , ( "c_DefectSource", Json.Encode.string <| record.c_DefectSource )
         , ( "Feature", Maybe.withDefault Json.Encode.null <| encodeFeature <| record.feature )
         , ( "ObjectID", Json.Encode.int <| record.objectId )
+        , ( "c_TestingStatus", Json.Encode.string <| record.c_TestingStatus )
+        , ( "Blocked", Json.Encode.bool <| record.blocked )
+        , ( "BlockedReason", Json.Encode.string <| record.blockedReason )
         ]
 
 

@@ -27,7 +27,7 @@ const queryReadyToMerge = (message, apiEndpoint) => {
     pageSize: 2,
     limit: 20,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason'],
     // query: queryUtils.where('Project.Name', 'contains', message)
     query: queryStringBuilder(message, 'Ready for Merge to ITB')
   })
@@ -41,7 +41,7 @@ const queryMergedToITB = (message, apiEndpoint) => {
     pageSize: 2,
     limit: 20,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason'],
     query: queryStringBuilder(message, 'Merged to Integration')
   })
 }
@@ -54,7 +54,7 @@ const queryITBDefects = (message, apiEndpoint) => {
     pageSize: 2,
     limit: 20,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason'],
     query: queryStringBuilder(message, 'Merged to Integration')
   })
 }
@@ -105,7 +105,7 @@ app.ws('/qaportal/readytomerge', (websocket, request) => {
           .then((response) => {
             res.Results = res.Results.concat(response.Results)
             websocket.send(JSON.stringify(res))
-            // console.log('Success', util.inspect(res, {showHidden: false, depth: null}))
+            console.log('Success', util.inspect(res, {showHidden: false, depth: null}))
           })
           .catch(onError)
       })
