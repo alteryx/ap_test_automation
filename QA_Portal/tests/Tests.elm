@@ -82,6 +82,11 @@ all =
         , test "should add numbers together" <|
             \() ->
                 Expect.equal (add 1 1) 2
+        , test "should format a string with spaces and capital letters to all lowercase" <|
+            \() ->
+                Expect.equal
+                    (formatString "Say Toasty")
+                    "ws://localhost:1234/qaportal/saytoasty"
         ]
 
 
