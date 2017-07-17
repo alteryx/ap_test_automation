@@ -34,7 +34,7 @@ const queryReadyToMerge = (message, apiEndpoint) => {
     pageSize: 2,
     limit: 1,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release', ],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release', 'c_PriorityTier', 'c_ReleaseTrainBoardingStatus', 'PercentDoneByStoryCount'],
     // query: queryUtils.where('Project.Name', 'contains', message)
     query: queryStringBuilder(message, 'Ready for Merge to ITB')
   })
@@ -48,7 +48,7 @@ const queryMergedToITB = (message, apiEndpoint) => {
     pageSize: 2,
     limit: 1,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release', 'c_PriorityTier', 'c_ReleaseTrainBoardingStatus', 'PercentDoneByStoryCount'],
     query: queryStringBuilder(message, 'Merged to Integration')
   })
 }
@@ -61,7 +61,7 @@ const queryITBDefects = (message, apiEndpoint) => {
     pageSize: 2,
     limit: 1,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release', 'c_PriorityTier', 'c_ReleaseTrainBoardingStatus', 'PercentDoneByStoryCount'],
     query: queryStringBuilder(message, 'Merged to Integration')
   })
 }

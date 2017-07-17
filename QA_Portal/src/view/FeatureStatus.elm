@@ -25,7 +25,26 @@ featureStatusTable model result =
         , td [ class "m0 pl3 truncate mw4" ] [ text result.owner.refObjectName ]
         , td [ class "m0 pl3 truncate mw4" ] [ text result.createdAt ]
         , td [ class "m0 pl3 truncate mw4" ] [ text result.name ]
-        , td [ class "m0 pl3 truncate mw4" ] [ text "string" ]
+        , td [ class "m0 pl3 truncate mw4" ]
+            [ text
+                (case result.feature of
+                    Just a ->
+                        a.c_PriorityTier
+
+                    _ ->
+                        ""
+                )
+            ]
+        , td [ class "m0 pl3 truncate mw4" ]
+            [ text
+                (case result.feature of
+                    Just a ->
+                        a.c_ReleaseTrainBoardingStatus
+
+                    _ ->
+                        ""
+                )
+            ]
         ]
 
 

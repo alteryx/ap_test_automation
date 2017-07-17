@@ -103,6 +103,8 @@ type alias ResultFeature =
     , owner : FeatureOwner
     , project : FeatureProject
     , rtype : String
+    , c_PriorityTier : String
+    , c_ReleaseTrainBoardingStatus : String
     }
 
 
@@ -228,6 +230,8 @@ decodeFeature =
         |> Json.Decode.Pipeline.required "Owner" decodeFeatureOwner
         |> Json.Decode.Pipeline.required "Project" decodeFeatureProject
         |> Json.Decode.Pipeline.required "_type" Json.Decode.string
+        |> Json.Decode.Pipeline.optional "c_PriorityTier" Json.Decode.string "Not Important"
+        |> Json.Decode.Pipeline.optional "c_ReleaseTrainBoardingStatus" Json.Decode.string ""
 
 
 decodeFeatureWorkspaceOwner : Json.Decode.Decoder FeatureWorkspaceOwner
@@ -363,6 +367,8 @@ encodeFeature maybeRecord =
                     , ( "Owner", encodeFeatureOwner <| record.owner )
                     , ( "Project", encodeFeatureProject <| record.project )
                     , ( "_type", Json.Encode.string <| record.rtype )
+                    , ( "c_PriorityTier", Json.Encode.string <| record.c_PriorityTier )
+                    , ( "c_ReleaseTrainBoardingStatus", Json.Encode.string <| record.c_ReleaseTrainBoardingStatus )
                     ]
 
         _ ->
