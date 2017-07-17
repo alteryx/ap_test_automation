@@ -20,6 +20,11 @@ identity thing =
     thing
 
 
+updateMergeToITB : String -> Cmd Msg
+updateMergeToITB ref =
+    WebSocket.send "ws://localhost:1234/qaportal/mergedtoitb/update" ref
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -63,17 +68,20 @@ update msg model =
                 sizeAsInt =
                     Result.withDefault 5 <| String.toInt size
             in
-                ( { model | paginated = Paginate.changeItemsPerPage sizeAsInt model.paginated, pageSize = sizeAsInt }, Cmd.none )
+            ( { model | paginated = Paginate.changeItemsPerPage sizeAsInt model.paginated, pageSize = sizeAsInt }, Cmd.none )
 
         Msg.DeleteItem item ->
             let
                 removeItem =
                     List.filter ((/=) item)
             in
-                ( { model | paginated = Paginate.map removeItem model.paginated }, Cmd.none )
+            ( { model | paginated = Paginate.map removeItem model.paginated }, Cmd.none )
 
         Msg.Reverse ->
             ( { model | reversed = not model.reversed }, Cmd.none )
 
         Msg.Find query ->
             ( { model | query = query }, Cmd.none )
+
+        Msg.MergeToITB ref ->
+            ( model, updateMergeToITB ref )

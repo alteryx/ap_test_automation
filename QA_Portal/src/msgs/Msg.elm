@@ -18,3 +18,4 @@ type Msg
     | DeleteItem UserStory.Result
     | Reverse
     | Find String
+    | MergeToITB String

@@ -2,6 +2,7 @@ module ReadyToMerge exposing (..)
 
 import Html exposing (Html, a, div, input, li, td, text, th, thead, tr, ul)
 import Html.Attributes exposing (class, classList, href, style, type_)
+import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Msg exposing (Msg)
 import UserStory
@@ -42,7 +43,7 @@ readyToMergeTable model result =
                 , ( "min-width", "3em" )
                 ]
             ]
-            [ input [ type_ "checkbox" ] [] ]
+            [ input [ type_ "checkbox", onClick (Msg.MergeToITB result.ref) ] [] ]
         ]
 
 

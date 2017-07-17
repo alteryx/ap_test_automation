@@ -33,6 +33,7 @@ type alias Result =
     , rtype : String
     , c_DefectSource : String
     , feature : Maybe ResultFeature
+    , objectId : Int
     }
 
 
@@ -526,6 +527,7 @@ decodeResult =
         |> Json.Decode.Pipeline.required "_type" Json.Decode.string
         |> Json.Decode.Pipeline.optional "c_DefectSource" Json.Decode.string ""
         |> Json.Decode.Pipeline.optional "Feature" (Json.Decode.map Just decodeFeature) Nothing
+        |> Json.Decode.Pipeline.required "ObjectID" Json.Decode.int
 
 
 decodeResultChangesets : Json.Decode.Decoder ResultChangesets
@@ -597,6 +599,7 @@ encodeResult record =
         , ( "_type", Json.Encode.string <| record.rtype )
         , ( "c_DefectSource", Json.Encode.string <| record.c_DefectSource )
         , ( "Feature", Maybe.withDefault Json.Encode.null <| encodeFeature <| record.feature )
+        , ( "ObjectID", Json.Encode.int <| record.objectId )
         ]
 
 

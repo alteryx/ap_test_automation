@@ -27,7 +27,7 @@ const queryReadyToMerge = (message, apiEndpoint) => {
     pageSize: 2,
     limit: 20,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID'],
     // query: queryUtils.where('Project.Name', 'contains', message)
     query: queryStringBuilder(message, 'Ready for Merge to ITB')
   })
@@ -41,7 +41,7 @@ const queryMergedToITB = (message, apiEndpoint) => {
     pageSize: 2,
     limit: 20,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID'],
     query: queryStringBuilder(message, 'Merged to Integration')
   })
 }
@@ -54,7 +54,7 @@ const queryITBDefects = (message, apiEndpoint) => {
     pageSize: 2,
     limit: 20,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID'],
     query: queryStringBuilder(message, 'Merged to Integration')
   })
 }
@@ -75,11 +75,10 @@ const queryITBDefects = (message, apiEndpoint) => {
 
 const updateMergedToITB = (result) => {
   return restApi.update({
-    ref: result.object,
+    ref: result,
     data: {
-      Name: 'Some update message'
-    },
-    fetch: ['Name']
+      c_KanbanStateAlteryxSuperSet: 'Merged to Integration'
+    }
   })
 }
 
@@ -106,7 +105,7 @@ app.ws('/qaportal/readytomerge', (websocket, request) => {
           .then((response) => {
             res.Results = res.Results.concat(response.Results)
             websocket.send(JSON.stringify(res))
-            console.log('Success', util.inspect(res, {showHidden: false, depth: null}))
+            // console.log('Success', util.inspect(res, {showHidden: false, depth: null}))
           })
           .catch(onError)
       })
@@ -130,6 +129,16 @@ app.ws('/qaportal/mergedtoitb', (websocket, request) => {
           .catch(onError)
       })
       .catch(onError)
+  })
+})
+
+
+app.ws('/qaportal/mergedtoitb/update', (websocket, request) => {
+  console.log('A client connected!')
+
+  websocket.on('message', (message) => {
+    console.log(`A client sent a message: ${message}`)
+    updateMergedToITB(message)
   })
 })
 
@@ -165,3 +174,5 @@ app.ws('/qaportal/featurestatus', (websocket, request) => {
       .catch(onError)
   })
 })
+
+
