@@ -41,7 +41,7 @@ featureStatusTableHeader model =
         [ tr []
             [ th
                 [ class "tl pa2 pl3 w-10 arrow"
-                , style [ ( "min-width", "12em" ) ]
+                , style [ ( "min-width", "10em" ) ]
                 ]
                 [ text "TEAM"
                 , ul [ classList [ ( "dn", model.sortCategory /= "TEAM" ) ] ]
@@ -50,29 +50,44 @@ featureStatusTableHeader model =
                     ]
                 ]
             , th
-                [ class "tl pa2 pl3 w-15 arrow"
-                , style [ ( "min-width", "12em" ) ]
+                [ class "tl pa2 pl3 w-10 arrow"
+                , style [ ( "min-width", "10em" ) ]
                 ]
                 [ text "FEATURE" ]
             , th
                 [ class "tl pa2 pl3 w-10 arrow"
-                , style [ ( "min-width", "11em" ) ]
+                , style [ ( "min-width", "10em" ) ]
                 ]
                 [ text "OWNER" ]
             , th
-                [ class "tl pa2 pl3 w-20"
-                , style [ ( "min-width", "16em" ) ]
+                [ class "tl pa2 pl3 w-10"
+                , style [ ( "min-width", "10em" ) ]
                 ]
                 [ text "CREATED" ]
             , th
-                [ class "tl pa2 pl3 w-20"
-                , style [ ( "min-width", "20em" ) ]
+                [ class "tl pa2 pl3 w-10"
+                , style [ ( "min-width", "10em" ) ]
                 ]
                 [ text "DESCRIPTION" ]
             , th
+                [ class "tl pa2 pl3 w-15"
+                , style [ ( "min-width", "10em" ) ]
+                ]
+                [ text "PRIORITY TIER" ]
+            , th
+                [ class "tl pa2 pl3 w-20"
+                , style [ ( "min-width", "10em" ) ]
+                ]
+                [ text "RELEASE TRAIN BOARDING STATUS" ]
+            , th
                 [ class "tl pa2 pl3 w-10"
-                , style [ ( "min-width", "16em" ) ]
+                , style [ ( "min-width", "10em" ) ]
                 ]
                 [ text "COMPLETED" ]
+            , th
+                [ class "tl pa2 pl3 w-10"
+                , style [ ( "min-width", "12em" ) ]
+                ]
+                [ text "STORIES " ]
             ]
         ]

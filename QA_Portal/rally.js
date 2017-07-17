@@ -19,15 +19,22 @@ const queryStringBuilder = (message, kbState) => {
   return query.toQueryString()
 }
 
+const testQueryBuilder = (message) => {
+  let query = queryUtils.where('Project.Name', 'contains', message)
+  query = query.and('c_KanbanStateAlteryxSuperSet', '=', 'Ready to Merge')
+  query = query.or('c_KanbanStateAlteryxSuperSet', '=', 'Merged to Integration')
+  return query.toQueryString()
+}
+
 const queryReadyToMerge = (message, apiEndpoint) => {
   console.log('Message: ', message)
   return restApi.query({
     type: apiEndpoint,
     start: 1,
     pageSize: 2,
-    limit: 20,
+    limit: 1,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release', ],
     // query: queryUtils.where('Project.Name', 'contains', message)
     query: queryStringBuilder(message, 'Ready for Merge to ITB')
   })
@@ -39,9 +46,9 @@ const queryMergedToITB = (message, apiEndpoint) => {
     type: apiEndpoint,
     start: 1,
     pageSize: 2,
-    limit: 20,
+    limit: 1,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release'],
     query: queryStringBuilder(message, 'Merged to Integration')
   })
 }
@@ -52,30 +59,16 @@ const queryITBDefects = (message, apiEndpoint) => {
     type: apiEndpoint,
     start: 1,
     pageSize: 2,
-    limit: 20,
+    limit: 1,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release'],
     query: queryStringBuilder(message, 'Merged to Integration')
   })
 }
 
-// const queryFeatureStatus = (message, apiEndpoint) => {
-//   console.log('Message: ', message)
-//   return restApi.query({
-//     type: apiEndpoint,
-//     start: 1,
-//     pageSize: 2,
-//     limit: 20,
-//     order: 'Rank',
-//     fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource'],
-//     // query: queryUtils.where('Project.Name', 'contains', message)
-//     query: queryStringBuilder(message, 'Ready for Merge to ITB')
-//   })
-// }
-
-const updateMergedToITB = (result) => {
+const updateMergedToITB = (ref) => {
   return restApi.update({
-    ref: result,
+    ref: ref,
     data: {
       c_KanbanStateAlteryxSuperSet: 'Merged to Integration'
     }
@@ -132,13 +125,13 @@ app.ws('/qaportal/mergedtoitb', (websocket, request) => {
   })
 })
 
-
 app.ws('/qaportal/mergedtoitb/update', (websocket, request) => {
   console.log('A client connected!')
 
   websocket.on('message', (message) => {
     console.log(`A client sent a message: ${message}`)
     updateMergedToITB(message)
+    .catch(onError)
   })
 })
 
@@ -174,5 +167,3 @@ app.ws('/qaportal/featurestatus', (websocket, request) => {
       .catch(onError)
   })
 })
-
-
