@@ -105,6 +105,7 @@ type alias ResultFeature =
     , rtype : String
     , c_PriorityTier : String
     , c_ReleaseTrainBoardingStatus : String
+    , percentDoneByStoryCount : Float
     }
 
 
@@ -232,6 +233,7 @@ decodeFeature =
         |> Json.Decode.Pipeline.required "_type" Json.Decode.string
         |> Json.Decode.Pipeline.optional "c_PriorityTier" Json.Decode.string "Not Important"
         |> Json.Decode.Pipeline.optional "c_ReleaseTrainBoardingStatus" Json.Decode.string ""
+        |> Json.Decode.Pipeline.optional "PercentDoneByStoryCount" Json.Decode.float 0
 
 
 decodeFeatureWorkspaceOwner : Json.Decode.Decoder FeatureWorkspaceOwner
@@ -369,6 +371,7 @@ encodeFeature maybeRecord =
                     , ( "_type", Json.Encode.string <| record.rtype )
                     , ( "c_PriorityTier", Json.Encode.string <| record.c_PriorityTier )
                     , ( "c_ReleaseTrainBoardingStatus", Json.Encode.string <| record.c_ReleaseTrainBoardingStatus )
+                    , ( "PercentDoneByStoryCount", Json.Encode.float <| record.percentDoneByStoryCount )
                     ]
 
         _ ->
