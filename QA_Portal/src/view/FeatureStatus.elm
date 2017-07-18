@@ -2,6 +2,7 @@ module FeatureStatus exposing (..)
 
 import Html exposing (Html, li, td, text, th, thead, tr, ul)
 import Html.Attributes exposing (class, classList, style, title)
+import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Msg exposing (Msg)
 import UserStory
@@ -105,6 +106,8 @@ featureStatusTableHeader : Model -> Html Msg
 featureStatusTableHeader model =
     thead
         [ class "system-sans-serif f7 bg-white"
+
+        -- , onClick <| Msg.GetRelease ""
         , style
             [ ( "color", "#5A5A5A" )
             , ( "font-weight", "100" )
@@ -113,7 +116,7 @@ featureStatusTableHeader model =
         [ tr []
             [ th
                 [ class "tl pa2 pl3 w-10 arrow"
-                , style [ ( "min-width", "10em" ) ]
+                , style [ ( "min-width", "8em" ) ]
                 ]
                 [ text "TEAM"
                 , ul [ classList [ ( "dn", model.sortCategory /= "TEAM" ) ] ]
@@ -123,7 +126,7 @@ featureStatusTableHeader model =
                 ]
             , th
                 [ class "tl pa2 pl3 w-10 arrow"
-                , style [ ( "min-width", "10em" ) ]
+                , style [ ( "min-width", "8em" ) ]
                 ]
                 [ text "FEATURE" ]
             , th

@@ -43,7 +43,7 @@ update msg model =
             )
 
         Msg.GetRelease release ->
-            ( { model | releases = release }, Cmd.none )
+            ( { model | releases = release }, WebSocket.send "ws://localhost:1234/qaportal/releases" "" )
 
         Msg.FailedToParseUserStory msg ->
             Debug.log msg ( model, Cmd.none )

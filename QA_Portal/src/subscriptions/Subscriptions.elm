@@ -12,7 +12,8 @@ subscriptions : Model.Model -> Sub Msg.Msg
 subscriptions model =
     Sub.batch
         [ WebSocket.listen (formatString model.selected) parseGetUserStory
-        , WebSocket.listen "ws://localhost:1234/qaportal/releases" (getRelease model)
+
+        -- , WebSocket.listen "ws://localhost:1234/qaportal/releases" (getRelease model)
         ]
 
 

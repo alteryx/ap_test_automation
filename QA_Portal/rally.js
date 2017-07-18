@@ -75,24 +75,22 @@ const updateMergedToITB = (ref) => {
   })
 }
 
-const releaseStringBuilder = (message) => {
-  let query = queryUtils.where('Project.Name', 'contains', message)
-  query = query.and('State', 'contains', 'Active')
+const releaseStringBuilder = () => {
+  let query = queryUtils.where('State', 'contains', 'Active')
   query = query.or('State', 'contains', 'Planning')
   query = query.and('Name', 'contains', 'PI')
   query = query.and('Name', 'contains', "|")
   return query.toQueryString()
 }
 
-const queryRelease = (message) => {
+const queryRelease = () => {
     return restApi.query({
     type: 'release',
     start: 1,
     pageSize: 2,
-    limit: 20,
-    order: 'Rank',
-    fetch: [],
-    query: releaseStringBuilder(message)
+    limit: 100,
+    // fetch: [],
+    query: releaseStringBuilder()
   })
 }
 
@@ -194,12 +192,12 @@ app.ws('/qaportal/releases', (websocket, request) => {
 
   websocket.on('message', (message) => {
     console.log(`A client sent a message: ${message}`)
-    queryRelease(message)
+    queryRelease()
       .then((response) => {
-        let output = response.map((res => res._refObjectName))
+        let output = response.Results.map((res => res._refObjectName))
         let newOutput = R.uniq(output)
+        websocket.send(JSON.stringify(newOutput))
         console.log(newOutput)
-        websocket.send(Json.stringify(newOutput))
       })
       .catch(onError)
   })
