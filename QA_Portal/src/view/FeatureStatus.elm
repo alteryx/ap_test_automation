@@ -58,6 +58,16 @@ featureStatusTable model result =
                     )
                     "%"
             ]
+        , td [ class "m0 pl3 truncate mw4" ]
+            [ text <|
+                toString <|
+                    case result.feature of
+                        Just a ->
+                            a.directChildrenCount
+
+                        _ ->
+                            0
+            ]
         ]
 
 

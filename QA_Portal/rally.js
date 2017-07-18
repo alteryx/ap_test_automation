@@ -32,7 +32,7 @@ const queryReadyToMerge = (message, apiEndpoint) => {
     type: apiEndpoint,
     start: 1,
     pageSize: 2,
-    limit: 1,
+    limit: 20,
     order: 'Rank',
     fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release', 'c_PriorityTier', 'c_ReleaseTrainBoardingStatus', 'PercentDoneByStoryCount'],
     // query: queryUtils.where('Project.Name', 'contains', message)
@@ -46,7 +46,7 @@ const queryMergedToITB = (message, apiEndpoint) => {
     type: apiEndpoint,
     start: 1,
     pageSize: 2,
-    limit: 1,
+    limit: 20,
     order: 'Rank',
     fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release', 'c_PriorityTier', 'c_ReleaseTrainBoardingStatus', 'PercentDoneByStoryCount'],
     query: queryStringBuilder(message, 'Merged to Integration')
@@ -59,7 +59,7 @@ const queryITBDefects = (message, apiEndpoint) => {
     type: apiEndpoint,
     start: 1,
     pageSize: 2,
-    limit: 1,
+    limit: 20,
     order: 'Rank',
     fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release', 'c_PriorityTier', 'c_ReleaseTrainBoardingStatus', 'PercentDoneByStoryCount'],
     query: queryStringBuilder(message, 'Merged to Integration')
