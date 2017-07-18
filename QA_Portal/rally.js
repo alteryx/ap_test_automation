@@ -34,7 +34,7 @@ const queryReadyToMerge = (message, apiEndpoint) => {
     pageSize: 2,
     limit: 20,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release', 'c_PriorityTier', 'c_ReleaseTrainBoardingStatus', 'PercentDoneByStoryCount'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release', 'c_PriorityTier', 'c_ReleaseTrainBoardingStatus', 'PercentDoneByStoryCount', 'Theme'],
     // query: queryUtils.where('Project.Name', 'contains', message)
     query: queryStringBuilder(message, 'Ready for Merge to ITB')
   })
@@ -72,6 +72,27 @@ const updateMergedToITB = (ref) => {
     data: {
       c_KanbanStateAlteryxSuperSet: 'Merged to Integration'
     }
+  })
+}
+
+const releaseStringBuilder = (message) => {
+  let query = queryUtils.where('Project.Name', 'contains', message)
+  query = query.and('State', 'contains', 'Active')
+  query = query.or('State', 'contains', 'Planning')
+  query = query.and('Name', 'contains', 'PI')
+  query = query.and('Name', 'contains', "|")
+  return query.toQueryString()
+}
+
+const queryRelease = (message) => {
+    return restApi.query({
+    type: 'release',
+    start: 1,
+    pageSize: 2,
+    limit: 20,
+    order: 'Rank',
+    fetch: [],
+    query: releaseStringBuilder(message)
   })
 }
 
@@ -163,6 +184,22 @@ app.ws('/qaportal/featurestatus', (websocket, request) => {
             websocket.send(JSON.stringify(res))
           })
           .catch(onError)
+      })
+      .catch(onError)
+  })
+})
+
+app.ws('/qaportal/releases', (websocket, request) => {
+  console.log('A client connected!')
+
+  websocket.on('message', (message) => {
+    console.log(`A client sent a message: ${message}`)
+    queryRelease(message)
+      .then((response) => {
+        let output = response.map((res => res._refObjectName))
+        let newOutput = R.uniq(output)
+        console.log(newOutput)
+        websocket.send(Json.stringify(newOutput))
       })
       .catch(onError)
   })

@@ -14,8 +14,8 @@ import View
 
 main : Program Never Model Msg
 main =
-    TimeTravel.program
-        -- Html.program
+    -- TimeTravel.program
+    Html.program
         -- Platform.program
         { init = Init.init
         , view = View.view

@@ -20,6 +20,11 @@ updateMergeToITB ref =
     WebSocket.send "ws://localhost:1234/qaportal/mergedtoitb/update" ref
 
 
+
+-- getReleases : Cmd Msg
+-- getReleases
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -37,7 +42,13 @@ update msg model =
             , Cmd.none
             )
 
+        Msg.GetRelease release ->
+            ( { model | releases = release }, Cmd.none )
+
         Msg.FailedToParseUserStory msg ->
+            Debug.log msg ( model, Cmd.none )
+
+        Msg.FailedToParseRelease msg ->
             Debug.log msg ( model, Cmd.none )
 
         Msg.SetSelectedTeam string ->

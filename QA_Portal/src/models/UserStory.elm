@@ -15,6 +15,16 @@ type alias UserStory =
     }
 
 
+type alias Release =
+    { rallyAPIMajor : String
+    , rallyAPIMinor : String
+    , ref : String
+    , refObjectName : String
+    , refObjectUUID : String
+    , rtype : String
+    }
+
+
 type alias Result =
     { rallyAPIMajor : String
     , rallyAPIMinor : String
@@ -209,6 +219,29 @@ type alias FeatureProject =
     , workspace : FeatureProjectWorkspace
     , rtype : String
     }
+
+
+decodeRelease : Json.Decode.Decoder Release
+decodeRelease =
+    Json.Decode.Pipeline.decode Release
+        |> Json.Decode.Pipeline.required "_rallyAPIMajor" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_rallyAPIMinor" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_ref" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_refObjectUUID" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_type" Json.Decode.string
+        |> Json.Decode.Pipeline.required "_refObjectName" Json.Decode.string
+
+
+encodeRelease : Release -> Json.Encode.Value
+encodeRelease record =
+    Json.Encode.object
+        [ ( "_rallyAPIMajor", Json.Encode.string <| record.rallyAPIMajor )
+        , ( "_rallyAPIMinor", Json.Encode.string <| record.rallyAPIMinor )
+        , ( "_ref", Json.Encode.string <| record.ref )
+        , ( "_refObjectUUID", Json.Encode.string <| record.refObjectUUID )
+        , ( "_refObjectName", Json.Encode.string <| record.refObjectName )
+        , ( "_type", Json.Encode.string <| record.rtype )
+        ]
 
 
 decodeFeature : Json.Decode.Decoder ResultFeature

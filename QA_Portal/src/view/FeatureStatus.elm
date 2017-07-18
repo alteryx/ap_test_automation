@@ -1,7 +1,7 @@
 module FeatureStatus exposing (..)
 
 import Html exposing (Html, li, td, text, th, thead, tr, ul)
-import Html.Attributes exposing (class, classList, style)
+import Html.Attributes exposing (class, classList, style, title)
 import Model exposing (Model)
 import Msg exposing (Msg)
 import UserStory
@@ -11,8 +11,18 @@ featureStatusTable : Model -> UserStory.Result -> Html Msg
 featureStatusTable model result =
     tr
         [ class "system-sans-serif f7" ]
-        [ td [ class "m0 pl3 pa2 truncate mw4" ] [ text model.selectedTeam ]
-        , td [ class "m0 pl3 truncate mw4" ]
+        [ td [ class "m0 pl3 pa2 truncate mw4", title model.selectedTeam ] [ text model.selectedTeam ]
+        , td
+            [ class "m0 pl3 truncate mw4"
+            , title
+                (case result.feature of
+                    Just a ->
+                        a.formattedID
+
+                    _ ->
+                        result.formattedID
+                )
+            ]
             [ text
                 (case result.feature of
                     Just a ->
@@ -22,10 +32,20 @@ featureStatusTable model result =
                         result.formattedID
                 )
             ]
-        , td [ class "m0 pl3 truncate mw4" ] [ text result.owner.refObjectName ]
-        , td [ class "m0 pl3 truncate mw4" ] [ text result.createdAt ]
-        , td [ class "m0 pl3 truncate mw4" ] [ text result.name ]
-        , td [ class "m0 pl3 truncate mw4" ]
+        , td [ class "m0 pl3 truncate mw4", title result.owner.refObjectName ] [ text result.owner.refObjectName ]
+        , td [ class "m0 pl3 truncate mw4", title result.createdAt ] [ text result.createdAt ]
+        , td [ class "m0 pl3 truncate mw4", title result.name ] [ text result.name ]
+        , td
+            [ class "m0 pl3 truncate mw4"
+            , title
+                (case result.feature of
+                    Just a ->
+                        a.c_PriorityTier
+
+                    _ ->
+                        ""
+                )
+            ]
             [ text
                 (case result.feature of
                     Just a ->
@@ -35,7 +55,17 @@ featureStatusTable model result =
                         ""
                 )
             ]
-        , td [ class "m0 pl3 truncate mw4" ]
+        , td
+            [ class "m0 pl3 truncate mw4"
+            , title
+                (case result.feature of
+                    Just a ->
+                        a.c_ReleaseTrainBoardingStatus
+
+                    _ ->
+                        ""
+                )
+            ]
             [ text
                 (case result.feature of
                     Just a ->

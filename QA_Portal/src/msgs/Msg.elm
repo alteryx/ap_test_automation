@@ -19,3 +19,5 @@ type Msg
     | Reverse
     | Find String
     | MergeToITB String
+    | GetRelease String
+    | FailedToParseRelease String

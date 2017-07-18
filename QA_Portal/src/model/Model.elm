@@ -17,4 +17,5 @@ type alias Model =
     , reversed : Bool
     , query : String
     , pageSize : Int
+    , releases : String
     }
