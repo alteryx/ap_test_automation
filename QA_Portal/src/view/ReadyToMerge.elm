@@ -1,7 +1,7 @@
 module ReadyToMerge exposing (..)
 
 import Html exposing (Html, a, div, input, li, td, text, th, thead, tr, ul)
-import Html.Attributes exposing (class, classList, href, style, type_)
+import Html.Attributes exposing (class, classList, href, style, title, type_)
 import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Msg exposing (Msg)
@@ -14,26 +14,31 @@ readyToMergeTable model result =
         [ class "system-sans-serif f7" ]
         [ td
             [ class "m0 pl3 pa2 truncate mw4"
+            , title model.selectedTeam
             , style [ ( "min-width", "8em" ) ]
             ]
             [ text model.selectedTeam ]
         , td
             [ class "m0 pl3 truncate mw4"
+            , title result.formattedID
             , style [ ( "min-width", "8em" ) ]
             ]
             [ text result.formattedID ]
         , td
             [ class "m0 pl3 truncate mw4"
+            , title result.owner.refObjectName
             , style [ ( "min-width", "8em" ) ]
             ]
             [ text result.owner.refObjectName ]
         , td
             [ class "m0 pl3 truncate mw3"
+            , title result.changesets.ref
             , style [ ( "min-width", "4em" ) ]
             ]
             [ a [ href result.changesets.ref ] [ text "click here" ] ]
         , td
             [ class "m0 pl3 truncate mw5"
+            , title result.name
             , style [ ( "min-width", "16em" ) ]
             ]
             [ text result.name ]
