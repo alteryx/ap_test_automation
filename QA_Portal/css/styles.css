@@ -47,6 +47,15 @@ table {
   box-shadow: -1px 1px 3px 0px #9DB4C6
 }
 
+.export {
+  background-image: url('../assets/12527.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+  width: 100%;
+  height: 70%;
+}
+
 .merge-shadow {
   box-shadow: 0px 7px 3px 1px #9DB4C6
 }
@@ -83,19 +92,9 @@ select {
 
 .paging-btns {
   position: absolute;
-  bottom: 42px; 
+  bottom: 42px;
   display: block;
   margin: auto;
-  width: 99.99%; 
+  width: 99.99%;
   left: 20px;
 }
-
-
-
-
-
-
-
-
-
-

@@ -78,7 +78,15 @@ readyToMergeTableHeader model =
                 , onClick Msg.ExportCSV
                 , style [ ( "min-width", "12em" ) ]
                 ]
-                [ text "STORY/DEFECT", a [ downloadAs "export.csv", href (createCSVFile model), class "pl2" ] [ text "Export" ] ]
+                [ text "STORY/DEFECT"
+                , a
+                    [ downloadAs "exports.csv"
+                    , href (createCSVFile model)
+                    , class "pl2 export"
+                    , title "Export"
+                    ]
+                    []
+                ]
             , th
                 [ class "tl pa2 pl3 w-10 arrow"
                 , style [ ( "min-width", "11em" ) ]
@@ -104,4 +112,4 @@ readyToMergeTableHeader model =
 
 
 createCSVFile model =
-    encodeUri <| String.join ("data:application/csv;charset=utf-8," ++ "STORY/DEFECT") model.csvString
+    "data:application/csv;charset=utf-8," ++ (encodeUri <| String.join "" model.csvString)
