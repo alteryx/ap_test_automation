@@ -21,6 +21,16 @@ updateMergeToITB ref =
     WebSocket.send "ws://localhost:1234/qaportal/mergedtoitb/update" ref
 
 
+
+-- mergeAll list =
+--     if List.length list == 0 then
+--         Nothing
+--     else if List.length list > 0 then
+--         updateMergeToITB (List.head list)
+--     else
+--         mergeAll List.tail list
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -34,6 +44,7 @@ update msg model =
             ( { model
                 | userStory = userStory
                 , csvString = List.map (\s -> s.formattedID ++ "\x0D\n") userStory.results
+                , refs = List.map (\s -> s.ref) userStory.results
                 , paginated =
                     Paginate.fromList model.pageSize <|
                         (List.map identity <|
@@ -99,3 +110,6 @@ update msg model =
 
         Msg.MergeToITB ref ->
             ( model, updateMergeToITB ref )
+
+        Msg.MergeAll ->
+            ( { model | mergeAll = not model.mergeAll }, Cmd.none )

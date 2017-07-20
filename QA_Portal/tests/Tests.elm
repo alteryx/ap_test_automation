@@ -75,6 +75,8 @@ all =
                         , pageSize = 5
                         , releases = ""
                         , csvString = [ "" ]
+                        , mergeAll = False
+                        , regs = [ "" ]
                         }
         , test "should have correct number of teams" <|
             \() ->

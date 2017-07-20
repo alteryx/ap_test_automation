@@ -19,4 +19,6 @@ type alias Model =
     , pageSize : Int
     , releases : String
     , csvString : List String
+    , mergeAll : Bool
+    , refs : List String
     }

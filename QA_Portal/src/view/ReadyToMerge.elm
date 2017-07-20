@@ -1,7 +1,7 @@
 module ReadyToMerge exposing (..)
 
 import Html exposing (Html, a, div, input, label, li, td, text, th, thead, tr, ul)
-import Html.Attributes exposing (class, classList, downloadAs, href, style, title, type_)
+import Html.Attributes exposing (checked, class, classList, downloadAs, href, style, title, type_)
 import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Msg exposing (Msg)
@@ -9,7 +9,7 @@ import UserStory
 
 
 readyToMergeTable : Model -> UserStory.Result -> Html Msg
-readyToMergeTable { selectedTeam } { formattedID, owner, changesets, name, ref } =
+readyToMergeTable { selectedTeam, mergeAll } { formattedID, owner, changesets, name, ref } =
     tr
         [ class "system-sans-serif f7" ]
         [ td
@@ -48,7 +48,7 @@ readyToMergeTable { selectedTeam } { formattedID, owner, changesets, name, ref }
                 , ( "min-width", "3em" )
                 ]
             ]
-            [ input [ type_ "checkbox", onClick (Msg.MergeToITB ref) ] [] ]
+            [ input [ checked mergeAll, type_ "checkbox", onClick (Msg.MergeToITB ref) ] [] ]
         ]
 
 
@@ -98,7 +98,7 @@ readyToMergeTableHeader model =
                 , style [ ( "min-width", "16em" ) ]
                 ]
                 [ text "MERGED"
-                , input [ class "ml2 mr2 merge-all", type_ "checkbox" ] []
+                , input [ class "ml2 mr2 merge-all", type_ "checkbox", onClick Msg.MergeAll ] []
                 , label [] [ text "Merge All" ]
                 ]
             ]
