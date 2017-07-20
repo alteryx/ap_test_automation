@@ -6,6 +6,16 @@
   background-color: #EEF4F9;
 }
 
+.banner {
+  background-image: url('../assets/alteryx_QA_portal_logo.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+  margin: 0.75em 0em 0.75em 1em;
+  width: 17em;
+  height: 2.5em;
+  background-color: white;
+}
+
 .chart-image {
   background-image: url('../assets/column3d-chart.svg');
   background-repeat: no-repeat;
@@ -13,6 +23,10 @@
   background-size: 100% 100%;
   width: 100%;
   height: 70%;
+}
+
+.container {
+  height: 90.5vh;
 }
 
 .tab-focused {
