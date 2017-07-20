@@ -1,9 +1,11 @@
 module MergeInfo exposing (..)
 
-import ITBDefects exposing (itbDefectsTable, itbDefectsTableHeader)
 import FeatureStatus exposing (featureStatusTable, featureStatusTableHeader)
-import Html exposing (Html, div, option, select, span, table, tbody, text)
-import Html.Attributes exposing (class, classList, style)
+import Html exposing (Html, a, div, option, select, span, table, tbody, text)
+import Html.Attributes exposing (class, classList, downloadAs, href, style, title)
+import Html.Events exposing (onClick)
+import Http exposing (encodeUri)
+import ITBDefects exposing (itbDefectsTable, itbDefectsTableHeader)
 import MergedToITB exposing (..)
 import Model exposing (Model)
 import Msg exposing (Msg)
@@ -48,10 +50,11 @@ mergeInfo model =
                         , ( "background-repeat", "no-repeat" )
                         , ( "background-position", "90% 52%" )
                         , ( "cursor", "pointer" )
-                          -- , ( "-webkit-appearance", "none" )
-                          -- , ( "-moz-appearance", "none" )
-                          -- , ( "text-indent", "8px" )
-                          -- , ( "text-overflow", "" )
+
+                        -- , ( "-webkit-appearance", "none" )
+                        -- , ( "-moz-appearance", "none" )
+                        -- , ( "text-indent", "8px" )
+                        -- , ( "text-overflow", "" )
                         , ( "background-size", "10px" )
                         , ( "top", "-12px" )
                         ]
@@ -66,6 +69,13 @@ mergeInfo model =
                         model.listOfTeams
                     )
                 , itemsPerPageSelector
+                , a
+                    [ downloadAs "exports.csv"
+                    , href (createCSVFile model)
+                    , class "pl2 export"
+                    , title "Export"
+                    ]
+                    []
                 , searchInput model
                 ]
             , div
@@ -98,3 +108,7 @@ mergeInfo model =
             ]
         , pagerButtons model.paginated
         ]
+
+
+createCSVFile model =
+    "data:application/csv;charset=utf-8," ++ (encodeUri <| String.join "" model.csvString)

@@ -1,9 +1,8 @@
 module ReadyToMerge exposing (..)
 
 import Html exposing (Html, a, div, input, li, td, text, th, thead, tr, ul)
-import Html.Attributes exposing (class, classList, href, style, title, type_, downloadAs)
+import Html.Attributes exposing (class, classList, downloadAs, href, style, title, type_)
 import Html.Events exposing (onClick)
-import Http exposing (encodeUri)
 import Model exposing (Model)
 import Msg exposing (Msg)
 import UserStory
@@ -75,17 +74,9 @@ readyToMergeTableHeader model =
                 ]
             , th
                 [ class "tl pa2 pl3 w-15 arrow"
-                , onClick Msg.ExportCSV
                 , style [ ( "min-width", "12em" ) ]
                 ]
                 [ text "STORY/DEFECT"
-                , a
-                    [ downloadAs "exports.csv"
-                    , href (createCSVFile model)
-                    , class "pl2 export"
-                    , title "Export"
-                    ]
-                    []
                 ]
             , th
                 [ class "tl pa2 pl3 w-10 arrow"
@@ -109,7 +100,3 @@ readyToMergeTableHeader model =
                 [ text "MERGED" ]
             ]
         ]
-
-
-createCSVFile model =
-    "data:application/csv;charset=utf-8," ++ (encodeUri <| String.join "" model.csvString)

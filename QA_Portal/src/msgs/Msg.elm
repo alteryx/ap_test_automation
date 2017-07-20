@@ -21,4 +21,7 @@ type Msg
     | MergeToITB String
     | GetRelease String
     | FailedToParseRelease String
-    | ExportCSV
+
+
+
+-- | ExportCSV
