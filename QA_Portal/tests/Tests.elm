@@ -1,20 +1,18 @@
 module Tests exposing (..)
 
-import ElmTest.Extra exposing (..)
-import Test.Html.Query as Query
-import Test.Html.Selector exposing (text, tag, classes)
-import UserStory exposing (..)
-import Expect
-
-
 -- import Fuzz exposing (list, int, tuple, string)
 
-import Portal exposing (add)
-import Update exposing (..)
-import Msg exposing (..)
+import ElmTest.Extra exposing (..)
+import Expect
 import Init exposing (..)
+import Msg exposing (..)
 import Navigation exposing (navigation)
 import Paginate exposing (..)
+import Portal exposing (add)
+import Test.Html.Query as Query
+import Test.Html.Selector exposing (classes, tag, text)
+import Update exposing (..)
+import UserStory exposing (..)
 
 
 all : Test
@@ -71,12 +69,12 @@ all =
                             , "Web Team"
                             ]
                         , selectedTeam = ""
-                        , paginated = (Paginate.fromList 5 <| List.map (\s -> s) <| userStory.results)
+                        , paginated = Paginate.fromList 5 <| List.map (\s -> s) <| userStory.results
                         , reversed = False
                         , query = ""
                         , pageSize = 5
                         , releases = ""
-                        , csvString = [ "STORY/DEFECT" ]
+                        , csvString = [ "" ]
                         }
         , test "should have correct number of teams" <|
             \() ->
