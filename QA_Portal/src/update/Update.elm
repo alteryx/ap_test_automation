@@ -21,11 +21,6 @@ updateMergeToITB ref =
     WebSocket.send "ws://localhost:1234/qaportal/mergedtoitb/update" ref
 
 
-
--- getReleases : Cmd Msg
--- getReleases
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -38,7 +33,14 @@ update msg model =
         Msg.GetUserStory userStory ->
             ( { model
                 | userStory = userStory
-                , paginated = Paginate.fromList model.pageSize <| (List.map identity <| Debug.log "results: " userStory.results)
+                , csvString = List.map (\s -> s.formattedID ++ "\x0D\n") userStory.results
+                , paginated =
+                    Paginate.fromList model.pageSize <|
+                        (List.map identity <|
+                            Debug.log
+                                "results: "
+                                userStory.results
+                        )
               }
             , Cmd.none
             )
@@ -98,5 +100,7 @@ update msg model =
         Msg.MergeToITB ref ->
             ( model, updateMergeToITB ref )
 
-        Msg.ExportCSV ->
-            ( { model | csvString = List.map (\s -> s.formattedID ++ "\x0D\n") model.userStory.results }, Cmd.none )
+
+
+-- Msg.ExportCSV ->
+--     ( { model | csvString = List.map (\s -> s.formattedID ++ "\x0D\n") model.userStory.results }, Cmd.none )

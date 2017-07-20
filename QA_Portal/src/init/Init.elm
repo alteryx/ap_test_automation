@@ -42,7 +42,7 @@ model =
         ""
         5
         ""
-        [ "STORY/DEFECT" ]
+        [ "" ]
 
 
 init : ( Model, Cmd msg )
