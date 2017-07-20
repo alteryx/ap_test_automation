@@ -1,5 +1,6 @@
 module Update exposing (formatString, update)
 
+import Init exposing (model)
 import Model exposing (Model)
 import Msg exposing (Msg)
 import Paginate
@@ -96,3 +97,6 @@ update msg model =
 
         Msg.MergeToITB ref ->
             ( model, updateMergeToITB ref )
+
+        Msg.ExportCSV ->
+            ( { model | csvString = List.map (\s -> s.formattedID ++ "\x0D\n") model.userStory.results }, Cmd.none )

@@ -1,7 +1,7 @@
 module MergedToITB exposing (..)
 
 import Html exposing (Html, input, td, text, th, thead, tr)
-import Html.Attributes exposing (class, style, type_)
+import Html.Attributes exposing (class, style, title, type_)
 import Model exposing (Model)
 import Msg exposing (Msg)
 import UserStory
@@ -11,15 +11,12 @@ mergedToITBTable : Model -> UserStory.Result -> Html Msg
 mergedToITBTable { selectedTeam } { formattedID, owner, c_TestingStatus, blocked, blockedReason } =
     tr
         [ class "system-sans-serif f7" ]
-        [ td [ class "m0 pl3 pa2 truncate" ] [ text selectedTeam ]
-        , td [ class "m0 pl3 truncate" ] [ text formattedID ]
-        , td [ class "m0 pl3 truncate" ] [ text owner.refObjectName ]
-        , td [ class "m0 pl3 truncate" ] [ text c_TestingStatus ]
-        , td [ class "m0 pl3 truncate" ] [ text <| toString blocked ]
-        , td [ class "m0 pl3 truncate" ] [ text blockedReason ]
-
-        -- , td [ class "m0 pl3 truncate" ] [ text "string" ]
-        -- , td [ style [ ( "padding-left", "4em" ) ] ] [ input [ type_ "checkbox" ] [] ]
+        [ td [ class "m0 pl3 pa2 truncate", title selectedTeam ] [ text selectedTeam ]
+        , td [ class "m0 pl3 truncate", title formattedID ] [ text formattedID ]
+        , td [ class "m0 pl3 truncate", title owner.refObjectName ] [ text owner.refObjectName ]
+        , td [ class "m0 pl3 truncate", title c_TestingStatus ] [ text c_TestingStatus ]
+        , td [ class "m0 pl3 truncate", title <| toString blocked ] [ text <| toString blocked ]
+        , td [ class "m0 pl3 truncate", title blockedReason ] [ text blockedReason ]
         ]
 
 
@@ -39,8 +36,5 @@ mergedToITBTableHeader model =
             , th [ class "tl pa2 pl3 w-15", style [ ( "min-width", "12em" ) ] ] [ text "TEST STATUS" ]
             , th [ class "tl pa2 pl3 w-10", style [ ( "min-width", "12em" ) ] ] [ text "BLOCKED" ]
             , th [ class "tl pa2 pl3 w-15", style [ ( "min-width", "10em" ) ] ] [ text "BLOCKED REASON" ]
-
-            -- , th [ class "tl pa2 pl3 w-10", style [ ( "min-width", "12em" ) ] ] [ text "TASK" ]
-            -- , th [ class "tl pa2 pl3 w-10", style [ ( "min-width", "12em" ) ] ] [ text "AUTOMATION" ]
             ]
         ]

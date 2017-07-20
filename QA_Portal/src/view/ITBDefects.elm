@@ -1,23 +1,23 @@
 module ITBDefects exposing (itbDefectsTable, itbDefectsTableHeader)
 
 import Html exposing (Html, td, text, th, thead, tr)
-import Html.Attributes exposing (class, style)
+import Html.Attributes exposing (class, style, title)
 import Model exposing (Model)
 import Msg exposing (Msg)
 import UserStory
 
 
 itbDefectsTable : Model -> UserStory.Result -> Html Msg
-itbDefectsTable model result =
+itbDefectsTable { selectedTeam } { formattedID, owner, createdAt, c_DefectSource, name, severity } =
     tr
         [ class "system-sans-serif f7" ]
-        [ td [ class "m0 pl3 pa2 truncate mw4" ] [ text model.selectedTeam ]
-        , td [ class "m0 pl3 truncate mw4" ] [ text result.formattedID ]
-        , td [ class "m0 pl3 truncate mw4" ] [ text result.owner.refObjectName ]
-        , td [ class "m0 pl3 truncate mw4" ] [ text result.createdAt ]
-        , td [ class "m0 pl3 truncate mw4" ] [ text result.c_DefectSource ]
-        , td [ class "m0 pl3 truncate mw4" ] [ text result.name ]
-        , td [ class "m0 pl3 truncate mw4" ] [ text result.severity ]
+        [ td [ class "m0 pl3 pa2 truncate mw4", title selectedTeam ] [ text selectedTeam ]
+        , td [ class "m0 pl3 truncate mw4", title formattedID ] [ text formattedID ]
+        , td [ class "m0 pl3 truncate mw4", title owner.refObjectName ] [ text owner.refObjectName ]
+        , td [ class "m0 pl3 truncate mw4", title createdAt ] [ text createdAt ]
+        , td [ class "m0 pl3 truncate mw4", title c_DefectSource ] [ text c_DefectSource ]
+        , td [ class "m0 pl3 truncate mw4", title name ] [ text name ]
+        , td [ class "m0 pl3 truncate mw4", title severity ] [ text severity ]
         ]
 
 

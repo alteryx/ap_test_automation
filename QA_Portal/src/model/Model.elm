@@ -18,4 +18,5 @@ type alias Model =
     , query : String
     , pageSize : Int
     , releases : String
+    , csvString : List String
     }

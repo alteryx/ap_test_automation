@@ -9,37 +9,37 @@ import UserStory
 
 
 featureStatusTable : Model -> UserStory.Result -> Html Msg
-featureStatusTable model result =
+featureStatusTable { selectedTeam } { feature, formattedID, owner, createdAt, name } =
     tr
         [ class "system-sans-serif f7" ]
-        [ td [ class "m0 pl3 pa2 truncate mw4", title model.selectedTeam ] [ text model.selectedTeam ]
+        [ td [ class "m0 pl3 pa2 truncate mw4", title selectedTeam ] [ text selectedTeam ]
         , td
             [ class "m0 pl3 truncate mw4"
             , title
-                (case result.feature of
+                (case feature of
                     Just a ->
                         a.formattedID
 
                     _ ->
-                        result.formattedID
+                        formattedID
                 )
             ]
             [ text
-                (case result.feature of
+                (case feature of
                     Just a ->
                         a.formattedID
 
                     _ ->
-                        result.formattedID
+                        formattedID
                 )
             ]
-        , td [ class "m0 pl3 truncate mw4", title result.owner.refObjectName ] [ text result.owner.refObjectName ]
-        , td [ class "m0 pl3 truncate mw4", title result.createdAt ] [ text result.createdAt ]
-        , td [ class "m0 pl3 truncate mw4", title result.name ] [ text result.name ]
+        , td [ class "m0 pl3 truncate mw4", title owner.refObjectName ] [ text owner.refObjectName ]
+        , td [ class "m0 pl3 truncate mw4", title createdAt ] [ text createdAt ]
+        , td [ class "m0 pl3 truncate mw4", title name ] [ text name ]
         , td
             [ class "m0 pl3 truncate mw4"
             , title
-                (case result.feature of
+                (case feature of
                     Just a ->
                         a.c_PriorityTier
 
@@ -48,7 +48,7 @@ featureStatusTable model result =
                 )
             ]
             [ text
-                (case result.feature of
+                (case feature of
                     Just a ->
                         a.c_PriorityTier
 
@@ -59,7 +59,7 @@ featureStatusTable model result =
         , td
             [ class "m0 pl3 truncate mw4"
             , title
-                (case result.feature of
+                (case feature of
                     Just a ->
                         a.c_ReleaseTrainBoardingStatus
 
@@ -68,7 +68,7 @@ featureStatusTable model result =
                 )
             ]
             [ text
-                (case result.feature of
+                (case feature of
                     Just a ->
                         a.c_ReleaseTrainBoardingStatus
 
@@ -80,7 +80,7 @@ featureStatusTable model result =
             [ text <|
                 String.append
                     (toString <|
-                        case result.feature of
+                        case feature of
                             Just a ->
                                 a.percentDoneByStoryCount * 100
 
@@ -92,7 +92,7 @@ featureStatusTable model result =
         , td [ class "m0 pl3 truncate mw4" ]
             [ text <|
                 toString <|
-                    case result.feature of
+                    case feature of
                         Just a ->
                             a.directChildrenCount
 

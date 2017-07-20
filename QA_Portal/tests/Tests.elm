@@ -76,6 +76,7 @@ all =
                         , query = ""
                         , pageSize = 5
                         , releases = ""
+                        , csvString = [ "STORY/DEFECT" ]
                         }
         , test "should have correct number of teams" <|
             \() ->
