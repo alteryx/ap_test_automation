@@ -50,7 +50,8 @@ table {
 .export {
   background-image: url('../assets/12083.svg');
   background-repeat: no-repeat;
-  /* background-position: center; */
+  position: relative;
+  top: 2px;
   background-size: 1.1em 1.1em;
   display: inline-block;
   width: 2em;
