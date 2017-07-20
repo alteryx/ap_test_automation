@@ -1,6 +1,6 @@
 module ReadyToMerge exposing (..)
 
-import Html exposing (Html, a, div, input, li, td, text, th, thead, tr, ul)
+import Html exposing (Html, a, div, input, label, li, td, text, th, thead, tr, ul)
 import Html.Attributes exposing (class, classList, downloadAs, href, style, title, type_)
 import Html.Events exposing (onClick)
 import Model exposing (Model)
@@ -97,6 +97,9 @@ readyToMergeTableHeader model =
                 [ class "tl pa2 pl3 w-10"
                 , style [ ( "min-width", "16em" ) ]
                 ]
-                [ text "MERGED" ]
+                [ text "MERGED"
+                , input [ class "ml2 mr2 merge-all", type_ "checkbox" ] []
+                , label [] [ text "Merge All" ]
+                ]
             ]
         ]

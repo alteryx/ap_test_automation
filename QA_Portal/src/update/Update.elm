@@ -99,8 +99,3 @@ update msg model =
 
         Msg.MergeToITB ref ->
             ( model, updateMergeToITB ref )
-
-
-
--- Msg.ExportCSV ->
---     ( { model | csvString = List.map (\s -> s.formattedID ++ "\x0D\n") model.userStory.results }, Cmd.none )
