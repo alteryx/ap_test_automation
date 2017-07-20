@@ -75,6 +75,7 @@ all =
                         , reversed = False
                         , query = ""
                         , pageSize = 5
+                        , releases = ""
                         }
         , test "should have correct number of teams" <|
             \() ->

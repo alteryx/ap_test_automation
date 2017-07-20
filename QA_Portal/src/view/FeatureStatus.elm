@@ -106,8 +106,7 @@ featureStatusTableHeader : Model -> Html Msg
 featureStatusTableHeader model =
     thead
         [ class "system-sans-serif f7 bg-white"
-
-        -- , onClick <| Msg.GetRelease ""
+          -- , onClick <| Msg.GetRelease ""
         , style
             [ ( "color", "#5A5A5A" )
             , ( "font-weight", "100" )
@@ -136,7 +135,7 @@ featureStatusTableHeader model =
                 [ text "OWNER" ]
             , th
                 [ class "tl pa2 pl3 w-10"
-                , style [ ( "min-width", "10em" ) ]
+                , style [ ( "min-width", "8em" ) ]
                 ]
                 [ text "CREATED" ]
             , th
