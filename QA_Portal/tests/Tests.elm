@@ -76,7 +76,7 @@ all =
                         , releases = ""
                         , csvString = [ "" ]
                         , mergeAll = False
-                        , regs = [ "" ]
+                        , refs = [ "" ]
                         }
         , test "should have correct number of teams" <|
             \() ->
