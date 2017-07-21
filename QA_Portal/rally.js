@@ -149,7 +149,23 @@ app.ws('/qaportal/mergedtoitb/update', (websocket, request) => {
 
   websocket.on('message', (message) => {
     console.log(`A client sent a message: ${message}`)
-    updateMergedToITB(message)
+    let teamName = message.split('-')[0]
+    let ref = message.split('-')[1]
+
+    updateMergedToITB(ref)
+      .then(() => {
+        queryReadyToMerge(teamName, 'hierarchicalrequirement')
+        .then((response) => response)
+        .then((res) => {
+          queryReadyToMerge(teamName, 'defect')
+            .then((response) => {
+              res.Results = res.Results.concat(response.Results)
+              websocket.send(JSON.stringify(res))
+            })
+            .catch(onError)
+        })
+        .catch(onError)
+      })
     .catch(onError)
   })
 })

@@ -16,39 +16,16 @@ formatString string =
         |> String.toLower
 
 
-updateMergeToITB : String -> Cmd Msg
-updateMergeToITB ref =
-    WebSocket.send "ws://localhost:1234/qaportal/mergedtoitb/update" ref
-
-
-recur list =
-    case List.head list of
-        Nothing ->
-            updateMergeToITB ""
-
-        Just string ->
-            updateMergeToITB string
-
-
-mergeAll list =
-    case list of
-        [] ->
-            recur []
-
-        _ ->
-            case List.tail list of
-                Nothing ->
-                    recur []
-
-                Just list ->
-                    mergeAll list
+updateMergeToITB : Model -> String -> Cmd Msg
+updateMergeToITB model ref =
+    WebSocket.send "ws://localhost:1234/qaportal/mergedtoitb/update" (model.selectedTeam ++ "-" ++ ref)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Msg.SetActive tabName ->
-            ( { model | selected = tabName }, WebSocket.send (formatString tabName) model.selectedTeam )
+            ( { model | selected = tabName, mergeAll = False }, WebSocket.send (formatString tabName) model.selectedTeam )
 
         Msg.ChooseSortOrder category ->
             ( { model | sortCategory = category }, Cmd.none )
@@ -101,19 +78,19 @@ update msg model =
                 sizeAsInt =
                     Result.withDefault 5 <| String.toInt size
             in
-                ( { model
-                    | paginated = Paginate.changeItemsPerPage sizeAsInt model.paginated
-                    , pageSize = sizeAsInt
-                  }
-                , Cmd.none
-                )
+            ( { model
+                | paginated = Paginate.changeItemsPerPage sizeAsInt model.paginated
+                , pageSize = sizeAsInt
+              }
+            , Cmd.none
+            )
 
         Msg.DeleteItem item ->
             let
                 removeItem =
                     List.filter ((/=) item)
             in
-                ( { model | paginated = Paginate.map removeItem model.paginated }, Cmd.none )
+            ( { model | paginated = Paginate.map removeItem model.paginated }, Cmd.none )
 
         Msg.Reverse ->
             ( { model | reversed = not model.reversed }, Cmd.none )
@@ -122,7 +99,7 @@ update msg model =
             ( { model | query = query }, Cmd.none )
 
         Msg.MergeToITB ref ->
-            ( model, updateMergeToITB ref )
+            ( model, updateMergeToITB model ref )
 
         Msg.MergeAll ->
-            ( { model | mergeAll = not model.mergeAll }, Cmd.none )
+            ( { model | mergeAll = not model.mergeAll }, Cmd.batch <| List.map (updateMergeToITB model) model.refs )

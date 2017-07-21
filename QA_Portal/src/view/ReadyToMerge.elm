@@ -98,7 +98,7 @@ readyToMergeTableHeader model =
                 , style [ ( "min-width", "16em" ) ]
                 ]
                 [ text "MERGED"
-                , input [ class "ml2 mr2 merge-all", type_ "checkbox", onClick Msg.MergeAll ] []
+                , input [ checked model.mergeAll, class "ml2 mr2 merge-all", type_ "checkbox", onClick Msg.MergeAll ] []
                 , label [] [ text "Merge All" ]
                 ]
             ]
