@@ -3,6 +3,7 @@ module ReadyToMerge exposing (..)
 import Html exposing (Html, a, div, input, label, li, td, text, th, thead, tr, ul)
 import Html.Attributes exposing (checked, class, classList, downloadAs, href, style, title, type_)
 import Html.Events exposing (onClick)
+import Html.Keyed as Keyed
 import Model exposing (Model)
 import Msg exposing (Msg)
 import UserStory
@@ -10,8 +11,7 @@ import UserStory
 
 readyToMergeTable : Model -> UserStory.Result -> Html Msg
 readyToMergeTable { selectedTeam, mergeAll } { formattedID, owner, changesets, name, ref } =
-    tr
-        [ class "system-sans-serif f7" ]
+    tr [ class "system-sans-serif f7" ]
         [ td
             [ class "m0 pl3 pa2 truncate mw4"
             , title selectedTeam
@@ -53,7 +53,7 @@ readyToMergeTable { selectedTeam, mergeAll } { formattedID, owner, changesets, n
 
 
 readyToMergeTableHeader : Model -> Html Msg
-readyToMergeTableHeader model =
+readyToMergeTableHeader { sortCategory, mergeAll } =
     thead
         [ class "system-sans-serif f7 bg-white"
         , style
@@ -67,7 +67,7 @@ readyToMergeTableHeader model =
                 , style [ ( "min-width", "12em" ) ]
                 ]
                 [ text "TEAM"
-                , ul [ classList [ ( "dn", model.sortCategory /= "TEAM" ) ] ]
+                , ul [ classList [ ( "dn", sortCategory /= "TEAM" ) ] ]
                     [ li [] [ text "Ascending" ]
                     , li [] [ text "Descinding" ]
                     ]
@@ -98,7 +98,7 @@ readyToMergeTableHeader model =
                 , style [ ( "min-width", "16em" ) ]
                 ]
                 [ text "MERGED"
-                , input [ checked model.mergeAll, class "ml2 mr2 merge-all", type_ "checkbox", onClick Msg.MergeAll ] []
+                , input [ checked mergeAll, class "ml2 mr2 merge-all", type_ "checkbox", onClick Msg.MergeAll ] []
                 , label [] [ text "Merge All" ]
                 ]
             ]

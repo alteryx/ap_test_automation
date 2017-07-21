@@ -1,10 +1,11 @@
 module Pagination exposing (..)
 
-import ITBDefects exposing (itbDefectsTable, itbDefectsTableHeader)
 import FeatureStatus exposing (featureStatusTable, featureStatusTableHeader)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Html.Keyed as Keyed
+import ITBDefects exposing (itbDefectsTable, itbDefectsTableHeader)
 import MergedToITB exposing (mergedToITBTable, mergedToITBTableHeader)
 import Model exposing (..)
 import Msg exposing (..)
@@ -28,7 +29,7 @@ filterAndSortThings model =
             else
                 List.filter (\thing -> String.contains model.query (toString thing))
     in
-        Paginate.map (filter >> sort) model.paginated
+    Paginate.map (filter >> sort) model.paginated
 
 
 itemsPerPageSelector : Html Msg
@@ -77,8 +78,8 @@ paginatedButtonView model filteredSortedThings =
                 _ ->
                     div [] []
     in
-        tbody []
-            (List.map (itemView model) <| Paginate.page filteredSortedThings)
+    tbody []
+        (List.map (itemView model) <| Paginate.page filteredSortedThings)
 
 
 pagerButtonView index isActive =
