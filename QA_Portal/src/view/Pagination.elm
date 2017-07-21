@@ -1,5 +1,6 @@
 module Pagination exposing (..)
 
+import Debug
 import FeatureStatus exposing (featureStatusTable, featureStatusTableHeader)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -10,6 +11,7 @@ import MergedToITB exposing (mergedToITBTable, mergedToITBTableHeader)
 import Model exposing (..)
 import Msg exposing (..)
 import Paginate exposing (..)
+import Random
 import ReadyToMerge exposing (readyToMergeTable, readyToMergeTableHeader)
 import UserStory exposing (UserStory)
 
@@ -64,21 +66,22 @@ paginatedButtonView model filteredSortedThings =
         itemView model result =
             case model.selected of
                 "Ready to Merge" ->
-                    readyToMergeTable model result
+                    ( result.ref, readyToMergeTable model result )
 
                 "Merged to ITB" ->
-                    mergedToITBTable model result
+                    ( model.selected, mergedToITBTable model result )
 
                 "ITB Defects" ->
-                    itbDefectsTable model result
+                    ( model.selected, itbDefectsTable model result )
 
                 "Feature Status" ->
-                    featureStatusTable model result
+                    ( model.selected, featureStatusTable model result )
 
                 _ ->
-                    div [] []
+                    ( model.selected, div [] [] )
     in
-    tbody []
+    Keyed.node "tbody"
+        []
         (List.map (itemView model) <| Paginate.page filteredSortedThings)
 
 
