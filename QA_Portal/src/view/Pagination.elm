@@ -69,16 +69,16 @@ paginatedButtonView model filteredSortedThings =
                     ( result.ref, readyToMergeTable model result )
 
                 "Merged to ITB" ->
-                    ( model.selected, mergedToITBTable model result )
+                    ( result.ref, mergedToITBTable model result )
 
                 "ITB Defects" ->
-                    ( model.selected, itbDefectsTable model result )
+                    ( result.ref, itbDefectsTable model result )
 
                 "Feature Status" ->
-                    ( model.selected, featureStatusTable model result )
+                    ( result.ref, featureStatusTable model result )
 
                 _ ->
-                    ( model.selected, div [] [] )
+                    ( result.ref, div [] [] )
     in
     Keyed.node "tbody"
         []
