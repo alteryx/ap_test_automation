@@ -177,7 +177,7 @@ app.ws('/qaportal/mergedtoitb/update', (websocket, request) => {
   })
 })
 
-app.ws('/qaportal/mergedtocrt/update', (websocket, request) => {
+app.ws('/qaportal/mergetocrt/update', (websocket, request) => {
   console.log('A client connected!')
 
   websocket.on('message', (message) => {
