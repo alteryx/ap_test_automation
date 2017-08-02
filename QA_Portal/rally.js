@@ -75,16 +75,25 @@ const updateMergedToITB = (ref) => {
   })
 }
 
+const updateMergeToCRT = (ref) => {
+  return restApi.update({
+    ref,
+    data: {
+      c_KanbanStateAlteryxSuperSet: 'Ready for Merge to CRT'
+    }
+  })
+}
+
 const releaseStringBuilder = () => {
   let query = queryUtils.where('State', 'contains', 'Active')
   query = query.or('State', 'contains', 'Planning')
   query = query.and('Name', 'contains', 'PI')
-  query = query.and('Name', 'contains', "|")
+  query = query.and('Name', 'contains', '|')
   return query.toQueryString()
 }
 
 const queryRelease = () => {
-    return restApi.query({
+  return restApi.query({
     type: 'release',
     start: 1,
     pageSize: 2,
@@ -111,7 +120,6 @@ app.ws('/qaportal/readytomerge', (websocket, request) => {
       message = 'Blue Group'
     }
     queryReadyToMerge(message, 'hierarchicalrequirement')
-      .then((response) => response)
       .then((res) => {
         queryReadyToMerge(message, 'defect')
           .then((response) => {
@@ -131,7 +139,6 @@ app.ws('/qaportal/mergedtoitb', (websocket, request) => {
   websocket.on('message', (message) => {
     console.log(`A client sent a message: ${message}`)
     queryMergedToITB(message, 'hierarchicalrequirement')
-      .then((response) => response)
       .then((res) => {
         queryMergedToITB(message, 'defect')
           .then((response) => {
@@ -155,18 +162,44 @@ app.ws('/qaportal/mergedtoitb/update', (websocket, request) => {
     updateMergedToITB(ref)
       .then(() => {
         queryReadyToMerge(teamName, 'hierarchicalrequirement')
-        .then((response) => response)
-        .then((res) => {
-          queryReadyToMerge(teamName, 'defect')
-            .then((response) => {
-              res.Results = res.Results.concat(response.Results)
-              websocket.send(JSON.stringify(res))
-            })
-            .catch(onError)
-        })
-        .catch(onError)
+          .then((response) => response)
+          .then((res) => {
+            queryReadyToMerge(teamName, 'defect')
+              .then((response) => {
+                res.Results = res.Results.concat(response.Results)
+                websocket.send(JSON.stringify(res))
+              })
+              .catch(onError)
+          })
+          .catch(onError)
       })
-    .catch(onError)
+      .catch(onError)
+  })
+})
+
+app.ws('/qaportal/mergedtocrt/update', (websocket, request) => {
+  console.log('A client connected!')
+
+  websocket.on('message', (message) => {
+    console.log(`A client sent a message: ${message}`)
+    let teamName = message.split('-')[0]
+    let ref = message.split('-')[1]
+
+    updateMergeToCRT(ref)
+      .then(() => {
+        queryMergedToITB(teamName, 'hierarchicalrequirement')
+          .then((response) => response)
+          .then((res) => {
+            queryMergedToITB(teamName, 'defect')
+              .then((response) => {
+                res.Results = res.Results.concat(response.Results)
+                websocket.send(JSON.stringify(res))
+              })
+              .catch(onError)
+          })
+          .catch(onError)
+      })
+      .catch(onError)
   })
 })
 

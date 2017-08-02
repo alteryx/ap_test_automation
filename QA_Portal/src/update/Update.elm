@@ -21,11 +21,16 @@ updateMergeToITB model ref =
     WebSocket.send "ws://localhost:1234/qaportal/mergedtoitb/update" (model.selectedTeam ++ "-" ++ ref)
 
 
+updateMergeToCRT : Model -> String -> Cmd Msg
+updateMergeToCRT model ref =
+    WebSocket.send "ws://localhost:1234/qaportal/mergedtocrt/update" (model.selectedTeam ++ "-" ++ ref)
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Msg.SetActive tabName ->
-            ( { model | selected = tabName, mergeAll = False }, WebSocket.send (formatString tabName) model.selectedTeam )
+            ( { model | selected = tabName, mergeAll = False, mergeAllCRT = False }, WebSocket.send (formatString tabName) model.selectedTeam )
 
         Msg.ChooseSortOrder category ->
             ( { model | sortCategory = category }, Cmd.none )
@@ -101,5 +106,11 @@ update msg model =
         Msg.MergeToITB ref ->
             ( model, updateMergeToITB model ref )
 
+        Msg.MergeToCRT ref ->
+            ( model, updateMergeToCRT model ref )
+
         Msg.MergeAll ->
             ( { model | mergeAll = not model.mergeAll }, Cmd.batch <| List.map (updateMergeToITB model) model.refs )
+
+        Msg.MergeAllCRT ->
+            ( { model | mergeAllCRT = not model.mergeAllCRT }, Cmd.batch <| List.map (updateMergeToCRT model) model.refs )

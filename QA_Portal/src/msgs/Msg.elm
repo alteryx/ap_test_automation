@@ -19,6 +19,8 @@ type Msg
     | Reverse
     | Find String
     | MergeToITB String
+    | MergeToCRT String
     | GetRelease String
     | FailedToParseRelease String
     | MergeAll
+    | MergeAllCRT

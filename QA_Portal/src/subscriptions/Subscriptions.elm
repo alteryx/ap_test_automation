@@ -13,6 +13,7 @@ subscriptions model =
     Sub.batch
         [ WebSocket.listen (formatString model.selected) parseGetUserStory
         , WebSocket.listen "ws://localhost:1234/qaportal/mergedtoitb/update" parseGetUserStory
+        , WebSocket.listen "ws://localhost:1234/qaportal/mergedtocrt/update" parseGetUserStory
         ]
 
 

@@ -20,5 +20,6 @@ type alias Model =
     , releases : String
     , csvString : List String
     , mergeAll : Bool
+    , mergeAllCRT : Bool
     , refs : List String
     }
