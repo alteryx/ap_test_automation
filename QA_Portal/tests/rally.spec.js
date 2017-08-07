@@ -1,0 +1,74 @@
+const chai = require('chai')
+const chaiHttp = require('chai-http')
+const assert = require('assert')
+const rally = require('../rally')
+// const express = require('express')
+// const app = express()
+const expressWS = require('express-ws')(rally.app)
+
+chai.use(chaiHttp)
+
+describe('add', () => {
+  it('should add 2 numbers together', () => {
+    const add = (x, y) => x + y
+    assert.equal(add(2, 2), 4)
+  })
+
+  it('should be curried', () => {
+    const add = x => y => x + y
+    const actual = add(1)(2)
+    const expected = 3
+    assert.equal(actual, expected)
+  })
+})
+
+describe('should have a queryReadyToMerge function', () => {
+  it('should exists', () => {
+    const expected = 'function'
+    const actual = typeof rally.queryReadyToMerge
+    assert.equal(actual, expected)
+  })
+
+  // it('should return a 200 response status', (done) => {
+  //   chai.request(rally.app)
+  //     .get('/')
+  //     .send({message: 'Integration Test Team'})
+  //     .then((res) => {
+  //       console.log(res)
+  //       done()
+  //     })
+  //     .catch((err) => console.log(err))
+  // })
+})
+
+describe('should have a queryMergedToITB function', () => {
+  it('should exists', () => {
+    const expected = 'function'
+    const actual = typeof rally.queryMergedToITB
+    assert.equal(actual, expected)
+  })
+})
+
+describe('should have a queryITBDefects function', () => {
+  it('should exists', () => {
+    const expected = 'function'
+    const actual = typeof rally.queryITBDefects
+    assert.equal(actual, expected)
+  })
+})
+
+describe('should have a updateMergedToITB function', () => {
+  it('should exists', () => {
+    const expected = 'function'
+    const actual = typeof rally.updateMergedToITB
+    assert.equal(actual, expected)
+  })
+})
+
+describe('should have a updateMergeToCRT function', () => {
+  it('should exists', () => {
+    const expected = 'function'
+    const actual = typeof rally.updateMergeToCRT
+    assert.equal(actual, expected)
+  })
+})

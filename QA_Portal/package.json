@@ -22,12 +22,15 @@
     "webpack": "^1.15.0"
   },
   "devDependencies": {
+    "chai": "^4.1.1",
+    "chai-http": "^3.0.0",
     "chokidar-cli": "^1.2.0",
     "clean-webpack-plugin": "^0.1.8",
     "copy-webpack-plugin": "^1.1.1",
     "elm-hot-loader": "^0.5.4",
     "elm-webpack-loader": "^4.1.1",
     "file-loader": "^0.8.5",
+    "mocha": "^3.5.0",
     "rally": "^2.1.2",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.12",

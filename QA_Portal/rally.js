@@ -19,12 +19,12 @@ const queryStringBuilder = (message, kbState) => {
   return query.toQueryString()
 }
 
-const testQueryBuilder = (message) => {
-  let query = queryUtils.where('Project.Name', 'contains', message)
-  query = query.and('c_KanbanStateAlteryxSuperSet', '=', 'Ready to Merge')
-  query = query.or('c_KanbanStateAlteryxSuperSet', '=', 'Merged to Integration')
-  return query.toQueryString()
-}
+// const testQueryBuilder = (message) => {
+//   let query = queryUtils.where('Project.Name', 'contains', message)
+//   query = query.and('c_KanbanStateAlteryxSuperSet', '=', 'Ready to Merge')
+//   query = query.or('c_KanbanStateAlteryxSuperSet', '=', 'Merged to Integration')
+//   return query.toQueryString()
+// }
 
 const queryReadyToMerge = (message, apiEndpoint) => {
   console.log('Message: ', message)
@@ -252,3 +252,6 @@ app.ws('/qaportal/releases', (websocket, request) => {
       .catch(onError)
   })
 })
+
+
+module.exports = { queryReadyToMerge, queryMergedToITB, queryITBDefects, updateMergedToITB, updateMergeToCRT, app }
