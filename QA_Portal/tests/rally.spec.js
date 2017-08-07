@@ -2,9 +2,6 @@ const chai = require('chai')
 const chaiHttp = require('chai-http')
 const assert = require('assert')
 const rally = require('../rally')
-// const express = require('express')
-// const app = express()
-const expressWS = require('express-ws')(rally.app)
 
 chai.use(chaiHttp)
 
@@ -28,17 +25,6 @@ describe('should have a queryReadyToMerge function', () => {
     const actual = typeof rally.queryReadyToMerge
     assert.equal(actual, expected)
   })
-
-  // it('should return a 200 response status', (done) => {
-  //   chai.request(rally.app)
-  //     .get('/')
-  //     .send({message: 'Integration Test Team'})
-  //     .then((res) => {
-  //       console.log(res)
-  //       done()
-  //     })
-  //     .catch((err) => console.log(err))
-  // })
 })
 
 describe('should have a queryMergedToITB function', () => {
