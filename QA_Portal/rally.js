@@ -109,9 +109,6 @@ app.ws('/qaportal/readytomerge', (websocket, request) => {
 
   websocket.on('message', (message) => {
     console.log(`A client sent a message: ${message}`)
-    if (message === 'All Teams') {
-      message = 'Blue Group'
-    }
     queryReadyToMerge(message, 'hierarchicalrequirement')
       .then((res) => {
         queryReadyToMerge(message, 'defect')
