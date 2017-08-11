@@ -152,7 +152,6 @@ app.ws('/qaportal/mergedtoitb/update', (websocket, request) => {
     updateMergedToITB(ref)
       .then(() => {
         queryReadyToMerge(teamName, 'hierarchicalrequirement')
-          .then((response) => response)
           .then((res) => {
             queryReadyToMerge(teamName, 'defect')
               .then((response) => {
@@ -178,7 +177,6 @@ app.ws('/qaportal/mergetocrt/update', (websocket, request) => {
     updateMergeToCRT(ref)
       .then(() => {
         queryMergedToITB(teamName, 'hierarchicalrequirement')
-          .then((response) => response)
           .then((res) => {
             queryMergedToITB(teamName, 'defect')
               .then((response) => {
@@ -213,7 +211,6 @@ app.ws('/qaportal/featurestatus', (websocket, request) => {
   websocket.on('message', (message) => {
     console.log(`A client sent a message: ${message}`)
     queryReadyToMerge(message, 'hierarchicalrequirement')
-      .then((response) => response)
       .then((res) => {
         queryReadyToMerge(message, 'defect')
           .then((response) => {
