@@ -240,4 +240,4 @@ app.ws('/qaportal/releases', (websocket, request) => {
   })
 })
 
-module.exports = { queryReadyToMerge, queryMergedToITB, queryITBDefects, updateMergedToITB, updateMergeToCRT, app }
+module.exports = { queryReadyToMerge, queryMergedToITB, queryITBDefects, updateMergedToITB, updateMergeToCRT, app, queryStringBuilder }

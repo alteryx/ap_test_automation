@@ -54,7 +54,13 @@ describe('should have a updateMergedToITB function', () => {
 describe('should have a updateMergeToCRT function', () => {
   it('should exists', () => {
     const expected = 'function'
-    const actual = typeof rally.updateMergeToCRT
+    const actual = typeof rally.queryStringBuilder
+    assert.equal(actual, expected)
+  })
+
+  it('should output a string', () => {
+    const expected = '((Project.Name contains "Integration Test Team") AND (c_KanbanStateAlteryxSuperSet = "In Progress"))'
+    const actual = rally.queryStringBuilder('Integration Test Team', 'In Progress')
     assert.equal(actual, expected)
   })
 })
