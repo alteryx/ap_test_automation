@@ -19,13 +19,6 @@ const queryStringBuilder = (message, kbState) => {
   return query.toQueryString()
 }
 
-// const testQueryBuilder = (message) => {
-//   let query = queryUtils.where('Project.Name', 'contains', message)
-//   query = query.and('c_KanbanStateAlteryxSuperSet', '=', 'Ready to Merge')
-//   query = query.or('c_KanbanStateAlteryxSuperSet', '=', 'Merged to Integration')
-//   return query.toQueryString()
-// }
-
 const queryReadyToMerge = (message, apiEndpoint) => {
   console.log('Message: ', message)
   return restApi.query({
@@ -34,7 +27,7 @@ const queryReadyToMerge = (message, apiEndpoint) => {
     pageSize: 2,
     limit: 20,
     order: 'Rank',
-    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release', 'c_PriorityTier', 'c_ReleaseTrainBoardingStatus', 'PercentDoneByStoryCount', 'Theme'],
+    fetch: ['FormattedID', 'Defects', 'Owner', 'Project', 'Name', 'Changesets', 'Description', 'CreationDate', 'Workspace', 'PlanEstimate', 'TaskStatus', 'Blocked', 'Feature', 'Severity', 'c_DefectSource', 'c_TestingStatus', 'ObjectID', 'BlockedReason', 'Release', 'c_PriorityTier', 'c_ReleaseTrainBoardingStatus', 'PercentDoneByStoryCount', 'Theme', 'Predecessors', 'Successors', 'Parent', 'Children'],
     // query: queryUtils.where('Project.Name', 'contains', message)
     query: queryStringBuilder(message, 'Ready for Merge to ITB')
   })
@@ -252,6 +245,5 @@ app.ws('/qaportal/releases', (websocket, request) => {
       .catch(onError)
   })
 })
-
 
 module.exports = { queryReadyToMerge, queryMergedToITB, queryITBDefects, updateMergedToITB, updateMergeToCRT, app }
