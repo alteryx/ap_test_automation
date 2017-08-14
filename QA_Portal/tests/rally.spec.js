@@ -43,7 +43,7 @@ describe('should have a queryITBDefects function', () => {
   })
 })
 
-describe('should have a queryStringBuilder function', () => {
+describe('should have a updateMergedToITB function', () => {
   it('should exists', () => {
     const expected = 'function'
     const actual = typeof rally.updateMergedToITB
@@ -51,7 +51,7 @@ describe('should have a queryStringBuilder function', () => {
   })
 })
 
-describe('should have a updateMergeToCRT function', () => {
+describe('should have a queryStringBuilder function', () => {
   it('should exists', () => {
     const expected = 'function'
     const actual = typeof rally.queryStringBuilder
