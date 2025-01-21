@@ -23,7 +23,6 @@ var rally = require('rally');
 var util = require('util');
 var queryUtils = rally.util.query
 var restApi = rally({
-  apiKey: '_lWhBr01mSf2lAIPLdTtjaDoMmIv0QnUgaVOAN2cY',
   apiVersion: 'v2.0', // this is the default and may be omitted
   server: 'https://rally1.rallydev.com'
 });
@@ -51,24 +50,24 @@ app.set('view engine', 'ejs');
 //app.use(express.favicon());
 
 /* (start) migration from express 3 to 4 */
-  //app.use(express.logger('dev'));
-  app.use(morgan('dev'));
+//app.use(express.logger('dev'));
+app.use(morgan('dev'));
 
-  //app.use(express.json());
-  app.use(bodyParser.json());
+//app.use(express.json());
+app.use(bodyParser.json());
 
-  //app.use(express.urlencoded());
-  app.use(bodyParser.urlencoded({ extended: false }));
+//app.use(express.urlencoded());
+app.use(bodyParser.urlencoded({ extended: false }));
 
-  //app.use(express.methodOverride());
-  app.use(methodOverride());
+//app.use(express.methodOverride());
+app.use(methodOverride());
 
-  // development only
-  //if ('development' == app.get('env')) {
-  if (process.env.NODE_ENV === 'development') {
-    //app.use(express.errorHandler());
-    app.use(errorHandler());
-  }
+// development only
+//if ('development' == app.get('env')) {
+if (process.env.NODE_ENV === 'development') {
+  //app.use(express.errorHandler());
+  app.use(errorHandler());
+}
 /* (end) migration from express 3 to 4 */
 
 
@@ -91,7 +90,7 @@ app.ws('/qaportal', (websocket, request) => {
     console.log(`A client sent a message: ${message}`)
     queryEpicStories(message)
       .then((response) => {
-        console.log('Success', util.inspect(response, {showHidden: false, depth: null}))
+        console.log('Success', util.inspect(response, { showHidden: false, depth: null }))
         websocket.send(JSON.stringify(response))
       })
       .catch(onError)
@@ -105,6 +104,6 @@ app.post('/customers/edit/:id',customers.save_edit);*/
 
 //app.use(app.router); // no longer needed (migration express 3->4)
 
-http.createServer(app).listen(app.get('port'), function(){
+http.createServer(app).listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
 });

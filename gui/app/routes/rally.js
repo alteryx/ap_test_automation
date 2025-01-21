@@ -7,7 +7,6 @@ const portNumber = 1234
 const rally = require('rally')
 const queryUtils = rally.util.query
 const restApi = rally({
-  apiKey: '_lWhBr01mSf2lAIPLdTtjaDoMmIv0QnUgaVOAN2cY',
   apiVersion: 'v2.0', // this is the default and may be omitted
   server: 'https://rally1.rallydev.com'
 })
@@ -40,8 +39,8 @@ const queryDefectStories = (message) => {
 }
 
 const onSuccess = result => {
-  return util.inspect(result, {showHidden: false, depth: null})
-// console.log('Success', util.inspect(result, {showHidden: false, depth: null}))
+  return util.inspect(result, { showHidden: false, depth: null })
+  // console.log('Success', util.inspect(result, {showHidden: false, depth: null}))
 }
 
 const onError = error => {
@@ -58,7 +57,7 @@ app.ws('/qaportal', (websocket, request) => {
     console.log(`A client sent a message: ${message}`)
     queryEpicStories(message)
       .then((response) => {
-        console.log('Success', util.inspect(response, {showHidden: false, depth: null}))
+        console.log('Success', util.inspect(response, { showHidden: false, depth: null }))
         websocket.send(JSON.stringify(response))
         // console.log(response.Changesets)
       })
@@ -73,9 +72,9 @@ app.ws('/qaportal', (websocket, request) => {
     //     output = Object.assign({}, userStory, defects)
     //   })
     //   .then(() => console.log('Success', util.inspect(output, {showHidden: false, depth: null})))
-  //  Object.assign({}, userStory, defects)
+    //  Object.assign({}, userStory, defects)
     // console.log('Success', util.inspect(output, {showHidden: false, depth: null}))
-  // websocket.send('Hello, world!')
+    // websocket.send('Hello, world!')
   })
 })
 

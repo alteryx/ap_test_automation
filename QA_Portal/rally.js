@@ -8,7 +8,6 @@ const R = require('ramda')
 const rally = require('rally')
 const queryUtils = rally.util.query
 const restApi = rally({
-  apiKey: '_lWhBr01mSf2lAIPLdTtjaDoMmIv0QnUgaVOAN2cY',
   apiVersion: 'v2.0', // this is the default and may be omitted
   server: 'https://rally1.rallydev.com'
 })
@@ -115,7 +114,7 @@ app.ws('/qaportal/readytomerge', (websocket, request) => {
           .then((response) => {
             res.Results = res.Results.concat(response.Results)
             websocket.send(JSON.stringify(res))
-            console.log('Success', util.inspect(res, {showHidden: false, depth: null}))
+            console.log('Success', util.inspect(res, { showHidden: false, depth: null }))
           })
           .catch(onError)
       })
